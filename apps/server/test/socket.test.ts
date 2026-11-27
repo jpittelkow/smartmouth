@@ -175,6 +175,8 @@ test('a grown-up starts trivia; phones get their own questions; plays are record
 
     grown.send({ t: 'game:intent', intent: { type: 'answer', choice: 0 } });
     kid.send({ t: 'game:intent', intent: { type: 'answer', choice: 0 } });
+    await kid.next((m) => m.t === 'view' && m.view.phase === 'game' && (m.view.game as G).stage === 'suspense');
+    grown.send({ t: 'admin:next' }); // skip the drum roll
     const rev = await kid.next((m) => m.t === 'view' && m.view.phase === 'game' && (m.view.game as G).stage === 'reveal');
     assert.ok((rev as { view: { game: G } }).view.game.result, 'the phone learns if it was right only at the reveal');
 

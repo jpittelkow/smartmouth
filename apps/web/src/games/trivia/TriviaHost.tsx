@@ -36,14 +36,14 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
     switch (g.stage) {
       case 'intro': bed(null); fx('start'); break;
       case 'question': bed('think'); if (g.round > 1) fx('round'); break;
+      // The drum roll builds while the answer is still hidden; the result lands with the reveal.
+      case 'suspense': bed(null); fx('reveal', 0, 0.85); break;
       case 'reveal': {
-        bed(null);
-        fx('reveal');
         const graded = g.players.filter((p) => p.right !== null);
         const right = graded.filter((p) => p.right).length;
-        if (graded.length && right === graded.length) { fx('right', 0.9); fx('applause', 1.1, 0.55); }
-        else if (graded.length && right === 0) fx('allwrong', 0.9);
-        else fx('right', 0.9);
+        if (graded.length && right === graded.length) { fx('right'); fx('applause', 0.2, 0.55); }
+        else if (graded.length && right === 0) fx('allwrong');
+        else fx('right');
         break;
       }
       case 'turn': fx('sparkle'); break;
@@ -70,7 +70,7 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
 
       <div className="tv-game">
         {g.stage === 'intro' && (g.round === 1 ? <TitleCard rounds={g.rounds} /> : <Intro round={g.round} rounds={g.rounds} />)}
-        {(g.stage === 'question' || g.stage === 'reveal') && g.question && <QuestionBoard g={g} q={g.question} />}
+        {(g.stage === 'question' || g.stage === 'suspense' || g.stage === 'reveal') && g.question && <QuestionBoard g={g} q={g.question} />}
         {(g.stage === 'turn' || g.stage === 'turnReveal') && g.turn && <Turn g={g} who={seat(g.turn.playerId)} send={send} answerClips={view.reads.turn?.answers ?? []} />}
         {g.stage === 'standings' && g.standings && <Standings g={g} seat={seat} />}
         {g.stage === 'final' && g.final && <Final g={g} seat={seat} />}
@@ -156,7 +156,7 @@ function Countdown({ deadline }: { deadline: number }) {
 
 function QuestionBoard({ g, q }: { g: TriviaHostView; q: TPublicQuestion }) {
   return (
-    <div className="board">
+    <div className={`board${g.stage === 'suspense' ? ' suspense' : ''}`}>
       <div className="board-head">
         <span className="cat-chip">{q.category}</span>
         {g.splitBands && <span className="split-chip">Everyone's got their own question on their phone</span>}

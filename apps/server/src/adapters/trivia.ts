@@ -105,6 +105,8 @@ function momentOf(s: TriviaState): Moment {
     }
     case 'turn': return 'turn';
     case 'turnReveal': return s.turn && s.turn.pick?.choice === s.turn.question.correct ? 'littleRight' : 'littleWrong';
+    // The drum roll: Salty holds his tongue (no lines for this moment).
+    case 'suspense': return 'suspense';
     // The leaderboard between rounds is where the next round is introduced.
     case 'standings': return 'intro';
     default: return 'final';

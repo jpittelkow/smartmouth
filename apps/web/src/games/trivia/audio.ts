@@ -20,6 +20,8 @@ export function fx(cue: string, delaySec = 0, volume = 0.7): boolean {
   return v ? playClip(v, delaySec, volume) : false;
 }
 
+/** Trivia's beds sit about 4 dB above the shared default (owner, 2026-11-27: "up 1 to 2 notches"). */
+const BED_LEVEL = 0.5;
 let wanted = 0;
 /**
  * Crossfade to a music bed (a random take each time it starts), or to silence. Waits for the sound list on first
@@ -29,7 +31,7 @@ export function bed(cue: string | null): void {
   const mine = ++wanted;
   void loadSounds().then((s) => {
     names = Object.keys(s);
-    if (mine === wanted) playBed(cue ? variant(cue) : null);
+    if (mine === wanted) playBed(cue ? variant(cue) : null, BED_LEVEL);
   });
 }
 

@@ -17,7 +17,13 @@ const start = (players: Array<[string, Band]>, rounds = 4, c = content()) =>
 
 const toQuestion = (s: TriviaState) => rules.tick(s, s.stageEnds as number);
 /** Ends the current pause, and the leaderboard after it if one comes up. */
-const next = (s0: TriviaState) => { const s = rules.tick(s0, s0.stageEnds as number); return s.stage === 'standings' ? rules.tick(s, s.stageEnds as number) : s; };
+const next = (s0: TriviaState) => {
+  let s = rules.tick(s0, s0.stageEnds as number);
+  while (s.stage === 'suspense' || s.stage === 'reveal' || s.stage === 'standings') s = rules.tick(s, s.stageEnds as number);
+  return s;
+};
+/** Past the drum roll to the reveal. */
+const revealed = (s: TriviaState) => (s.stage === 'suspense' ? rules.tick(s, s.stageEnds as number) : s);
 
 test('everyone gets a question for their own band; the TV shows the oldest band', () => {
   let s = toQuestion(start([['g', 'grownups'], ['k', 'kids']]));
@@ -46,7 +52,10 @@ test('answers: one each, in time; everyone answering reveals at once; scores are
   s = rules.intent(s, 'g', { type: 'answer', choice: 0 }, t0 + 1500); // second answer ignored
   assert.equal(s.stage, 'question');
   s = rules.intent(s, 'k', { type: 'answer', choice: 1 }, t0 + 5000);
-  assert.equal(s.stage, 'reveal', 'all in: reveal straight away');
+  assert.equal(s.stage, 'suspense', 'all in: the drum roll starts straight away');
+  assert.equal(rules.hostView(s).correct, null, 'the answer stays hidden during the drum roll');
+  s = revealed(s);
+  assert.equal(s.stage, 'reveal');
   assert.equal(s.gained.k, 200, 'kids ×2, no speed bonus');
   assert.ok((s.gained.g ?? 0) > 100 && (s.gained.g ?? 0) <= 150, 'grown-ups ×1 plus a speed bonus');
   assert.equal(s.log.length, 2);
@@ -57,7 +66,7 @@ test('late answers are refused by the rules, not the phone', () => {
   let s = toQuestion(start([['g', 'grownups'], ['t', 'teens']]));
   s = rules.intent(s, 'g', { type: 'answer', choice: 1 }, s.questionEnds + 1);
   assert.equal(s.picks.g, undefined);
-  s = rules.tick(s, s.questionEnds);
+  s = revealed(rules.tick(s, s.questionEnds));
   assert.equal(s.stage, 'reveal');
   assert.equal(s.gained.g, 0);
   assert.deepEqual(s.log.map((l) => l.ms), [null, null], 'unanswered plays are logged without a time');
@@ -71,7 +80,7 @@ test('a Little player gets a turn every other round, can answer by the TV remote
   s = next(s); // reveal → leaderboard → round 2
   assert.equal(s.round, 2);
   s = rules.intent(s, 'g', { type: 'answer', choice: 1 }, s.questionStart + 1);
-  s = rules.tick(s, s.stageEnds as number); // reveal → turn
+  s = next(s); // drum roll → reveal → turn
   assert.equal(s.stage, 'turn');
   assert.equal(s.turn?.playerId, 'l');
   assert.equal(s.stageEnds !== null && s.stageEnds - (s.turn?.start ?? 0) >= 60_000, true, 'no real timer for a Little');
@@ -88,7 +97,7 @@ test('a wrong Little pick still earns a try point, and the final always crowns L
   s = rules.intent(s, 'g', { type: 'answer', choice: 1 }, s.questionStart + 1);
   s = next(s);
   s = rules.intent(s, 'g', { type: 'answer', choice: 1 }, s.questionStart + 1);
-  s = rules.tick(s, s.stageEnds as number);
+  s = next(s);
   s = rules.intent(s, 'l', { type: 'answer', choice: 0 }, 5);
   assert.equal(s.gained.l, 25);
   s = rules.tick(s, s.stageEnds as number);
@@ -116,6 +125,8 @@ test('spice turned down mid-game skips spicier questions', () => {
 test('skip ends a wait; running out of questions ends the game', () => {
   let s = toQuestion(start([['g', 'grownups']], 8, content(1)));
   s = rules.intent(s, 'g', { type: 'skip' }, s.questionStart + 1);
+  assert.equal(s.stage, 'suspense');
+  s = rules.intent(s, 'g', { type: 'skip' }, s.questionStart + 1);
   assert.equal(s.stage, 'reveal');
   s = rules.intent(s, 'g', { type: 'skip' }, s.questionStart + 2);
   assert.equal(s.stage, 'standings', 'the leaderboard comes between rounds');
@@ -127,7 +138,7 @@ test('between rounds the leaderboard ranks everyone and shows who moved; it is s
   let s = toQuestion(start([['a', 'grownups'], ['b', 'grownups']], 2));
   s = rules.intent(s, 'b', { type: 'answer', choice: 1 }, s.questionStart + 1);
   s = rules.intent(s, 'a', { type: 'answer', choice: 0 }, s.questionStart + 2);
-  s = rules.tick(s, s.stageEnds as number);
+  s = rules.tick(revealed(s), revealed(s).stageEnds as number);
   assert.equal(s.stage, 'standings');
   const board = rules.hostView(s).standings!;
   const right = s.current.grownups!.correct === 1 ? 'b' : 'a';
@@ -138,6 +149,6 @@ test('between rounds the leaderboard ranks everyone and shows who moved; it is s
   s = rules.tick(s, s.stageEnds as number);
   assert.equal(s.round, 2);
   s = rules.intent(s, 'a', { type: 'skip' }, s.questionStart + 1);
-  s = rules.tick(s, s.stageEnds as number);
+  s = next(s);
   assert.equal(s.stage, 'final', 'no leaderboard after the last round: the final scores');
 });

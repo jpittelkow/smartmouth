@@ -36,7 +36,8 @@ const LEVEL = 0.32;
 const DUCKED = 0.13;
 const FADE_MS = 1500;
 
-let current: { cue: string; el: HTMLAudioElement } | null = null;
+/** `level`: this bed's volume (a game may play its beds louder than LEVEL); ducking keeps the same ~8 dB drop. */
+let current: { cue: string; el: HTMLAudioElement; level: number } | null = null;
 let ducked = false;
 let pending: (() => void) | null = null;
 
@@ -51,7 +52,7 @@ function fade(el: HTMLAudioElement, to: number, ms: number, then?: () => void) {
   requestAnimationFrame(step);
 }
 
-const target = () => (ducked ? DUCKED : LEVEL);
+const target = () => { const l = current?.level ?? LEVEL; return ducked ? l * (DUCKED / LEVEL) : l; };
 
 /** A desktop browser plays sound only after a click or key; the TV app's WebView plays at once. */
 if (typeof window !== 'undefined') {
@@ -61,7 +62,7 @@ if (typeof window !== 'undefined') {
 }
 
 /** Crossfade to a stage's bed (null: fade to silence). The win themes play once; the rest loop. */
-export function playBed(cue: string | null) {
+export function playBed(cue: string | null, level = LEVEL) {
   if (current?.cue === cue) return;
   const old = current;
   current = null;
@@ -71,7 +72,7 @@ export function playBed(cue: string | null) {
   const el = new Audio(url);
   el.loop = !cue.endsWith('-win');
   el.volume = 0;
-  current = { cue, el };
+  current = { cue, el, level };
   const start = () => el.play().then(() => fade(el, target(), FADE_MS)).catch(() => { pending = start; });
   start();
 }

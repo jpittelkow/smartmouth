@@ -30,6 +30,8 @@ export function TriviaController({ view, send }: { view: PlayerGameView; send: (
         </div>
       </div>
     );
+  } else if (g.stage === 'suspense') {
+    body = <Center big="Drumroll…" small={g.picked !== null ? 'Answers are in. Look at the TV!' : 'Too late! Look at the TV'} />;
   } else if (g.stage === 'reveal') {
     body = g.result ? <Result right={g.result.right} gained={g.result.gained} correctText={g.result.correctText} score={g.score} rank={g.rank} />
       : <Center big="Look at the TV" small={`You have ${g.score} points`} />;

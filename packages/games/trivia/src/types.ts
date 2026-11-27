@@ -25,7 +25,8 @@ export interface TriviaSettings {
 }
 
 /** `standings`: the leaderboard between rounds (owner, 2026-11-27). */
-export type Stage = 'intro' | 'question' | 'reveal' | 'turn' | 'turnReveal' | 'standings' | 'final';
+/** `suspense`: the drum roll between answers closing and the reveal (owner, 2026-11-27). */
+export type Stage = 'intro' | 'question' | 'suspense' | 'reveal' | 'turn' | 'turnReveal' | 'standings' | 'final';
 
 export interface TPlayer { band: Band; score: number }
 interface Pick { choice: number; at: number }

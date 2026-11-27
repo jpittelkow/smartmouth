@@ -172,7 +172,8 @@ button, input { font: inherit; color: inherit; }
 .timer.late span { color: var(--hot); }
 .q-text { font-size: 64px; line-height: 1.08; max-width: calc(100% - 220px); text-wrap: balance; }
 .q-text.small { font-size: 48px; }
-.answers { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+/* Side padding: the glowing right answer pops a little and mustn't be clipped by .tv-game (owner's TV test). */
+.answers { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 4px 22px 12px; }
 .answer {
   display: flex; align-items: center; gap: 22px; font-size: 42px; font-weight: 700; padding: 14px 26px; min-height: 96px;
   background: var(--stage-2); border: var(--outline); border-radius: var(--radius-tv); box-shadow: var(--shadow-tv);
@@ -320,7 +321,7 @@ button, input { font: inherit; color: inherit; }
 .answer { transition: opacity 300ms ease, transform 300ms ease; }
 .answer.dim { transform: scale(.96); }
 .answer.correct { animation: correct-pop 650ms var(--pop) both; box-shadow: 0 0 0 6px var(--zap), 0 0 48px rgba(54, 220, 184, .55), var(--shadow-tv); }
-@keyframes correct-pop { 0% { transform: scale(1); } 45% { transform: scale(1.08); } 100% { transform: scale(1.03); } }
+@keyframes correct-pop { 0% { transform: scale(1); } 45% { transform: scale(1.05); } 100% { transform: scale(1.02); } }
 
 /* The leaderboard rises in before its rows start to move. */
 .standings { animation: rise 420ms ease-out both; }
@@ -341,3 +342,8 @@ button, input { font: inherit; color: inherit; }
 .sparkles { position: absolute; left: 50%; top: 55%; z-index: 5; pointer-events: none; }
 .sparkles i { position: absolute; font-style: normal; font-size: 46px; text-shadow: 0 0 14px currentColor; animation: sparkle 1100ms ease-out both; }
 @keyframes sparkle { 0% { transform: translate(-50%, -50%) scale(.2); opacity: 0; } 25% { opacity: 1; } 100% { transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1.1) rotate(160deg); opacity: 0; } }
+
+/* The drum roll: answers tremble while the right one is still hidden. */
+.board.suspense .answer { animation: suspense-shake 160ms ease-in-out infinite alternate; }
+.board.suspense .answer:nth-child(2n) { animation-delay: 80ms; }
+@keyframes suspense-shake { from { transform: translateY(-2px) rotate(-.4deg); } to { transform: translateY(2px) rotate(.4deg); } }

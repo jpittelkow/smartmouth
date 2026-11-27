@@ -13,6 +13,8 @@ import type {
 export const INTRO_MS = 3500;
 export const REVEAL_MS = 8000;
 export const TURN_REVEAL_MS = 6000;
+/** The drum roll before a reveal: answers are closed, the right one isn't shown yet. */
+export const SUSPENSE_MS = 2200;
 /** The leaderboard between rounds (held longer while Salty talks). */
 export const STANDINGS_MS = 6000;
 /** A turn that nobody answers moves on after this, so a game can't stall. */
@@ -88,7 +90,8 @@ export function tick(s: TriviaState, now: number): TriviaState {
   if (s.stageEnds === null || now < s.stageEnds) return s;
   switch (s.stage) {
     case 'intro': return startQuestion(s, now);
-    case 'question': return reveal(s, now);
+    case 'question': return suspense(s, now);
+    case 'suspense': return reveal(s, now);
     case 'reveal': return turnDue(s) ? startTurn(s, now) : nextRound(s, now);
     case 'turn': return nextRound({ ...s, turn: null }, now); // nobody picked in time
     case 'turnReveal': return nextRound(s, now);
@@ -107,7 +110,7 @@ export function intent(s: TriviaState, playerId: string, i: TriviaIntent, now: n
 
 /** A grown-up pressed "next": end the wait now. */
 function skip(s: TriviaState, now: number): TriviaState {
-  if (s.stage === 'question') return reveal(s, now);
+  if (s.stage === 'question') return suspense(s, now);
   if (s.stage === 'turn') return nextRound({ ...s, turn: null }, now);
   if (s.stage === 'final') return s;
   return tick({ ...s, stageEnds: now }, now);
@@ -154,7 +157,12 @@ function answer(s: TriviaState, playerId: string, choice: number, now: number): 
   const next = { ...s, picks: { ...s.picks, [playerId]: { choice, at: now } } };
   // Everyone who has a question has answered: reveal now.
   const waiting = answerers(next).filter((id) => next.current[next.players[id]?.band as Band] && !next.picks[id]);
-  return waiting.length ? next : reveal(next, now);
+  return waiting.length ? next : suspense(next, now);
+}
+
+/** Answers are closed; a drum roll before the reveal (owner, 2026-11-27: "build some suspense"). */
+function suspense(s: TriviaState, now: number): TriviaState {
+  return { ...s, stage: 'suspense', stageEnds: now + SUSPENSE_MS };
 }
 
 function reveal(s0: TriviaState, now: number): TriviaState {
@@ -269,7 +277,7 @@ function standings(s: TriviaState) {
 }
 
 export function hostView(s: TriviaState): TriviaHostView {
-  const showing = s.stage === 'question' || s.stage === 'reveal';
+  const showing = s.stage === 'question' || s.stage === 'suspense' || s.stage === 'reveal';
   const tvQ = s.tvBand ? s.current[s.tvBand] : undefined;
   const reveal = s.stage === 'reveal';
   const players: TPlayerStatus[] = Object.entries(s.players).map(([id, p]) => {
@@ -277,7 +285,7 @@ export function hostView(s: TriviaState): TriviaHostView {
     const answered = showing && p.band !== 'little' && !!q;
     return {
       id, score: p.score,
-      locked: s.stage === 'question' ? !!s.picks[id] : s.stage === 'turn' ? !!s.turn?.helpers[id] : false,
+      locked: s.stage === 'question' || s.stage === 'suspense' ? !!s.picks[id] : s.stage === 'turn' ? !!s.turn?.helpers[id] : false,
       right: reveal && answered ? s.picks[id]?.choice === q?.correct : null,
       gained: reveal || s.stage === 'turnReveal' ? s.gained[id] ?? 0 : 0,
     };
@@ -313,7 +321,7 @@ export function playerView(s: TriviaState, playerId: string): TriviaPlayerView {
   const q = s.current[p.band];
   const t = s.turn;
   const view: TriviaPlayerView = { ...base };
-  if ((s.stage === 'question' || s.stage === 'reveal') && q && p.band !== 'little') {
+  if ((s.stage === 'question' || s.stage === 'suspense' || s.stage === 'reveal') && q && p.band !== 'little') {
     view.question = publicQ(q);
     view.showPrompt = p.band !== s.tvBand;
     view.picked = s.picks[playerId]?.choice ?? null;

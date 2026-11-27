@@ -17,6 +17,7 @@ export function useSocket(onOpen: () => ClientMsg | null, onMessage: (m: ServerM
 
   useEffect(() => {
     let stopped = false;
+    let opened = false;
     let delay = 500;
     let timer: ReturnType<typeof setTimeout> | undefined;
 
@@ -26,6 +27,9 @@ export function useSocket(onOpen: () => ClientMsg | null, onMessage: (m: ServerM
       wsRef.current = ws;
       setStatus('connecting');
       ws.onopen = () => {
+        // A reconnect usually means the server restarted for a deploy: load the new version if there is one.
+        if (opened) void reloadIfStale();
+        opened = true;
         delay = 500;
         setStatus('open');
         const hello = handlers.current.onOpen();
@@ -47,7 +51,12 @@ export function useSocket(onOpen: () => ClientMsg | null, onMessage: (m: ServerM
     };
     connect();
     // A phone coming back from the lock screen: reconnect now rather than waiting out the backoff.
-    const wake = () => { if (document.visibilityState === 'visible' && !wsRef.current) { clearTimeout(timer); connect(); } };
+    const wake = () => {
+      if (document.visibilityState !== 'visible') return;
+      // The TV app keeps its page alive in the background for hours: check for a newer version on the way back.
+      void reloadIfStale();
+      if (!wsRef.current) { clearTimeout(timer); connect(); }
+    };
     document.addEventListener('visibilitychange', wake);
     return () => {
       stopped = true;
@@ -69,4 +78,23 @@ export function store(key: string): string | null {
 }
 export function save(key: string, value: string | null) {
   try { if (value === null) localStorage.removeItem(key); else localStorage.setItem(key, value); } catch { /* private mode */ }
+}
+
+/**
+ * Reloads the page when the server now serves a different build (its script name changes with every build). Found on
+ * the office TV, 2026-11-27: the TV app's page stayed on an hour-old version after several deploys. A reload is safe
+ * mid-game: the host and phones resume their seats from their saved tokens.
+ */
+let checking = false;
+export async function reloadIfStale(): Promise<void> {
+  if (checking) return;
+  const mine = document.querySelector('script[type="module"][src*="/assets/"]')?.getAttribute('src');
+  if (!mine) return; // the dev server: nothing to compare
+  checking = true;
+  try {
+    const r = await fetch(location.pathname, { cache: 'no-store' });
+    if (r.ok && !(await r.text()).includes(mine)) location.reload();
+  } catch { /* offline: try again next time */ } finally {
+    checking = false;
+  }
 }
