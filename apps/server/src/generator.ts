@@ -150,7 +150,7 @@ export function checkRequest(raw: unknown): { ok: true; value: GenerateRequest }
   const topic = typeof x.topic === 'string' ? x.topic.trim().replace(/\s+/g, ' ').slice(0, 300) : '';
   if (topic.length < 2) return { ok: false, error: 'Say what the questions should be about.' };
   const ids = BANDS.map((b) => b.id) as string[];
-  const bands = Array.isArray(x.bands) ? [...new Set(x.bands.filter((b): b is Band => typeof b === 'string' && ids.includes(b)))] : [];
+  const bands = Array.isArray(x.bands) ? [...new Set(x.bands.filter((b): b is Band => typeof b === 'string' && ids.includes(b)))].sort((a, b) => bandRank(a) - bandRank(b)) : [];
   if (!bands.length) return { ok: false, error: 'Pick at least one age.' };
   const perBand = Math.round(Number(x.perBand ?? 5));
   if (!(perBand >= 1 && perBand <= MAX_PER_BAND)) return { ok: false, error: `Ask for 1 to ${MAX_PER_BAND} per age.` };
@@ -210,7 +210,7 @@ export class Generator {
     job.cost += written.cost;
     job.sources = written.sources.slice(0, 12);
     const drafts = ((parseJsonObject(written.text) as { questions?: Draft[] }).questions ?? []).filter((d) => bands.includes(d.band));
-    job.log.push(`Wrote ${drafts.length}. ${written.sources.length ? `Read ${written.sources.length} web pages.` : 'No web pages cited.'}`);
+    job.log.push(`Wrote ${drafts.length}. ${written.sources.length ? `Read ${written.sources.length} web page${written.sources.length === 1 ? '' : 's'}.` : 'No web pages cited.'}`);
     if (!drafts.length) throw new Error('The writer returned no questions.');
     if (job.cost > this.cfg.budget) throw new Error(`Stopped at the budget ($${this.cfg.budget}).`);
 

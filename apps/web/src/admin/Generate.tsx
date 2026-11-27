@@ -163,7 +163,7 @@ function JobCard({ job, goTo }: { job: Job; goTo: (f: Partial<Filters>) => void 
         </details>
       )}
       {job.sources.length > 0 && (
-        <details><summary className="adm-count">{job.sources.length} sources</summary>
+        <details><summary className="adm-count">{job.sources.length} source{job.sources.length === 1 ? '' : 's'}</summary>
           <ul className="gen-results">{job.sources.map((s) => <li key={s.url}><a href={s.url} target="_blank" rel="noreferrer">{s.title || s.url}</a></li>)}</ul>
         </details>
       )}
