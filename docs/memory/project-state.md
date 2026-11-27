@@ -32,8 +32,12 @@ of Salty's voice. All ADRs except 0021 are **Proposed** (the owner will review t
 
 ## Next
 0. **Game #2 is decided (owner, 2026-11-27): a hidden-traitor game inspired by the TV show "The Traitors"**
-   (secret traitors among the players, round-table votes to banish, night "murders"). Logged only; nothing designed yet.
-   Its own name, art and rules when we get to it, not the show's branding.
+   (secret traitors among the players, round-table votes to banish, night "murders"). **Design drafted 2026-11-27** as a
+   Claude Doc, "Smart Mouth: Traitors Mode Design" (https://claude.ai/artifact/2vHrDkftuZKsf1YBcc5QHg): working name
+   Snake Manor, roles Guests/Snakes/Ghosts, 5-10 players, trivia missions with Dagger-paying sabotage, identical night
+   screens, Salty as "Lord of the Manor". Not reviewed by the owner; no ADR or code yet. Its open questions are at the doc's end.
+   Medieval-look mockups: `docs/design/mockups/snake-manor.html` (artifact https://claude.ai/artifact/UR6VZ46KUoY3fcriACf42k), draft 1, with a
+   playable banishment reveal (synced sound and visuals); the doc's "Drama" section holds the sound and pacing rules.
 1. The owner picks Salty's voice; rerun `bank` with that `VOICE` if it changes.
 2. The first family playtest on the office TV, with sound.
 3. Back actually pauses; the kid-mode lock; more tracking (results by age band, which wrong answer people pick, the average answer time

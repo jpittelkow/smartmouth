@@ -32,3 +32,5 @@ Short-term memory: a dated log of work sessions, with what was done, what was de
 ## Entries
 - [2026-11-26](2026-11-26.md): repo created; 20 ADRs proposed; design guide and 16 mockups; build step 1 (rooms,
   join, lobby, reconnects, spice cap) working in the browser; TV shell builds
+- [2026-11-27](2026-11-27.md): Game #2 (Snake Manor) design doc, medieval mockups, the drama section and a playable
+  banishment reveal with synced sound and visuals
