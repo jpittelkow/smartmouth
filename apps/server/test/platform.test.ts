@@ -122,3 +122,25 @@ test('the grown-up’s game length sets how many questions trivia asks: 10, 30 o
   }
   db.close();
 });
+
+test('house bots play trivia but their answers stay out of the question stats', async () => {
+  const { loadSeeds } = await import('../src/seeds.ts');
+  const { fileURLToPath } = await import('node:url');
+  const { drainLog, tickGame, gameIntent } = await import('../src/gameRuntime.ts');
+  const db = openDb(':memory:');
+  loadSeeds(db, fileURLToPath(new URL('../../../content/seed', import.meta.url)), 0);
+  const store = new RoomStore();
+  const room = store.create(0);
+  store.join(room, { name: 'Person', band: 'grownups', avatar: 0 }, 0);
+  const bot = store.join(room, { name: 'Robo', band: 'grownups', avatar: 1 }, 0);
+  assert.ok(bot.ok);
+  bot.value.bot = true;
+  assert.ok(startGame(room, 'trivia', db, 1000).ok);
+  tickGame(room, 20_000); // the question is up
+  for (const seat of room.seats) gameIntent(room, { kind: 'player', seatId: seat.id }, { type: 'answer', choice: 0 }, 21_000);
+  tickGame(room, 40_000); // the drum roll ends: reveal
+  drainLog(room, db, 40_000);
+  const total = (db.prepare('SELECT SUM(asked) n FROM questions').get() as { n: number }).n;
+  assert.equal(total, 1, 'only the person’s play counts');
+  db.close();
+});

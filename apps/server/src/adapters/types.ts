@@ -21,7 +21,11 @@ export interface StartInput {
 }
 
 /** One question played, for the library's stats (per question, never per person: ADR 0016). */
-export interface Play { questionId: number; right: boolean; ms: number | null }
+export interface Play {
+  questionId: number; right: boolean; ms: number | null;
+  /** Who played it: a house bot's plays don't count in the library's stats (they'd skew how hard a question looks). */
+  player?: string;
+}
 
 /** What Salty can use when a game decides what he says (salty.ts supplies these). */
 export interface SaltyTools {

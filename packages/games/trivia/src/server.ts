@@ -193,7 +193,7 @@ function reveal(s0: TriviaState, now: number): TriviaState {
     }
     s.gained[id] = points;
     s.players[id] = { ...p, score: p.score + points };
-    s.log.push({ questionId: q.id, right, ms: pick ? pick.at - s.questionStart : null });
+    s.log.push({ questionId: q.id, right, ms: pick ? pick.at - s.questionStart : null, player: id });
   }
   return s;
 }
@@ -238,7 +238,7 @@ function turnAnswer(s: TriviaState, playerId: string, choice: number, now: numbe
   return {
     ...s, players, gained, stage: 'turnReveal', stageEnds: now + TURN_REVEAL_MS,
     turn: { ...t, pick: { choice, at: now } },
-    log: [...s.log, { questionId: t.question.id, right, ms: now - t.start }],
+    log: [...s.log, { questionId: t.question.id, right, ms: now - t.start, player: t.playerId }],
   };
 }
 

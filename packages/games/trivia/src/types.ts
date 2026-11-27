@@ -60,7 +60,7 @@ export interface TriviaState {
   /** Everyone's score when this round began, so the leaderboard can show who moved. */
   roundStartScores?: Record<string, number>;
   /** Plays to record in the library's stats; the platform takes them after each step. */
-  log: Array<{ questionId: number; right: boolean; ms: number | null }>;
+  log: Array<{ questionId: number; right: boolean; ms: number | null; player?: string }>;
 }
 
 export interface TPublicQuestion {
