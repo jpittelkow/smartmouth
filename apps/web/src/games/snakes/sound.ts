@@ -3,6 +3,7 @@
 // Salty's strip, and every sound has a picture timed to the same moment (drama.tsx).
 import { useEffect, useSyncExternalStore } from 'react';
 import { serverNow } from '../../socket.ts';
+import { hasSound, playClip } from './music.ts';
 
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
@@ -73,7 +74,9 @@ let drone: { gain: GainNode; oscs: OscillatorNode[] } | null = null;
 
 /** The sound bank. Names match the cues in drama.tsx. */
 export const SFX = {
-  droneOn() {
+  /** The low drone. Skipped at night when the night music is playing instead. */
+  droneOn(unlessMusic?: string) {
+    if (unlessMusic && hasSound(unlessMusic)) return;
     const a = audio();
     if (!a || !master || drone) return;
     const g = a.createGain();
@@ -124,8 +127,9 @@ export const SFX = {
   quill() { burst(0.12, 'bandpass', 3800, 0.16); },
   /** A wax seal pressed down. */
   thud() { tone(70, 'sine', 0.7, 0.005, 0.25); burst(0.08, 'lowpass', 600, 0.25); },
-  /** The great bell. */
+  /** The great bell: the picked recording when there is one (tools/sounds), else synthesized. */
   bell(delay = 0) {
+    if (playClip('bell', delay)) return;
     for (const [m, v, d] of [[1, 0.5, 7], [2, 0.25, 5], [2.4, 0.22, 4.5], [3, 0.14, 3.5], [4.2, 0.1, 2.5], [5.4, 0.06, 1.8]] as const) {
       tone(146.8 * m, 'sine', v, 0.01, d, delay);
     }
@@ -144,8 +148,9 @@ export const SFX = {
   gasp() { burst(0.6, 'bandpass', 1400, 0.22); },
   /** A soft chime: one more of you made it to breakfast. */
   chime() { tone(880, 'sine', 0.12, 0.005, 1.2); tone(1320, 'sine', 0.05, 0.005, 0.9); },
-  /** The choir and brass for the end. */
-  finale() { [196, 246.9, 293.7, 392].forEach((hz) => { tone(hz, 'sawtooth', 0.05, 0.6, 2.6); tone(hz * 2, 'sine', 0.05, 0.6, 2.6); }); },
+  /** The choir and brass for the end (the win music replaces it when there is one). */
+  finale() {
+    if (hasSound('guests-win') || hasSound('snakes-win')) return; [196, 246.9, 293.7, 392].forEach((hz) => { tone(hz, 'sawtooth', 0.05, 0.6, 2.6); tone(hz * 2, 'sine', 0.05, 0.6, 2.6); }); },
 };
 
 // ---------- captions for sounds (design guide §7: every meaningful sound is captioned) ----------

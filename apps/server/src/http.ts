@@ -1,6 +1,6 @@
 // HTTP: the built web app, a health check, and the WebSocket upgrade at /ws (ADR 0015).
 import { createServer, type Server } from 'node:http';
-import { readFile, stat } from 'node:fs/promises';
+import { readFile, readdir, stat } from 'node:fs/promises';
 import { extname, isAbsolute, join, normalize, relative, resolve } from 'node:path';
 import { WebSocketServer } from 'ws';
 import { APP_NAME } from '@smartmouth/protocol';
@@ -40,6 +40,21 @@ export interface ServerConfig {
   /** Where recordings and pictures live (DATA_DIR/media), served at /media. */
   mediaDir?: string | null;
   now?: () => number;
+}
+
+/** Files in media/sounds/game named `<cue>.<version>.mp3`; for each cue, the newest version wins. */
+export async function gameSounds(mediaDir: string): Promise<Record<string, string>> {
+  const out: Record<string, { url: string; mtime: number }> = {};
+  let names: string[] = [];
+  try { names = await readdir(join(mediaDir, 'sounds', 'game')); } catch { return {}; }
+  for (const name of names) {
+    const m = /^([a-z0-9-]+)\.[a-z0-9]+\.mp3$/.exec(name);
+    if (!m) continue;
+    const cue = m[1] as string;
+    const mtime = (await stat(join(mediaDir, 'sounds', 'game', name))).mtimeMs;
+    if (!out[cue] || mtime > (out[cue]?.mtime ?? 0)) out[cue] = { url: `/media/sounds/game/${name}`, mtime };
+  }
+  return Object.fromEntries(Object.entries(out).map(([k, v]) => [k, v.url]));
 }
 
 function json(res: ServerResponse, status: number, body: unknown, headers: Record<string, string> = {}) {
@@ -101,6 +116,13 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
     for (const [k, v] of Object.entries(securityHeaders(url.pathname, isHttps(req)))) res.setHeader(k, v);
     if (url.pathname === '/api/health') {
       json(res, 200, { ok: true, app: APP_NAME, rooms: store.rooms.size });
+      return;
+    }
+
+    // The game's picked sounds and music (tools/sounds): cue -> URL, newest file per cue. Not cached, so a new pick
+    // shows up at once; the files themselves are versioned by name, so Cloudflare's long cache stays safe.
+    if (url.pathname === '/api/sounds') {
+      json(res, 200, { sounds: cfg.mediaDir ? await gameSounds(cfg.mediaDir) : {} });
       return;
     }
 

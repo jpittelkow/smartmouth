@@ -65,3 +65,20 @@ test('typed text is rate-limited per seat, before the game sees it', () => {
     echo.intent = original;
   }
 });
+
+test('the game’s sound list: the newest file per cue, only well-named mp3s', async () => {
+  const { mkdtempSync, mkdirSync, writeFileSync, utimesSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { gameSounds } = await import('../src/http.ts');
+  const media = mkdtempSync(join(tmpdir(), 'sm-sounds-'));
+  const dir = join(media, 'sounds', 'game');
+  mkdirSync(dir, { recursive: true });
+  for (const n of ['bell.aaa.mp3', 'bell.bbb.mp3', 'night.x1.mp3', 'notes.txt', '../evil.mp3x', 'Bad Name.mp3']) {
+    try { writeFileSync(join(dir, n), 'ID3'); } catch { /* names the OS refuses */ }
+  }
+  utimesSync(join(dir, 'bell.aaa.mp3'), new Date(1000), new Date(1000));
+  utimesSync(join(dir, 'bell.bbb.mp3'), new Date(2000), new Date(2000));
+  assert.deepEqual(await gameSounds(media), { bell: '/media/sounds/game/bell.bbb.mp3', night: '/media/sounds/game/night.x1.mp3' });
+  assert.deepEqual(await gameSounds(join(media, 'missing')), {});
+});

@@ -8,6 +8,7 @@ import { useSalty } from '../../host/voice.ts';
 import { Arms, Candle, Mark, Seal, clock, useLeft } from './arms.tsx';
 import { Drama } from './drama.tsx';
 import { SFX, captionSound, useCues, useSoundCaption } from './sound.ts';
+import { bedFor, duck, loadSounds, playBed, stopMusic } from './music.ts';
 import './fonts.ts';
 import './snakes.css';
 
@@ -40,6 +41,11 @@ export function SnakesHost({ view, send }: { view: HostGameView; send: (m: Clien
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [g.stage, send]);
+
+  // The music bed follows the stage; it fades out when the game ends.
+  const bed = bedFor(g);
+  useEffect(() => { void loadSounds().then(() => playBed(bed)); }, [bed]);
+  useEffect(() => () => stopMusic(), []);
 
   const night = g.stage === 'night';
   return (
@@ -98,6 +104,7 @@ const formatName = (f: string) => (f === 'chain' ? 'The chain' : f === 'pairs' ?
 /** Salty's strip: his seal pulses while he talks; a line in timed parts shows each part's caption at its time. */
 function Herald({ cue, quiet }: { cue: HostGameView['salty']; quiet: boolean }) {
   const { talking, blocked } = useSalty(cue);
+  useEffect(() => { duck(talking); }, [talking]);
   const now = useNow(250);
   const sound = useSoundCaption();
   const part = cue?.parts?.filter((p) => p.at <= now).at(-1);
@@ -261,7 +268,7 @@ function Night({ g }: { g: SnakesHostView }) {
   const { left } = useLeft(g.deadline);
   useCues(`night:${g.stageStart}`, () => [
     { at: g.stageStart, run: () => { SFX.bell(); SFX.bell(2.2); SFX.bell(4.4); captionSound('[three bell tolls]'); } },
-    { at: g.stageStart + 5000, run: () => { SFX.droneOn(); captionSound('[wind around the manor]'); } },
+    { at: g.stageStart + 5000, run: () => { SFX.droneOn('night'); captionSound('[wind around the manor]'); } },
   ]);
   return (
     <div className="sm-night">
