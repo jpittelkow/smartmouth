@@ -79,9 +79,10 @@ export function TriviaController({ view, send }: { view: PlayerGameView; send: (
       {!kidMode && (
         <div className="ctl-top"><span>{view.you.name}</span><span className="display">{g.score}</span></div>
       )}
-      {body}
+      {view.paused ? <Center big="Paused" small="A grown-up paused the game. The clock has stopped." /> : body}
       {view.you.isAdmin && !kidMode && (
         <div className="ctl-admin">
+          <button className="press" onClick={() => send({ t: 'admin:pause', paused: !view.paused })}>{view.paused ? 'Resume' : 'Pause'}</button>
           {g.stage !== 'final' && g.stage !== 'question' && <button className="press" onClick={() => send({ t: 'admin:next' })}>Next</button>}
           {g.stage === 'question' && <button className="press" onClick={() => send({ t: 'admin:next' })}>Reveal now</button>}
           <button className="press" onClick={() => send({ t: 'admin:end' })}>{g.stage === 'final' ? 'Back to the lobby' : 'End game'}</button>

@@ -33,6 +33,8 @@ export type ClientMsg =
   /** Full drama or Quick for staged reveals (ADR 0024). */
   | { t: 'admin:drama'; drama: Drama }
   | { t: 'admin:kick'; seatId: string }
+  /** Pause or resume the game: every clock stops while paused. */
+  | { t: 'admin:pause'; paused: boolean }
   /** Add one house bot to the room, or remove them all (lobby only). */
   | { t: 'admin:bots'; add: boolean }
   | { t: 'admin:start'; gameId: string }
@@ -127,6 +129,8 @@ export interface HostGameView {
   spice: SpiceState;
   voice: VoiceId;
   drama: Drama;
+  /** A grown-up paused the game: every clock is stopped. */
+  paused: boolean;
   game: unknown;
   salty: SaltyCue | null;
   /** Recordings for the TV's question and the Little turn's question (answers are read as focus moves). */
@@ -144,6 +148,7 @@ export interface PlayerGameView {
   spice: SpiceState;
   voice: VoiceId;
   drama: Drama;
+  paused: boolean;
   game: unknown;
 }
 

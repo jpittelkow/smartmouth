@@ -28,13 +28,14 @@ export function SnakesController({ view, send }: { view: PlayerGameView; send: S
       {night && <TimeBar deadline={g.deadline} dim />}
 
       <main className="sm-ph-main">
-        {g.spectator && <Message big="Watching" say="You joined after the game began. Watch the TV, and join the next one." />}
-        {!g.spectator && me && <Body g={g} view={view} seat={seat} act={act} />}
+        {view.paused && <Message big="Paused" say="A grown-up paused the game. Every clock has stopped; nobody loses a second." />}
+        {!view.paused && g.spectator && <Message big="Watching" say="You joined after the game began. Watch the TV, and join the next one." />}
+        {!view.paused && !g.spectator && me && <Body g={g} view={view} seat={seat} act={act} />}
       </main>
 
-      {drawer && me && <Drawer g={g} seat={seat} act={act} onClose={() => setDrawer(false)} />}
+      {drawer && me && <Drawer g={g} seat={seat} act={act} onClose={() => setDrawer(false)} admin={view.you.isAdmin ? { paused: view.paused, send } : null} />}
       {/* No admin bar at night: every phone must look the same (ADR 0023). */}
-      {view.you.isAdmin && !night && <Admin g={g} send={send} />}
+      {view.you.isAdmin && (!night || view.paused) && <Admin g={g} send={send} paused={view.paused} />}
     </div>
   );
 }
@@ -255,7 +256,9 @@ function BetPhone({ bet, seat, act }: { bet: NonNullable<SnakesPlayerView['bet']
  * The hidden drawer (hold your coat of arms): a Snake's Overboard and Daggers. A Guest's drawer opens the same way
  * and says there's nothing in it, so the gesture itself gives nothing away.
  */
-function Drawer({ g, seat, act, onClose }: { g: SnakesPlayerView; seat: Seat; act: (i: unknown) => void; onClose: () => void }) {
+function Drawer({ g, seat, act, onClose, admin }: {
+  g: SnakesPlayerView; seat: Seat; act: (i: unknown) => void; onClose: () => void; admin: { paused: boolean; send: Send } | null;
+}) {
   const snake = g.me?.role === 'snake' && g.me.status === 'alive';
   const ob = g.mission?.overboard;
   const n = g.night;
@@ -286,15 +289,31 @@ function Drawer({ g, seat, act, onClose }: { g: SnakesPlayerView; seat: Seat; ac
         ) : <p>No Daggers. Sink a mission to earn one.</p>
       )}
       {snake && g.stage !== 'mission' && g.stage !== 'night' && <p>Your tools wake up during missions and at night.</p>}
+      {admin && g.stage === 'night' && (
+        <>
+          <p className="lbl">Grown-up controls (hidden at night so every phone looks the same)</p>
+          <button className="sm-btn" onClick={() => { admin.send({ t: 'admin:pause', paused: !admin.paused }); onClose(); }}>{admin.paused ? 'Resume' : 'Pause the game'}</button>
+          <EndButton send={admin.send} final={false} />
+        </>
+      )}
     </div>
   );
 }
 
-function Admin({ g, send }: { g: SnakesPlayerView; send: Send }) {
+function Admin({ g, send, paused }: { g: SnakesPlayerView; send: Send; paused: boolean }) {
   return (
     <div className="sm-admin">
-      {g.stage !== 'final' && <button onClick={() => send({ t: 'admin:next' })}>{g.stage === 'debate' ? 'Start the vote' : 'Next'}</button>}
-      <button onClick={() => send({ t: 'admin:end' })}>{g.stage === 'final' ? 'Back to the lobby' : 'End game'}</button>
+      {g.stage !== 'final' && <button onClick={() => send({ t: 'admin:pause', paused: !paused })}>{paused ? 'Resume' : 'Pause'}</button>}
+      {g.stage !== 'final' && !paused && <button onClick={() => send({ t: 'admin:next' })}>{g.stage === 'debate' ? 'Start the vote' : 'Skip ahead'}</button>}
+      <EndButton send={send} final={g.stage === 'final'} />
     </div>
   );
+}
+
+/** Ending a game asks once: a second tap within a few seconds confirms. */
+function EndButton({ send, final }: { send: Send; final: boolean }) {
+  const [armed, setArmed] = useState(false);
+  useEffect(() => { if (!armed) return; const t = setTimeout(() => setArmed(false), 4000); return () => clearTimeout(t); }, [armed]);
+  if (final) return <button onClick={() => send({ t: 'admin:end' })}>Back to the lobby</button>;
+  return <button className={armed ? 'danger' : ''} onClick={() => (armed ? send({ t: 'admin:end' }) : setArmed(true))}>{armed ? 'Tap again to end' : 'End game'}</button>;
 }

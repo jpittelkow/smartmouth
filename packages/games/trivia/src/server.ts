@@ -71,6 +71,15 @@ export function holdStage(s: TriviaState, until: number): TriviaState {
   return { ...s, stageEnds: until };
 }
 
+/** The game was paused for `ms`: every clock moves forward by that much. */
+export function shiftTime(s: TriviaState, ms: number): TriviaState {
+  if (ms <= 0) return s;
+  return {
+    ...s, stageEnds: s.stageEnds === null ? null : s.stageEnds + ms, questionStart: s.questionStart + ms, questionEnds: s.questionEnds + ms,
+    turn: s.turn ? { ...s.turn, start: s.turn.start + ms } : null,
+  };
+}
+
 export function isOver(s: TriviaState): boolean {
   return s.stage === 'final';
 }

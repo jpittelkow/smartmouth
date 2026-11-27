@@ -57,7 +57,7 @@ export function cleanText(raw: unknown): string | null {
  */
 export function gameIntent(room: Room, actor: Actor, raw: unknown, now: number): boolean {
   const g = room.game;
-  if (!g) return false;
+  if (!g || room.pausedAt !== null) return false;
   let intent = raw;
   if (raw && typeof raw === 'object' && 'text' in raw) {
     const text = cleanText((raw as { text: unknown }).text);
@@ -68,6 +68,21 @@ export function gameIntent(room: Room, actor: Actor, raw: unknown, now: number):
   const before = g.state;
   g.state = adapterFor(g.id).intent(before, actor, intent, now);
   return g.state !== before;
+}
+
+/** A grown-up paused the game: the clocks stop (ws.ts arms no timers while paused). */
+export function pauseGame(room: Room, now: number): void {
+  if (room.game && room.pausedAt === null) room.pausedAt = now;
+}
+
+/** Back on: every clock in the game moves forward by the time spent paused, so nobody loses a second. */
+export function resumeGame(room: Room, now: number): void {
+  const g = room.game;
+  if (room.pausedAt === null) return;
+  const ms = Math.max(0, now - room.pausedAt);
+  room.pausedAt = null;
+  const a = g ? adapterFor(g.id) : null;
+  if (g && a?.shift) g.state = a.shift(g.state, ms);
 }
 
 /** A bot's moves right now (its game's `bot` hook), or none. */
@@ -134,4 +149,5 @@ export function endGame(room: Room): void {
     for (const seat of room.seats) seat.score += scores[seat.id] ?? 0;
   }
   room.game = null;
+  room.pausedAt = null;
 }

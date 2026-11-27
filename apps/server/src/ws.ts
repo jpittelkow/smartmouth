@@ -7,7 +7,7 @@ import { GAMES, findGame } from './games.ts';
 import { RateLimit, clientAddress, originAllowed } from './limits.ts';
 import { normalizeCode } from './codes.ts';
 import type { Db } from './db.ts';
-import { botMovesFor, holdForSpeech, deadline, drainLog, endGame, gameIntent, pruneLimits, skip, startGame, syncRoom, tickGame } from './gameRuntime.ts';
+import { botMovesFor, holdForSpeech, pauseGame, resumeGame, deadline, drainLog, endGame, gameIntent, pruneLimits, skip, startGame, syncRoom, tickGame } from './gameRuntime.ts';
 import { cueJoin, readsFor, updateSalty } from './salty.ts';
 import type { VoiceBank } from './voice.ts';
 
@@ -78,6 +78,7 @@ const SPEECH_TAIL_MS = 1200;
     if (speech > 0) holdForSpeech(room, t + speech + SPEECH_TAIL_MS);
     clearTimeout(timers.get(room.code));
     timers.delete(room.code);
+    if (room.pausedAt !== null) return; // paused: no clock runs, no bot moves
     const due = deadline(room);
     if (due !== null) {
       timers.set(room.code, setTimeout(() => {
@@ -95,13 +96,13 @@ const SPEECH_TAIL_MS = 1200;
    * when it fires the bot looks again at its own view and sends what a phone would.
    */
   function scheduleBots(room: Room) {
-    if (!room.game) return;
+    if (!room.game || room.pausedAt !== null) return;
     for (const seat of room.seats) {
       const key = `${room.code}:${seat.id}`;
       if (!seat.bot || botTimers.has(key) || botMovesFor(room, seat.id).length === 0) continue;
       botTimers.set(key, setTimeout(() => {
         botTimers.delete(key);
-        if (stopped || !store.rooms.has(room.code) || !room.game) return;
+        if (stopped || !store.rooms.has(room.code) || !room.game || room.pausedAt !== null) return;
         let changed = false;
         for (const intent of botMovesFor(room, seat.id)) changed = gameIntent(room, { kind: 'player', seatId: seat.id }, intent, now()) || changed;
         if (changed) broadcast(room); else scheduleBots(room);
@@ -249,6 +250,13 @@ const SPEECH_TAIL_MS = 1200;
         return broadcast(room);
       }
 
+      case 'admin:pause': {
+        const room = roomOf(c);
+        if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
+        if (msg.paused) pauseGame(room, t); else resumeGame(room, t);
+        return broadcast(room);
+      }
+
       case 'admin:bots': {
         const room = roomOf(c);
         if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
@@ -296,6 +304,7 @@ const SPEECH_TAIL_MS = 1200;
       case 'admin:next': {
         const room = roomOf(c);
         if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
+        if (room.pausedAt !== null) return; // Next does nothing while paused
         skip(room, t);
         return broadcast(room);
       }

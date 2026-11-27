@@ -277,6 +277,7 @@ body:has(.sm-phone) { background: var(--sm-stone); }
 .sm-drawer .close { justify-self: end; border: 0; background: none; color: var(--sm-muted); font-size: 28px; cursor: pointer; }
 .sm-drawer p { margin: 0; }
 .sm-admin { display: flex; gap: 8px; justify-content: center; padding-top: 6px; border-top: 1px solid #ffffff10; }
+.sm-admin button.danger, .sm-drawer button.danger { background: var(--sm-gules); color: var(--sm-vellum); }
 .sm-admin button { border: 0; border-radius: 6px; background: var(--sm-stone-3); color: var(--sm-pale); padding: 10px 14px; font-family: var(--sm-caps); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) {

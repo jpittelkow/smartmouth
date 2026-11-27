@@ -122,6 +122,16 @@ export function holdStage(s: SnakesState, until: number): SnakesState {
   return { ...s, stageEnds: until };
 }
 
+/** The game was paused for `ms`: every clock moves forward by that much. */
+export function shiftTime(s: SnakesState, ms: number): SnakesState {
+  if (ms <= 0) return s;
+  return {
+    ...s, stageStart: s.stageStart + ms, stageEnds: s.stageEnds === null ? null : s.stageEnds + ms,
+    mission: s.mission ? { ...s.mission, stepEnds: s.mission.stepEnds + ms } : null,
+    night: s.night ? { ...s.night, offerAt: s.night.offerAt === null ? null : s.night.offerAt + ms } : null,
+  };
+}
+
 export function isOver(s: SnakesState): boolean {
   return s.stage === 'final';
 }

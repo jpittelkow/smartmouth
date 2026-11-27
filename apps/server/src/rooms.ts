@@ -34,6 +34,8 @@ export interface Room {
   voice: VoiceId;
   /** Full drama or Quick for staged reveals (ADR 0024). */
   drama: Drama;
+  /** When a grown-up paused the game (every clock stops), or null. */
+  pausedAt: number | null;
   notice: string | null;
   /** Last time anything was connected or anything happened. */
   lastActive: number;
@@ -74,7 +76,7 @@ export class RoomStore {
   create(now: number): Room {
     const code = makeCode((c) => this.rooms.has(c));
     const room: Room = {
-      code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy', voice: 'female', drama: 'full',
+      code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy', voice: 'female', drama: 'full', pausedAt: null,
       notice: null, lastActive: now, nextSeat: 1, game: null, asked: new Set(), salty: newSalty(),
     };
     this.rooms.set(code, room);
@@ -177,7 +179,7 @@ export function hostView(
   if (room.game) {
     return {
       role: 'host', phase: 'game', gameId: room.game.id, code: room.code, joinUrl,
-      players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama, game: adapterFor(room.game.id).hostView(room.game.state),
+      players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama, paused: room.pausedAt !== null, game: adapterFor(room.game.id).hostView(room.game.state),
       salty: room.salty.cue, reads,
     };
   }
@@ -192,7 +194,7 @@ export function playerView(room: Room, seat: Seat, games: GameManifest[]): Playe
   if (room.game) {
     return {
       role: 'player', phase: 'game', gameId: room.game.id, code: room.code, you: publicSeat(room, seat),
-      playerCount: room.seats.length, players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama,
+      playerCount: room.seats.length, players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama, paused: room.pausedAt !== null,
       game: adapterFor(room.game.id).playerView(room.game.state, seat.id),
     };
   }

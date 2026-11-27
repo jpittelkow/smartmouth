@@ -33,6 +33,7 @@ export const trivia: GameAdapter<TriviaState> = {
   skip: (state, now) => rules.intent(state, 'host', { type: 'skip' }, now),
   tick: (state, now) => rules.tick(state, now),
   hold: (state, until) => rules.holdStage(state, until),
+  shift: (state, ms) => rules.shiftTime(state, ms),
   deadline: (state) => rules.nextDeadline(state),
   sync: (state, players, spice, now) => rules.setSpice(rules.setPlayers(state, players, now), spice),
   hostView: (state) => rules.hostView(state),

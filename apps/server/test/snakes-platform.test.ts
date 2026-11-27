@@ -236,3 +236,18 @@ test('a game played only by bot rules reaches the end, at every size', async () 
     assert.equal(s.stage, 'final', `${n} bots finished`);
   }
 });
+
+test('pause: intents are refused while paused, and resuming moves every clock forward by the pause', async () => {
+  const { pauseGame, resumeGame } = await import('../src/gameRuntime.ts');
+  const { db, r } = room(['grownups', 'grownups', 'grownups', 'grownups', 'grownups']);
+  assert.ok(startGame(r, 'snakes', db, 1_000, 3).ok);
+  const before = r.game?.state as SnakesState;
+  pauseGame(r, 2_000);
+  assert.equal(gameIntent(r, { kind: 'player', seatId: r.seats[0]!.id }, { type: 'lock' }, 2_500), false, 'nothing happens while paused');
+  resumeGame(r, 32_000);
+  const after = r.game?.state as SnakesState;
+  assert.equal(r.pausedAt, null);
+  assert.equal((after.stageEnds ?? 0) - (before.stageEnds ?? 0), 30_000, 'the deal ends 30 s later: no time lost');
+  assert.equal(after.stageStart - before.stageStart, 30_000);
+  db.close();
+});

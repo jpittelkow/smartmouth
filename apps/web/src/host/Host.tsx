@@ -49,20 +49,31 @@ export function Host() {
     return () => { delete window.smartmouthBack; window.removeEventListener('keydown', onKey); };
   }, [inGame]);
   useEffect(() => { if (!inGame) setMenu(false); }, [inGame]);
+  // The menu pauses the game: every clock stops until Resume. A grown-up can also pause from their phone, and then
+  // the TV shows the same menu.
+  const paused = view?.phase === 'game' && view.paused;
+  const showMenu = inGame && (menu || paused);
+  const prevMenu = useRef(false);
+  useEffect(() => {
+    if (menu && !prevMenu.current && !paused) send({ t: 'admin:pause', paused: true });
+    prevMenu.current = menu;
+  }, [menu, paused, send]);
+  const resume = () => { setMenu(false); send({ t: 'admin:pause', paused: false }); };
 
   return (
-    <Stage variant={view?.phase === 'game' && view.gameId === 'snakes' && !menu ? 'snakes' : undefined}>
+    <Stage variant={view?.phase === 'game' && view.gameId === 'snakes' && !showMenu ? 'snakes' : undefined}
+      outside={inGame && !showMenu ? <button className="tv-menu-btn" onClick={() => setMenu(true)} aria-label="Pause and open the menu">❚❚ Pause</button> : null}>
       {!view && <div className="tv-message display"><Grin />{status === 'open' ? 'Setting up a room…' : `Finding the ${APP_NAME} server…`}</div>}
       {view?.phase === 'lobby' && <Lobby view={view} onPick={(gameId) => send({ t: 'admin:start', gameId })} problem={problem} />}
-      {view?.phase === 'game' && !menu && view.gameId === 'snakes' && <SnakesHost view={view} send={send} />}
-      {view?.phase === 'game' && !menu && view.gameId !== 'snakes' && <TriviaHost view={view} send={send} />}
-      {view?.phase === 'game' && menu && <Menu onResume={() => setMenu(false)} onEnd={() => { setMenu(false); send({ t: 'admin:end' }); }} />}
+      {view?.phase === 'game' && !showMenu && view.gameId === 'snakes' && <SnakesHost view={view} send={send} />}
+      {view?.phase === 'game' && !showMenu && view.gameId !== 'snakes' && <TriviaHost view={view} send={send} />}
+      {view?.phase === 'game' && showMenu && <Menu onResume={resume} onEnd={() => { setMenu(false); send({ t: 'admin:end' }); }} />}
     </Stage>
   );
 }
 
 /** Scales the 1920×1080 stage to fit any window, keeping its proportions. */
-function Stage({ children, variant }: { children: React.ReactNode; variant?: string }) {
+function Stage({ children, variant, outside }: { children: React.ReactNode; variant?: string; outside?: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     const fit = () => {
@@ -73,10 +84,10 @@ function Stage({ children, variant }: { children: React.ReactNode; variant?: str
     window.addEventListener('resize', fit);
     return () => window.removeEventListener('resize', fit);
   }, []);
-  return <div className="tv-viewport"><div className={`tv${variant ? ` ${variant}` : ''}`} ref={ref}><div className="tv-panel">{children}</div></div></div>;
+  return <div className="tv-viewport"><div className={`tv${variant ? ` ${variant}` : ''}`} ref={ref}>{outside}<div className="tv-panel">{children}</div></div></div>;
 }
 
-/** The pause menu (Back on the remote). The game keeps its own clock; this just gets out of the way. */
+/** The pause menu (Back on the remote, Escape, or the Pause button). The game is paused while it's open. */
 function Menu({ onResume, onEnd }: { onResume: () => void; onEnd: () => void }) {
   const first = useRef<HTMLButtonElement>(null);
   useEffect(() => { first.current?.focus(); }, []);
@@ -93,7 +104,8 @@ function Menu({ onResume, onEnd }: { onResume: () => void; onEnd: () => void }) 
   }, []);
   return (
     <div className="menu">
-      <div className="display" style={{ fontSize: 72 }}>Menu</div>
+      <div className="display" style={{ fontSize: 72 }}>Paused</div>
+      <div className="muted" style={{ fontSize: 32 }}>Every clock has stopped. Nobody loses a second.</div>
       <button ref={first} className="press game-card" onClick={onResume}><span className="name display">Resume</span></button>
       <button className="press game-card danger" onClick={onEnd}><span className="name display">End game</span></button>
     </div>
