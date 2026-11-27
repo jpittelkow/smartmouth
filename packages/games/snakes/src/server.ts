@@ -72,7 +72,7 @@ export function init(players: readonly GamePlayer[], settings: SnakesSettings, c
     endSize: endSizeFor(players.length), stage: 'deal', stageStart: now, stageEnds: now + DEAL_MS, round: 1,
     players: ps, order, pot: 0, daggers: 0, peeks: [], chat: [], queues: content, mission: null, vote: null,
     banished: null, night: null, breakfast: null, endgame: false, endVotes: {}, forceRecruit: false, mayRecruit: false,
-    unmasked: 0, log: [],
+    unmasked: 0, log: [], history: [],
   };
 }
 
@@ -210,6 +210,8 @@ function closeVote(s0: SnakesState, now: number): SnakesState {
     if (!p || !choice || p.role !== 'guest') continue;
     s = setPlayer(s, voter, { votes: p.votes + 1, snakeVotes: p.snakeVotes + (role(s, choice) === 'snake' ? 1 : 0) });
   }
+  const votes = v.order.map((from) => ({ from, to: v.votes[from] as string }));
+  s = { ...s, history: [...s.history, { kind: 'votes', round: s.round, votes }] };
   return to({ ...s, banished: target ?? null }, 'voteReveal', now, staged(s, v.order.length * REVEAL_PER_VOTE_MS + REVEAL_TAIL_MS));
 }
 
@@ -218,6 +220,7 @@ function afterTable(s0: SnakesState, now: number): SnakesState {
   let s = s0;
   for (const id of s.order) if (s.players[id]?.silenced) s = setPlayer(s, id, { silenced: false });
   const wasSnake = s.banished !== null && role(s, s.banished) === 'snake';
+  if (s.banished) s = { ...s, history: [...s.history, { kind: 'banished', round: s.round, id: s.banished, role: role(s, s.banished) as Role }] };
   const alive = living(s).length;
   if (aliveSnakes(s).length === 0) {
     // The last Snake is out. With 5 or more left, Salty recruits a new one tonight; otherwise the Guests win.
@@ -321,7 +324,8 @@ function resolveNight(s0: SnakesState, now: number): SnakesState {
     murdered, saved, saltyRecruited: n.recruit === 'forced', sameSuspect: same >= 2 ? same : 0,
     quiet: n.noMurder,
   };
-  return to({ ...s, night: null, breakfast, round: s.round + 1 }, 'breakfast', now, staged(s, BREAKFAST_MS));
+  const morning = { kind: 'morning' as const, round: s.round, murdered, saved, saltyRecruited: breakfast.saltyRecruited };
+  return to({ ...s, night: null, breakfast, round: s.round + 1, history: [...s.history, morning] }, 'breakfast', now, staged(s, BREAKFAST_MS));
 }
 
 function afterBreakfast(s: SnakesState, now: number): SnakesState {
@@ -500,7 +504,10 @@ export function setPlayers(s0: SnakesState, players: readonly GamePlayer[], _now
   let s = s0;
   for (const id of s.order) {
     const p = s.players[id];
-    if (p && !here.has(id) && (p.status === 'alive' || p.status === 'ghost')) s = setPlayer(s, id, { status: 'left' });
+    if (p && !here.has(id) && (p.status === 'alive' || p.status === 'ghost')) {
+      s = setPlayer(s, id, { status: 'left' });
+      s = { ...s, history: [...s.history, { kind: 'left', round: s.round, id, role: p.role }] };
+    }
   }
   return s;
 }
@@ -540,6 +547,7 @@ export function hostView(s: SnakesState): SnakesHostView {
       winner: winner(s), winners: alive.filter((id) => role(s, id) === winner(s)), pot: s.pot,
       roles: s.order.map((id) => ({ id, role: s.players[id]?.role as Role })),
     } : null,
+    history: s.history,
   };
 }
 
@@ -571,7 +579,7 @@ export function playerView(s: SnakesState, id: string): SnakesPlayerView {
     players: s.order.map((x) => publicPlayer(s, x)), pot: s.pot,
   };
   if (!p) {
-    return { ...base, spectator: true, me: null, fellows: [], mission: null, vote: null, night: null, bet: null, endVote: null, final: null };
+    return { ...base, spectator: true, me: null, fellows: [], mission: null, vote: null, night: null, bet: null, endVote: null, final: null, history: s.history };
   }
   const v = s.vote;
   const alive = p.status === 'alive';
@@ -591,5 +599,6 @@ export function playerView(s: SnakesState, id: string): SnakesPlayerView {
     } : null,
     endVote: s.stage === 'endVote' ? { mine: id in s.endVotes ? (s.endVotes[id] as boolean) : null, canVote: alive } : null,
     final: s.stage === 'final' ? { won: alive && p.role === winner(s), winner: winner(s), points: sc[id] ?? 0 } : null,
+    history: s.history,
   };
 }

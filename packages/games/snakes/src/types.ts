@@ -160,7 +160,16 @@ export interface SnakesState {
   mayRecruit: boolean;
   unmasked: number;
   log: Array<{ questionId: number; right: boolean; ms: number | null }>;
+  /** The public record: what everyone in the room has seen happen, in order. Never anything only a phone knows. */
+  history: HistoryEvent[];
 }
+
+export type HistoryEvent =
+  | { kind: 'mission'; round: number; right: number; asked: number; hit: boolean; overboard: boolean }
+  | { kind: 'votes'; round: number; votes: Array<{ from: string; to: string }> }
+  | { kind: 'banished'; round: number; id: string; role: Role }
+  | { kind: 'morning'; round: number; murdered: string[]; saved: boolean; saltyRecruited: boolean }
+  | { kind: 'left'; round: number; id: string; role: Role };
 
 // ---- views ----
 
@@ -223,6 +232,8 @@ export interface SnakesHostView {
   endVote: null | { sealed: number; voters: number };
   unmask: null | { shown: Array<{ id: string; role: Role }>; total: number };
   final: null | { winner: Role; winners: string[]; pot: number; roles: Array<{ id: string; role: Role }> };
+  /** What the table knows so far (for the debate, and for anyone who missed it). */
+  history: HistoryEvent[];
 }
 
 /** The night screen: one shape for every living player (ADR 0023); only its contents differ. */
@@ -267,6 +278,7 @@ export interface SnakesPlayerView {
   bet: null | { candidates: string[]; picks: string[]; max: number };
   endVote: null | { mine: boolean | null; canVote: boolean };
   final: null | { won: boolean; winner: Role; points: number };
+  history: HistoryEvent[];
 }
 
 export type SnakesIntent =

@@ -163,16 +163,36 @@ export const SFX = {
     burst(0.15, 'lowpass', 900, 0.12);
   },
   lute(step: number) { tone(step === 0 ? 196 : 233.1, 'triangle', 0.18, 0.005, 1.8); },
+  /** A vote letter torn open (the reveal). */
+  envelope() { if (!playClip('envelope', 0, 0.85, { maxSec: 2.5 })) burst(0.5, 'bandpass', 2600, 0.14); },
+  /** The letter unfolding to show the name. */
+  unfold() { if (!playClip('unfold', 0, 0.75, { maxSec: 2 })) burst(0.35, 'highpass', 3000, 0.08); },
+  /** A sealed letter laid on the table (a vote cast): the paper sound, short and quiet. */
+  letterIn() { if (!playClip('unfold', 0, 0.35, { maxSec: 0.6 })) burst(0.15, 'bandpass', 2400, 0.08); },
+  /** A blade drawn: the Snakes earned a Dagger. */
+  dagger() { if (!playClip('dagger', 0, 0.8, { maxSec: 2 })) { tone(1800, 'sawtooth', 0.04, 0.2, 0.5); burst(0.6, 'highpass', 5000, 0.12); } },
+  /** A metal clang: a shield given. */
+  shield() { if (!playClip('shield', 0, 0.7, { maxSec: 2 })) { tone(620, 'triangle', 0.15, 0.002, 0.8); tone(931, 'sine', 0.08, 0.002, 0.6); } },
+  /** Cards dealt: the deal. */
+  cards() { if (!playClip('cards', 0, 0.7, { maxSec: 3 })) for (let i = 0; i < 4; i++) burst(0.06, 'bandpass', 3000, 0.1, i * 0.15); },
+  /** A cloth whoosh: a mask comes off. */
+  whoosh() { if (!playClip('whoosh', 0, 0.7, { maxSec: 1.5 })) burst(0.5, 'bandpass', 900, 0.12); },
+  /** A knock on the door: a vote at the last table. */
+  knock() { if (!playClip('knock', 0, 0.8, { maxSec: 1.5 })) { tone(120, 'sine', 0.5, 0.002, 0.15); tone(120, 'sine', 0.4, 0.002, 0.15, 0.18); } },
+  /** The clock in the last ten seconds. */
+  tick() { if (!playClip('tick', 0, 0.45, { maxSec: 0.5 })) tone(1500, 'square', 0.05, 0.002, 0.05); },
+  /** A trumpet fanfare: target hit, the Guests win. Falls back to the synthesized flourish. */
+  fanfare() { if (!playClip('fanfare', 0, 0.75, { maxSec: 6 })) SFX.flourish(); },
   /** A bright little flourish: a mission's target hit. */
   flourish() { [523.3, 659.3, 784, 1046.5].forEach((hz, i) => tone(hz, 'triangle', 0.15, 0.005, 0.5, i * 0.09)); },
   /** A cracked, off-key fanfare: a target missed. */
   crackedFanfare() { [392, 370, 311.1].forEach((hz, i) => { tone(hz, 'sawtooth', 0.08, 0.02, 0.5, i * 0.22); tone(hz * 1.03, 'sawtooth', 0.05, 0.02, 0.5, i * 0.22); }); },
   /** Birdsong for the morning. */
-  birds() { for (let i = 0; i < 5; i++) tone(2400 + Math.random() * 1400, 'sine', 0.05, 0.01, 0.12, i * 0.21 + Math.random() * 0.05); },
+  birds() { if (playClip('birds', 0, 0.5, { maxSec: 6 })) return; for (let i = 0; i < 5; i++) tone(2400 + Math.random() * 1400, 'sine', 0.05, 0.01, 0.12, i * 0.21 + Math.random() * 0.05); },
   /** The manor staff gasp: the empty chair. */
-  gasp() { burst(0.6, 'bandpass', 1400, 0.22); },
+  gasp() { if (!playClip('gasp', 0, 0.8, { maxSec: 3 })) burst(0.6, 'bandpass', 1400, 0.22); },
   /** A soft chime: one more of you made it to breakfast. */
-  chime() { tone(880, 'sine', 0.12, 0.005, 1.2); tone(1320, 'sine', 0.05, 0.005, 0.9); },
+  chime() { if (playClip('chime', 0, 0.6, { maxSec: 2.5 })) return; tone(880, 'sine', 0.12, 0.005, 1.2); tone(1320, 'sine', 0.05, 0.005, 0.9); },
   /** The choir and brass for the end (the win music replaces it when there is one). */
   finale() {
     if (hasSound('guests-win') || hasSound('snakes-win')) return; [196, 246.9, 293.7, 392].forEach((hz) => { tone(hz, 'sawtooth', 0.05, 0.6, 2.6); tone(hz * 2, 'sine', 0.05, 0.6, 2.6); }); },

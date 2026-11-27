@@ -27,6 +27,7 @@ export function SnakesController({ view, send }: { view: PlayerGameView; send: S
       {!night && <TimeBar deadline={g.deadline} />}
       {night && <TimeBar deadline={g.deadline} dim />}
 
+      {!view.paused && !g.spectator && me && <Guide g={g} seat={seat} />}
       <main className="sm-ph-main">
         {view.paused && <Message big="Paused" say="A grown-up paused the game. Every clock has stopped; nobody loses a second." />}
         {!view.paused && g.spectator && <Message big="Watching" say="You joined after the game began. Watch the TV, and join the next one." />}
@@ -53,6 +54,46 @@ function Header({ view, g, onHold }: { view: PlayerGameView; g: SnakesPlayerView
       <span className="where">{stageLabel(g)}</span>
     </header>
   );
+}
+
+/**
+ * What to do on this screen, and what happens next, in plain words. At night it says the same thing to everyone
+ * (ADR 0023): the words can't hint at a role.
+ */
+export function phoneGuide(g: SnakesPlayerView, seat: Seat, left: number): { title: string; body: string } {
+  const me = g.me;
+  const ghost = me?.status === 'ghost';
+  const m = g.mission;
+  const secs = (ms: number) => `${Math.max(0, Math.ceil(ms / 1000))} s`;
+  switch (g.stage) {
+    case 'deal': return { title: 'Your secret role', body: 'Hold the card below to see it. Keep it to yourself. The first mission starts in a moment.' };
+    case 'mission':
+      if (m?.step === 'tally') return { title: 'Look at the TV', body: 'The count for that question: the total only, never who.' };
+      if (m?.question) return { title: ghost ? 'Answer (you still count, Ghost)' : 'Answer the question', body: `Tap your answer. Right answers add crowns to the pot. ${secs(left)} left.` };
+      return { title: 'Watch the TV', body: 'Not your turn. Someone else is answering.' };
+    case 'missionReveal': return { title: 'Look at the TV', body: 'Did the mission hit its target? Next: the Round Table.' };
+    case 'debate': return { title: 'Talk it out loud', body: `Argue at the table: who sank the mission? Who is lying? The vote opens in ${secs(left)}.` };
+    case 'vote':
+      if (!g.vote?.canVote) return { title: 'No vote this time', body: ghost ? 'Ghosts watch the vote.' : 'A Dagger silenced you for this vote. Argue anyway.' };
+      return { title: g.vote.mine ? 'Vote sealed' : 'Vote now', body: g.vote.mine ? 'Your letter is on the table. Watch them open on the TV.' : `Pick who should be shown the door, then seal it. It stays secret until the letters open. ${secs(left)} left.` };
+    case 'voteReveal': return { title: 'Watch the TV', body: 'The letters open one at a time.' };
+    case 'banish': return { title: 'Watch the TV', body: 'Who leaves, and what they really were.' };
+    case 'night': return ghost
+      ? { title: 'Night', body: 'Ghosts bet on who the Snakes are. Bets are revealed at the end.' }
+      : { title: 'Night', body: `Write in the box, pick a name below, then Lock. Every phone looks like this. ${secs(left)} left.` };
+    case 'breakfast': return { title: 'Morning', body: 'Look at the TV: who made it through the night?' };
+    case 'endVote': return { title: 'End it, or banish again?', body: 'The game ends only if every one of you picks End.' };
+    case 'unmask': return { title: 'The unmasking', body: 'Watch the TV: who was who.' };
+    case 'final': return { title: g.final?.won ? 'You won' : 'Game over', body: 'Watch the TV for the full story.' };
+    default: return { title: '', body: '' };
+  }
+}
+
+function Guide({ g, seat }: { g: SnakesPlayerView; seat: Seat }) {
+  const { left } = useLeft(g.deadline);
+  const { title, body } = phoneGuide(g, seat, left);
+  if (!title) return null;
+  return <div className="sm-guide"><b>{title}</b><span>{body}</span></div>;
 }
 
 const stageLabel = (g: SnakesPlayerView) => ({

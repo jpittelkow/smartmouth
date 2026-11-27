@@ -25,8 +25,10 @@
   border-radius: 0; padding: 0; position: relative; overflow: hidden; display: block;
   background: radial-gradient(1200px 700px at 50% 38%, #2a2219 0%, transparent 70%), radial-gradient(600px 400px at 85% 110%, #3a1a14aa 0%, transparent 70%), var(--sm-stone);
 }
-.sm-tv { position: absolute; inset: 0; padding: 28px 40px 24px; display: grid; grid-template-rows: auto 1fr auto auto; gap: 18px; color: var(--sm-pale); font-family: var(--sm-book); }
-.sm-tv.stage-night { grid-template-rows: 1fr auto; background: radial-gradient(700px 520px at 50% 40%, #1b1a24 0%, transparent 70%), #0b0a0d; }
+/* Five rows that always fit the 1920x1080 stage: the top bar, the now strip, the main area (takes what's left and
+   never grows), Salty's strip (fixed height) and the court. */
+.sm-tv { position: absolute; inset: 0; padding: 24px 40px 20px; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto auto; gap: 12px; color: var(--sm-pale); font-family: var(--sm-book); }
+.sm-tv.stage-night { grid-template-rows: auto minmax(0, 1fr) auto; background: radial-gradient(700px 520px at 50% 40%, #1b1a24 0%, transparent 70%), #0b0a0d; }
 .sm-top { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid var(--sm-gold-dim); padding-bottom: 14px; }
 .sm-phase { display: grid; gap: 2px; }
 .sm-phase .n { font-family: var(--sm-caps); font-size: 34px; letter-spacing: .14em; text-transform: uppercase; color: var(--sm-gold); }
@@ -37,7 +39,7 @@
 .sm-ledger .v { font-family: var(--sm-caps); font-weight: 600; font-size: 50px; color: var(--sm-vellum); font-variant-numeric: tabular-nums; line-height: 1.1; }
 .sm-ledger .v.gold { color: var(--sm-gold); }
 .sm-ledger small, .sm-big-number small { font-size: 30px; color: var(--sm-muted); font-weight: 500; }
-.sm-main { min-height: 0; position: relative; display: grid; }
+.sm-main { min-height: 0; position: relative; display: grid; overflow: hidden; }
 .sm-center { display: grid; place-content: center; justify-items: center; text-align: center; gap: 22px; }
 .sm-title { font-family: var(--sm-uncial); font-weight: 400; font-size: 150px; line-height: 1; color: var(--sm-vellum); margin: 0; }
 .sm-title.small { font-size: 96px; }
@@ -61,7 +63,8 @@
 /* Salty's herald strip: the seal and his caption on a scroll. */
 .sm-herald { display: flex; align-items: center; gap: 24px; }
 .sm-herald.quiet .scroll { color: #b9b2a2; }
-.sm-herald .scroll { flex: 1; border-top: 1px solid var(--sm-gold-dim); border-bottom: 1px solid var(--sm-gold-dim); padding: 10px 8px; font-size: 36px; font-style: italic; color: var(--sm-vellum); line-height: 1.25; min-height: 96px; }
+.sm-herald .scroll { flex: 1; border-top: 1px solid var(--sm-gold-dim); border-bottom: 1px solid var(--sm-gold-dim); padding: 8px 8px; font-size: 32px; font-style: italic; color: var(--sm-vellum); line-height: 1.22; height: 106px; overflow: hidden; display: flex; flex-direction: column; }
+.sm-herald .scroll .line { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .sm-herald .who { display: block; font-style: normal; font-family: var(--sm-caps); font-size: 20px; letter-spacing: .22em; text-transform: uppercase; color: var(--sm-gules); }
 .sm-herald .hint { font-size: 26px; color: var(--sm-muted); }
 .seal {
@@ -73,29 +76,32 @@
 .seal.talking { animation: sm-talk .26s ease-in-out infinite alternate; }
 @keyframes sm-talk { to { transform: scale(1.07); box-shadow: 0 0 0 10px #a3302a55, inset 0 -6px 12px #0006; } }
 
-.sm-court { display: flex; justify-content: center; gap: 26px; align-items: flex-end; flex-wrap: wrap; position: relative; }
-.knight { display: grid; justify-items: center; gap: 4px; width: 140px; }
-.knight .nm { font-family: var(--sm-caps); font-size: 32px; font-weight: 600; color: var(--sm-vellum); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.sm-court-row { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 20px; }
+.sm-court { display: flex; justify-content: center; gap: 22px; align-items: flex-end; flex-wrap: nowrap; }
+.knight { display: grid; justify-items: center; gap: 2px; width: 132px; }
+.knight .nm { font-family: var(--sm-caps); font-size: 30px; font-weight: 600; color: var(--sm-vellum); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .knight.gone { opacity: .45; }
 .knight.gone .nm { text-decoration: line-through; text-decoration-color: var(--sm-gules); }
 .knight.away { opacity: .3; }
 .knight .tag { font-size: 22px; font-style: italic; color: var(--sm-muted); }
 .arms.faded { filter: grayscale(1) brightness(.75); }
-.sm-join { position: absolute; right: 0; top: -30px; font-size: 20px; color: var(--sm-muted); font-family: var(--sm-caps); letter-spacing: .08em; }
+.sm-join { font-size: 18px; color: var(--sm-muted); font-family: var(--sm-caps); letter-spacing: .06em; text-align: right; line-height: 1.3; }
 
 /* Mission */
-.sm-mission { display: grid; grid-template-columns: 1fr 200px; gap: 48px; align-items: center; }
-.q-card { padding: 40px 60px 34px; display: grid; gap: 24px; }
+.sm-mission { display: grid; grid-template-columns: 1fr 160px; gap: 40px; align-items: center; min-height: 0; }
+.q-card { padding: 28px 48px 24px; display: grid; gap: 16px; }
 .q-card .turn { font-family: var(--sm-caps); font-size: 26px; letter-spacing: .16em; text-transform: uppercase; color: var(--sm-gules); }
-.q-card .q { font-size: 66px; line-height: 1.1; font-weight: 500; text-wrap: balance; }
+.q-card .q { font-size: 58px; line-height: 1.1; font-weight: 500; text-wrap: balance; }
+.q-card.long .q { font-size: 44px; }
+.q-card.long .ans { font-size: 32px; }
 .q-card .q::first-letter { font-family: var(--sm-uncial); color: var(--sm-gules); font-size: 1.35em; }
 .q-card .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 36px; }
-.q-card .ans { display: flex; align-items: center; gap: 18px; font-size: 46px; border-top: 1px solid #b8a47a; padding-top: 12px; }
+.q-card .ans { display: flex; align-items: center; gap: 16px; font-size: 40px; border-top: 1px solid #b8a47a; padding-top: 10px; line-height: 1.1; }
 .q-card .rn { font-family: var(--sm-caps); font-size: 24px; color: #7d6a48; width: 40px; }
 .q-card .split { font-size: 28px; font-style: italic; color: #6b5a3e; }
 .mark { flex: none; display: grid; place-items: center; border-radius: 50%; color: var(--sm-vellum); }
 .candle { display: grid; justify-items: center; gap: 8px; }
-.candle svg { width: 124px; height: 400px; overflow: visible; }
+.candle svg { width: 96px; height: 310px; overflow: visible; }
 .candle-time { font-family: var(--sm-caps); font-size: 52px; font-weight: 600; color: var(--sm-gold); font-variant-numeric: tabular-nums; }
 .candle.late .candle-time { color: #e0604f; }
 .flame { animation: sm-flick 2.4s ease-in-out infinite; }
@@ -165,7 +171,7 @@
 .sm-drama .serpent.go path { transition: stroke-dashoffset 1.8s cubic-bezier(.5, 0, .2, 1); stroke-dashoffset: 0; }
 .sm-drama .role.dim1 { text-shadow: 0 0 30px #c9a24a33 !important; color: #b8964a !important; transition: all .4s; }
 .sm-drama .role.dim2 { text-shadow: none !important; color: #9a8045 !important; transition: all .6s; }
-.sm-sound { display: block; font-style: normal; font-family: var(--sm-caps); font-size: 22px; letter-spacing: .14em; color: var(--sm-muted); min-height: 28px; }
+.sm-sound { font-style: normal; font-family: var(--sm-caps); font-size: 20px; letter-spacing: .1em; text-transform: none; color: var(--sm-muted); }
 
 /* Night */
 .sm-night { display: grid; justify-items: center; align-content: center; gap: 26px; text-align: center; }
@@ -287,3 +293,86 @@ body:has(.sm-phone) { background: var(--sm-stone); }
   .sm-drama .body, .sm-drama.push .body { transition: none; transform: none; }
   .sm-drama .name { transition: none; }
 }
+
+/* ---------- the now strip: what to do, what's next, where we are ---------- */
+.sm-now { display: flex; align-items: center; justify-content: space-between; gap: 24px; background: #00000033; border: 1px solid #3a3128; border-radius: 6px; padding: 12px 22px; }
+.sm-now.night { background: transparent; border-color: #2a2730; }
+.sm-now .say { display: grid; gap: 2px; }
+.sm-now .now { font-size: 38px; color: var(--sm-vellum); line-height: 1.15; }
+.sm-now .next { font-size: 26px; font-style: italic; color: var(--sm-muted); }
+.sm-now .track { display: flex; gap: 6px; list-style: none; margin: 0; padding: 0; flex: none; }
+.sm-now .track li { font-family: var(--sm-caps); font-size: 18px; letter-spacing: .12em; text-transform: uppercase; color: var(--sm-muted); padding: 6px 12px; border: 1px solid #3a3128; border-radius: 16px; }
+.sm-now .track li.on { color: var(--sm-stone); background: var(--sm-gold); border-color: var(--sm-gold); }
+
+/* The deal: how it works, one card at a time. */
+.sm-deal { display: grid; align-content: center; gap: 22px; }
+.sm-deal .sm-lede { text-align: center; }
+.sm-deal .how { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.how-card { padding: 22px 24px; display: grid; gap: 8px; align-content: start; opacity: 0; transform: translateY(16px); transition: opacity .5s, transform .5s cubic-bezier(.34, 1.56, .64, 1); }
+.how-card.on { opacity: 1; transform: none; }
+.how-card .k { font-family: var(--sm-uncial); font-size: 48px; color: var(--sm-gules); line-height: 1; }
+.how-card h3 { font-family: var(--sm-caps); font-size: 30px; margin: 0; color: var(--sm-ink); }
+.how-card p { font-size: 28px; line-height: 1.25; margin: 0; color: #4a3b28; }
+
+/* Mission reveal: the Dagger and the shield as objects. */
+.prizes { display: flex; gap: 48px; justify-content: center; }
+.prize { display: flex; align-items: center; gap: 20px; text-align: left; animation: sm-pop .5s cubic-bezier(.34, 1.56, .64, 1) 1; }
+.prize span { font-size: 34px; color: var(--sm-vellum); display: grid; }
+.prize small { font-size: 26px; font-style: italic; color: var(--sm-muted); }
+.prize.dagger span { color: #e0a39a; }
+@keyframes sm-pop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* The debate: the clock, and what the table knows. */
+.sm-debate { display: grid; grid-template-columns: 420px 1fr; gap: 48px; align-items: center; }
+.sm-debate .clock-side { text-align: center; }
+.record { background: #00000040; border-left: 4px solid var(--sm-gold); padding: 18px 26px; min-height: 0; }
+.record h3 { font-family: var(--sm-caps); font-size: 24px; letter-spacing: .2em; text-transform: uppercase; color: var(--sm-gold); margin: 0 0 10px; font-weight: 600; }
+.record ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
+.record li, .record p { font-size: 30px; line-height: 1.25; color: var(--sm-vellum); margin: 0; }
+
+/* Votes are sealed letters. Each lands on the table; at the reveal its seal cracks and it opens. */
+.letters { display: flex; flex-wrap: wrap; gap: 22px; justify-content: center; max-width: 1300px; }
+.letters.open { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px 16px; }
+.letter { position: relative; width: 170px; height: 130px; display: grid; justify-items: center; }
+.letter.empty { border: 3px dashed #4a3f33; border-radius: 6px; }
+.letter .paper { position: absolute; inset: 0 0 24px; background: linear-gradient(160deg, var(--sm-vellum), var(--sm-vellum-2)); border-radius: 4px; box-shadow: 0 8px 20px #0008; display: grid; place-items: center; overflow: hidden; }
+.letter .flap { position: absolute; left: 0; right: 0; top: 0; height: 60px; background: linear-gradient(180deg, #cdbb92, #b8a47a); clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top; transition: transform .5s ease .15s, opacity .5s ease .15s; }
+.letter .wax { position: absolute; top: 34px; width: 46px; height: 46px; display: flex; }
+.letter .wax .half { flex: 1; background: radial-gradient(circle at 70% 40%, #c2453c, var(--sm-gules) 60%, #6b1a16); transition: transform .35s ease, opacity .35s ease; }
+.letter .wax .half.l { border-radius: 46px 0 0 46px; }
+.letter .wax .half.r { border-radius: 0 46px 46px 0; }
+.letter .to { font-family: var(--sm-caps); font-weight: 700; font-size: 22px; color: var(--sm-ink); opacity: 0; transition: opacity .4s ease .5s; text-align: center; padding: 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.letter .from { position: absolute; bottom: 0; font-family: var(--sm-caps); font-size: 18px; color: var(--sm-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.letter.fresh { animation: sm-drop .45s cubic-bezier(.34, 1.56, .64, 1) 1; }
+@keyframes sm-drop { from { transform: translateY(-40px) rotate(-6deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.letter.open .flap { transform: rotateX(180deg); opacity: .25; }
+.letter.open .wax .half.l { transform: translate(-30px, 30px) rotate(-40deg); opacity: 0; }
+.letter.open .wax .half.r { transform: translate(30px, 30px) rotate(40deg); opacity: 0; }
+.letter.open .to { opacity: 1; }
+.letter.open.fresh { animation: none; box-shadow: 0 0 0 4px var(--sm-gold); border-radius: 6px; }
+
+/* Breakfast: any number of empty chairs. */
+.sm-breakfast { align-items: center; }
+.obits { display: flex; gap: 24px; }
+.obit { min-width: 380px; padding: 26px 32px; }
+.obit .nm { font-size: 56px; }
+
+/* The unmasking: a mask lifts off each coat of arms. */
+.sm-unmask { gap: 34px; }
+.mask-card { display: grid; justify-items: center; gap: 6px; min-width: 190px; }
+.mask-card .face { position: relative; width: 120px; height: 130px; display: grid; place-items: center; }
+.mask-card .mask { position: absolute; top: 18px; width: 128px; transition: transform .9s cubic-bezier(.5, 0, .3, 1), opacity .9s ease; }
+.mask-card.lifted .mask { transform: translateY(-80px) rotate(-18deg); opacity: 0; }
+.mask-card .nm { font-family: var(--sm-caps); font-size: 36px; font-weight: 700; color: var(--sm-vellum); }
+.mask-card .role { font-family: var(--sm-uncial); font-size: 56px; color: var(--sm-muted); }
+.mask-card.snake .role { color: var(--sm-vert); }
+.mask-card.guest .role { color: var(--sm-gold); }
+@media (prefers-reduced-motion: reduce) {
+  .how-card, .prize, .letter.fresh, .letter .flap, .letter .wax .half, .mask-card .mask { animation: none; transition: none; }
+}
+
+/* The phone's guide: what to do now, in plain words (the same words for everyone at night). */
+.sm-guide { display: grid; gap: 4px; padding: 10px 12px; border-radius: 6px; background: #00000040; border-left: 3px solid var(--sm-gold); }
+.sm-guide b { font-family: var(--sm-caps); font-size: 17px; letter-spacing: .06em; color: var(--sm-vellum); }
+.sm-guide span { font-size: 16px; line-height: 1.35; color: var(--sm-pale); }
+.sm-phone.night .sm-guide { background: #17151a; border-left-color: #6b6250; }

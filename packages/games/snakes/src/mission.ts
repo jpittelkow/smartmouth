@@ -173,6 +173,7 @@ function finishMission(s0: SnakesState, now: number, after: After): SnakesState 
   }
   const result = { hit, shieldTo, dagger: !hit, gained: pot - m.potBefore };
   s = { ...s, pot, daggers: s.daggers + (hit ? 0 : 1), mission: { ...m, result } };
+  s = { ...s, history: [...s.history, { kind: 'mission', round: s.round, right: m.right, asked: m.asked, hit, overboard: m.overboardUsed }] };
   return after(s, now);
 }
 
