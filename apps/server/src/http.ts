@@ -12,6 +12,7 @@ import { clientAddress, fromHomeNetwork, trustedProxies } from './limits.ts';
 import { openDb, type Db } from './db.ts';
 import { handleQuestionsApi } from './adminApi.ts';
 import { handleGeneratorApi } from './generatorApi.ts';
+import { securityHeaders } from './headers.ts';
 import type { Generator } from './generator.ts';
 import type { VoiceRunner } from './voiceRunner.ts';
 import type { VoiceBank } from './voice.ts';
@@ -97,6 +98,7 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
 
   async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
     const url = new URL(req.url ?? '/', 'http://x');
+    for (const [k, v] of Object.entries(securityHeaders(url.pathname, isHttps(req)))) res.setHeader(k, v);
     if (url.pathname === '/api/health') {
       json(res, 200, { ok: true, app: APP_NAME, rooms: store.rooms.size });
       return;
