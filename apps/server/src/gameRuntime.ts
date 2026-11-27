@@ -70,6 +70,13 @@ export function gameIntent(room: Room, actor: Actor, raw: unknown, now: number):
   return g.state !== before;
 }
 
+/** A bot's moves right now (its game's `bot` hook), or none. */
+export function botMovesFor(room: Room, seatId: string, rand: () => number = Math.random): unknown[] {
+  const g = room.game;
+  const a = g ? adapterFor(g.id) : null;
+  return g && a?.bot ? a.bot(g.state, seatId, rand) : [];
+}
+
 /** Drops old rate-limit windows (called from the socket layer's sweep). */
 export function pruneLimits(now: number): void {
   textLimit.prune(now);

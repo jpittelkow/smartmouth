@@ -7,7 +7,7 @@ import { GAMES, findGame } from './games.ts';
 import { RateLimit, clientAddress, originAllowed } from './limits.ts';
 import { normalizeCode } from './codes.ts';
 import type { Db } from './db.ts';
-import { holdForSpeech, deadline, drainLog, endGame, gameIntent, pruneLimits, skip, startGame, syncRoom, tickGame } from './gameRuntime.ts';
+import { botMovesFor, holdForSpeech, deadline, drainLog, endGame, gameIntent, pruneLimits, skip, startGame, syncRoom, tickGame } from './gameRuntime.ts';
 import { cueJoin, readsFor, updateSalty } from './salty.ts';
 import type { VoiceBank } from './voice.ts';
 
@@ -59,6 +59,8 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
 const SPEECH_TAIL_MS = 1200;
 
   const timers = new Map<string, ReturnType<typeof setTimeout>>();
+  /** One pending move per house bot (`code:seatId`). */
+  const botTimers = new Map<string, ReturnType<typeof setTimeout>>();
   let stopped = false;
 
   /** After any change: record plays, re-arm the game's timer, then send everyone their view. */
@@ -85,6 +87,26 @@ const SPEECH_TAIL_MS = 1200;
         broadcast(room);
       }, Math.max(0, due - t) + 5));
     }
+    scheduleBots(room);
+  }
+
+  /**
+   * House bots act a human-ish moment after something changes: each bot with something to do gets one timer, and
+   * when it fires the bot looks again at its own view and sends what a phone would.
+   */
+  function scheduleBots(room: Room) {
+    if (!room.game) return;
+    for (const seat of room.seats) {
+      const key = `${room.code}:${seat.id}`;
+      if (!seat.bot || botTimers.has(key) || botMovesFor(room, seat.id).length === 0) continue;
+      botTimers.set(key, setTimeout(() => {
+        botTimers.delete(key);
+        if (stopped || !store.rooms.has(room.code) || !room.game) return;
+        let changed = false;
+        for (const intent of botMovesFor(room, seat.id)) changed = gameIntent(room, { kind: 'player', seatId: seat.id }, intent, now()) || changed;
+        if (changed) broadcast(room); else scheduleBots(room);
+      }, 900 + Math.random() * 2200));
+    }
   }
 
   function send_views(room: Room) {
@@ -104,7 +126,7 @@ const SPEECH_TAIL_MS = 1200;
   function refreshPresence(room: Room) {
     room.hostConnected = [...clients].some((c) => c.conn.kind === 'host' && c.conn.code === room.code);
     for (const seat of room.seats) {
-      seat.connected = [...clients].some((c) => c.conn.kind === 'player' && c.conn.code === room.code && c.conn.seatId === seat.id);
+      seat.connected = !!seat.bot || [...clients].some((c) => c.conn.kind === 'player' && c.conn.code === room.code && c.conn.seatId === seat.id);
     }
   }
 
@@ -227,6 +249,20 @@ const SPEECH_TAIL_MS = 1200;
         return broadcast(room);
       }
 
+      case 'admin:bots': {
+        const room = roomOf(c);
+        if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
+        if (room.game) return error(c, 'not-allowed', 'Add or remove bots in the lobby.');
+        if (msg.add) {
+          const r = store.addBot(room, t);
+          if (!r.ok) return error(c, r.code, r.message);
+          cueJoin(room);
+        } else {
+          for (const seat of room.seats.filter((x) => x.bot)) store.remove(room, seat.id, t);
+        }
+        return broadcast(room);
+      }
+
       case 'admin:kick': {
         const room = roomOf(c);
         if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
@@ -317,11 +353,19 @@ const SPEECH_TAIL_MS = 1200;
       createLimit.prune(t);
       pruneLimits(t);
       const gone = store.sweep(t);
-      for (const code of gone) { clearTimeout(timers.get(code)); timers.delete(code); }
+      for (const code of gone) {
+        clearTimeout(timers.get(code)); timers.delete(code);
+        for (const [k, tm] of botTimers) if (k.startsWith(`${code}:`)) { clearTimeout(tm); botTimers.delete(k); }
+      }
       return gone;
     },
     clientCount: () => clients.size,
-    stop: () => { stopped = true; for (const tm of timers.values()) clearTimeout(tm); timers.clear(); },
+    stop: () => {
+      stopped = true;
+      for (const tm of timers.values()) clearTimeout(tm);
+      for (const tm of botTimers.values()) clearTimeout(tm);
+      timers.clear(); botTimers.clear();
+    },
     normalizeCode,
   };
 }

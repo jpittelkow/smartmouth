@@ -33,6 +33,8 @@ export type ClientMsg =
   /** Full drama or Quick for staged reveals (ADR 0024). */
   | { t: 'admin:drama'; drama: Drama }
   | { t: 'admin:kick'; seatId: string }
+  /** Add one house bot to the room, or remove them all (lobby only). */
+  | { t: 'admin:bots'; add: boolean }
   | { t: 'admin:start'; gameId: string }
   /** End the current wait (reveal, intro, a stalled turn). */
   | { t: 'admin:next' }
@@ -77,6 +79,8 @@ export interface PublicSeat {
   score: number;
   connected: boolean;
   isAdmin: boolean;
+  /** A house bot the server plays, for testing a game solo. */
+  isBot: boolean;
 }
 
 export interface SpiceState {

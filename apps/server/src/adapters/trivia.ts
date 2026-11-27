@@ -42,6 +42,13 @@ export const trivia: GameAdapter<TriviaState> = {
   plays: (state) => state.log,
   stageKey: (s) => `${s.round}:${s.stage}`,
 
+  /** A bot answers its own question at random. */
+  bot(s, seatId, rand) {
+    const v = rules.playerView(s, seatId);
+    if (v.stage !== 'question' || !v.question || v.picked !== null) return [];
+    return [{ type: 'answer', choice: Math.floor(rand() * v.question.answers.length) }];
+  },
+
   say(s, tools) {
     const moment = momentOf(s);
     const line = tools.line(moment);

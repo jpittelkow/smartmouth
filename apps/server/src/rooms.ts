@@ -21,6 +21,8 @@ export interface Seat {
   color: string;
   score: number;
   connected: boolean;
+  /** A house bot (no phone): the server plays it from its own view (bots.ts). */
+  bot?: boolean;
 }
 
 export interface Room {
@@ -98,6 +100,15 @@ export class RoomStore {
     return { ok: true, value: seat };
   }
 
+  /** A house bot: a grown-up seat with no phone, always connected, never the admin. */
+  addBot(room: Room, now: number): Result<Seat> {
+    if (room.seats.length >= MAX_PLAYERS) return fail('room-full', `This room is full (${MAX_PLAYERS} players).`);
+    const name = BOT_NAMES.find((n) => !room.seats.some((s) => s.name === n)) ?? `Bot ${room.nextSeat}`;
+    const r = this.join(room, { name, band: 'grownups', avatar: room.nextSeat % AVATAR_COUNT }, now);
+    if (r.ok) r.value.bot = true;
+    return r;
+  }
+
   seatByToken(room: Room, token: unknown): Seat | undefined {
     if (typeof token !== 'string' || token.length === 0) return undefined;
     return room.seats.find((s) => s.token === token);
@@ -115,7 +126,8 @@ export class RoomStore {
   sweep(now: number): string[] {
     const gone: string[] = [];
     for (const room of this.rooms.values()) {
-      const anyone = room.hostConnected || room.seats.some((s) => s.connected);
+      // Bots don't keep a room alive.
+      const anyone = room.hostConnected || room.seats.some((s) => s.connected && !s.bot);
       if (anyone) room.lastActive = now;
       else if (now - room.lastActive > IDLE_MS) gone.push(room.code);
     }
@@ -139,10 +151,13 @@ function freeColor(room: Room): string {
   return PLAYER_COLORS.find((c) => !used.has(c)) ?? PLAYER_COLORS[0];
 }
 
-/** The first grown-up to join is the admin; it moves on when they leave (ADR 0005). */
+/** The first grown-up to join is the admin; it moves on when they leave (ADR 0005). A bot never is. */
 export function adminSeatId(room: Room): string | null {
-  return room.seats.find((s) => s.band === 'grownups')?.id ?? null;
+  return room.seats.find((s) => s.band === 'grownups' && !s.bot)?.id ?? null;
 }
+
+/** House bots' names: made up, never a real person (CLAUDE.md privacy rule). */
+const BOT_NAMES = ['Bot Agnes', 'Bot Bertram', 'Bot Cecily', 'Bot Dunstan', 'Bot Edith', 'Bot Fulke', 'Bot Godric', 'Bot Hilde', 'Bot Ivo', 'Bot Joan'];
 
 export function spiceState(room: Room): SpiceState {
   const bands = room.seats.map((s) => s.band);
@@ -152,7 +167,7 @@ export function spiceState(room: Room): SpiceState {
 function publicSeat(room: Room, s: Seat): PublicSeat {
   return {
     id: s.id, name: s.name, band: s.band, avatar: s.avatar, color: s.color, score: s.score,
-    connected: s.connected, isAdmin: adminSeatId(room) === s.id,
+    connected: s.connected, isAdmin: adminSeatId(room) === s.id, isBot: !!s.bot,
   };
 }
 

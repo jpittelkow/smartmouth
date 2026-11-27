@@ -57,6 +57,11 @@ export interface GameAdapter<S = unknown> {
   plays(state: S): readonly Play[];
   /** Keep the current pause going until `until` (Salty is still talking). Optional; never shortens a wait. */
   hold?(state: S, until: number): S;
+  /**
+   * A house bot's moves right now (raw intents, as a phone would send them), decided only from that bot's own
+   * player view, so a bot knows no more than a person in its seat. Empty when it has nothing to do.
+   */
+  bot?(state: S, seatId: string, rand: () => number): unknown[];
   /** Changes whenever Salty should say something new. */
   stageKey(state: S): string;
   /** What Salty says at the current stage. */

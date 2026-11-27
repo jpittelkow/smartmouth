@@ -205,3 +205,34 @@ test('the banishment is said in two parts: the setup, then the payoff for the re
   const [qs, qp] = quick.parts ?? [];
   assert.ok(qs && qp && qp.at - qs.at < payoff.at - setup.at, 'Quick drama shortens the pause');
 });
+
+// ---------- house bots ----------
+
+test('a house bot is a grown-up seat, never the admin, and never keeps an empty room alive', () => {
+  const store = new RoomStore();
+  const r = store.create(0);
+  const bot = store.addBot(r, 0);
+  assert.ok(bot.ok && bot.value.bot && bot.value.band === 'grownups');
+  assert.equal(adminSeatId(r), null, 'a bot alone is no admin');
+  store.join(r, { name: 'Captain Test', band: 'grownups', avatar: 0 }, 0);
+  assert.equal(adminSeatId(r), r.seats[1]?.id, 'the first person is the admin, even after a bot');
+  r.seats[1]!.connected = false;
+  assert.deepEqual(store.sweep(60 * 60 * 1000), [r.code], 'only a bot left connected: the room still ends');
+});
+
+test('a game played only by bot rules reaches the end, at every size', async () => {
+  const { botMoves } = await import('../src/adapters/snakes.ts');
+  for (let n = 5; n <= 10; n++) {
+    let x = n * 7919;
+    const rand = () => { x = (Math.imul(x, 1664525) + 1013904223) >>> 0; return x / 4294967296; };
+    let s = start(n, n);
+    let t = 0;
+    for (let i = 0; i < 3000 && !rules.isOver(s); i++) {
+      for (const id of s.order) for (const intent of botMoves(s, id, rand)) s = rules.intent(s, id, intent as never, t);
+      if (rules.isOver(s)) break;
+      t = Math.max(t, rules.nextDeadline(s) ?? t);
+      s = rules.tick(s, t);
+    }
+    assert.equal(s.stage, 'final', `${n} bots finished`);
+  }
+});

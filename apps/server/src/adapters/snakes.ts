@@ -56,7 +56,48 @@ export const snakes: GameAdapter<SnakesState> = {
   },
 
   say: (s, tools) => sayFor(s, tools),
+
+  bot: (s, seatId, rand) => botMoves(s, seatId, rand),
 };
+
+const BOT_CHAT = ['Too quiet.', 'Watch them.', 'Not sure.', 'Tonight.', 'Trust me.', 'They voted weird.'];
+const BOT_NOTES = ['Too quiet at the table.', 'Voted last again.', 'Kept changing the subject.', 'Not sure yet.'];
+
+/**
+ * A house bot's moves, from its own player view only (ADR 0023): it knows what a person in its seat would know.
+ * Simple rules, not real reasoning: random answers and votes, a Snake never votes for a fellow Snake, a Snake bot
+ * sometimes sinks a mission with the Overboard, chats a stock line and spends any Dagger.
+ */
+export function botMoves(s: SnakesState, seatId: string, rand: () => number): unknown[] {
+  const v = rules.playerView(s, seatId);
+  const any = <T>(xs: readonly T[]): T | undefined => xs.at(Math.floor(rand() * xs.length));
+  const out: unknown[] = [];
+  if (!v.me || v.spectator) return out;
+  const m = v.mission;
+  if (m?.question && m.picked === null) out.push({ type: 'answer', choice: Math.floor(rand() * m.question.answers.length) });
+  if (m?.overboard?.available && m.overboard.candidates.length && rand() < 0.25) out.push({ type: 'overboard', target: any(m.overboard.candidates) });
+  if (v.vote?.canVote && !v.vote.mine) {
+    const pool = v.vote.candidates.filter((id) => !v.fellows.includes(id));
+    const target = any(pool.length ? pool : v.vote.candidates);
+    if (target) out.push({ type: 'vote', target });
+  }
+  const n = v.night;
+  if (n && !n.locked) {
+    if (n.grid.kind === 'answer') out.push({ type: 'offer', accept: rand() < 0.6 });
+    else {
+      if (n.grid.picks.length === 0 && n.grid.candidates.length) out.push({ type: 'pick', target: any(n.grid.candidates) });
+      if (n.daggers > 0 && rand() < 0.5) {
+        const kind = any(['silence', 'peek'] as const) ?? 'peek';
+        out.push({ type: 'dagger', kind, target: any(n.grid.candidates) ?? null });
+      }
+      if (rand() < 0.6) out.push({ type: 'say', text: any(n.box.kind === 'note' ? BOT_NOTES : BOT_CHAT) });
+      out.push({ type: 'lock' });
+    }
+  }
+  if (v.bet && v.bet.picks.length === 0 && v.bet.candidates.length) out.push({ type: 'pick', target: any(v.bet.candidates) });
+  if (v.endVote?.canVote && v.endVote.mine === null) out.push({ type: 'endVote', end: rand() < 0.7 });
+  return out;
+}
 
 const str = (x: unknown): x is string => typeof x === 'string' && x.length > 0 && x.length <= 64;
 

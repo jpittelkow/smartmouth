@@ -1,7 +1,7 @@
 // The phone controller (design guide §6 Phone). Join in one screen, then "look at the TV".
 import { useState } from 'react';
 import {
-  AVATAR_COUNT, BANDS, DRAMAS, NAME_MAX, PLAYER_COLORS, SPICES, SPICE_LABEL, VOICES, VOICE_LABEL, spiceAllows, type Drama, type VoiceId,
+  AVATAR_COUNT, BANDS, DRAMAS, MAX_PLAYERS, NAME_MAX, PLAYER_COLORS, SPICES, SPICE_LABEL, VOICES, VOICE_LABEL, spiceAllows, type Drama, type VoiceId,
   type Band, type PlayerView, type ServerMsg, type Spice,
 } from '@smartmouth/protocol';
 import { useSocket, store, save } from '../socket.ts';
@@ -128,7 +128,7 @@ function Waiting({ view, send, online, onLeave }: {
         <>
           <button className="press big-btn" onClick={() => setSheet((s) => !s)}>{sheet ? 'Close grown-up controls' : 'Grown-up controls'}</button>
           {sheet && <AdminSheet view={view} onSpice={(s) => send({ t: 'admin:spice', spice: s })} onVoice={(v) => send({ t: 'admin:voice', voice: v })}
-            onDrama={(d) => send({ t: 'admin:drama', drama: d })} />}
+            onDrama={(d) => send({ t: 'admin:drama', drama: d })} onBots={(add) => send({ t: 'admin:bots', add })} />}
         </>
       )}
       <button className="press" style={{ padding: 12 }} onClick={onLeave}>Leave the game</button>
@@ -136,8 +136,8 @@ function Waiting({ view, send, online, onLeave }: {
   );
 }
 
-function AdminSheet({ view, onSpice, onVoice, onDrama }: {
-  view: PlayerView; onSpice: (s: Spice) => void; onVoice: (v: VoiceId) => void; onDrama: (d: Drama) => void;
+function AdminSheet({ view, onSpice, onVoice, onDrama, onBots }: {
+  view: PlayerView; onSpice: (s: Spice) => void; onVoice: (v: VoiceId) => void; onDrama: (d: Drama) => void; onBots: (add: boolean) => void;
 }) {
   return (
     <div className="sheet">
@@ -166,6 +166,16 @@ function AdminSheet({ view, onSpice, onVoice, onDrama }: {
         ))}
       </div>
       <div className="muted">For Snake Manor's big reveals. Quick cuts the long pauses short. Starts with the next game.</div>
+      {view.phase === 'lobby' && (
+        <>
+          <h2>House bots</h2>
+          <div className="spice-row">
+            <button className="press" disabled={view.playerCount >= MAX_PLAYERS} onClick={() => onBots(true)}>Add a bot</button>
+            <button className="press" onClick={() => onBots(false)}>Remove bots</button>
+          </div>
+          <div className="muted">Bots fill seats so you can try a game with fewer people (Snake Manor needs 5). They play by simple rules, not real tactics.</div>
+        </>
+      )}
     </div>
   );
 }
