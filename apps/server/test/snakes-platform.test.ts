@@ -150,7 +150,7 @@ test('Salty’s moment is the same whoever the Snakes are (ADR 0023)', () => {
     const alive = rules.living(s);
     const snake = alive.find((id) => s.players[id]?.role === 'snake');
     const guest = alive.find((id) => s.players[id]?.role === 'guest');
-    if (snake && guest && s.stage !== 'banish' && s.stage !== 'final' && s.stage !== 'unmask') {
+    if (snake && guest && s.stage !== 'banish' && s.stage !== 'unmask') {
       const swapped: SnakesState = {
         ...s, players: { ...s.players, [snake]: { ...s.players[snake]!, role: 'guest' }, [guest]: { ...s.players[guest]!, role: 'snake' } },
       };
