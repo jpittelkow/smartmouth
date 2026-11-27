@@ -96,7 +96,7 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
         <div className="join-chip">Join: <b>{view.joinUrl.replace(/^https?:\/\//, '').replace(/\/play\?code=.*$/, '')}</b> · <b>{view.code}</b></div>
       </div>
 
-      <div className="tv-game">
+      <div className={`tv-game${view.players.length > 6 ? ' crowded' : ''}`}>
         {g.stage === 'intro' && (g.round === 1 ? <TitleCard rounds={g.rounds} /> : <Intro round={g.round} rounds={g.rounds} />)}
         {(g.stage === 'question' || g.stage === 'suspense' || g.stage === 'reveal') && g.question && <QuestionBoard g={g} q={g.question} />}
         {(g.stage === 'turn' || g.stage === 'turnReveal') && g.turn && <Turn g={g} who={seat(g.turn.playerId)} send={send} answerClips={view.reads.turn?.answers ?? []} />}

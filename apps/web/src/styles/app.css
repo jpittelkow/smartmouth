@@ -362,3 +362,23 @@ button, input { font: inherit; color: inherit; }
 .board.suspense .answer { animation: suspense-shake 160ms ease-in-out infinite alternate; }
 .board.suspense .answer:nth-child(2n) { animation-delay: 80ms; }
 @keyframes suspense-shake { from { transform: translateY(-2px) rotate(-.4deg); } to { transform: translateY(2px) rotate(.4deg); } }
+
+/* ---------- A crowded room (7 to 10 players; owner's TV test with bots, 2026-11-27) ----------
+   Two rows of tiles squeeze the game area, so the tiles shrink into five even columns and the board tightens, so the
+   bottom row of answers isn't hidden behind Salty's caption. */
+.tiles.compact.two-rows { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.tiles.compact.two-rows .tile { padding: 4px 12px; column-gap: 10px; }
+.tiles.compact.two-rows .tile svg { width: 44px; height: 44px; }
+.tiles.compact.two-rows .tile .name { font-size: 24px; }
+.tiles.compact.two-rows .tile .band { font-size: 22px; }
+.tiles.compact.two-rows .tile-badge svg { width: 30px; height: 30px; }
+.tv-game.crowded .board { gap: 12px; }
+.tv-game.crowded .board-head { min-height: 64px; }
+.tv-game.crowded .cat-chip { font-size: 26px; padding: 6px 18px; }
+.tv-game.crowded .q-text { font-size: 52px; }
+.tv-game.crowded .answers { gap: 14px; }
+.tv-game.crowded .answer { min-height: 76px; font-size: 36px; padding: 8px 22px; }
+.tv-game.crowded .answer svg { width: 50px; height: 50px; }
+.tv-game.crowded .timer { width: 140px; height: 140px; top: 4px; }
+.tv-game.crowded .timer span { font-size: 70px; }
+.tv-game.crowded .standings .st-row svg { width: 40px; height: 40px; }
