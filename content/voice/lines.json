@@ -1578,6 +1578,2736 @@
    "moment": "sm-brief-game",
    "spice": "filthy",
    "text": "Welcome to my damn manor. Most of you are Guests. A few of you are Snakes, and those little bastards know each other. Each round: a trivia mission for the pot, the Round Table where you throw someone out, then night, when the Snakes murder a Guest. Guests win if every Snake is gone. Snakes win if one survives to the end. Your role's on your phone. Don't blow it."
+  },
+  {
+   "id": "allRight-f1d",
+   "moment": "allRight",
+   "spice": "filthy",
+   "text": "[annoyed] A clean sweep. I wanted a glorious idiot."
+  },
+  {
+   "id": "allRight-f2d",
+   "moment": "allRight",
+   "spice": "filthy",
+   "text": "No misses. I rehearsed disappointment in the mirror. Wasted."
+  },
+  {
+   "id": "allRight-f3d",
+   "moment": "allRight",
+   "spice": "filthy",
+   "text": "You all knew. I'll read the fact. Try staying awake."
+  },
+  {
+   "id": "allRight-f4d",
+   "moment": "allRight",
+   "spice": "filthy",
+   "text": "All correct. The parrot would've heckled harder. Little traitor."
+  },
+  {
+   "id": "allRight-f5d",
+   "moment": "allRight",
+   "spice": "filthy",
+   "text": "Everyone got it. My planned roast just died. Fucking tragic."
+  },
+  {
+   "id": "allRight-f6d",
+   "moment": "allRight",
+   "spice": "filthy",
+   "text": "[deadpan] Nobody missed. I'll smile. Internally, I'm screaming shit."
+  },
+  {
+   "id": "allRight-f7d",
+   "moment": "allRight",
+   "spice": "filthy",
+   "text": "[sighs] Everyone nailed it. There goes my favorite complaint."
+  },
+  {
+   "id": "allRight-f8d",
+   "moment": "allRight",
+   "spice": "filthy",
+   "text": "[deadpan] Right answers everywhere. I'm pouring another. Don't narrate."
+  },
+  {
+   "id": "allRight-f9d",
+   "moment": "allRight",
+   "spice": "filthy",
+   "text": "Nobody blew it. My saved jab is getting cold. Damn."
+  },
+  {
+   "id": "allRight-f10d",
+   "moment": "allRight",
+   "spice": "filthy",
+   "text": "[mischievously] Everyone nailed it. Suspicious as hell. I'll allow applause."
+  },
+  {
+   "id": "allRight-f11d",
+   "moment": "allRight",
+   "spice": "filthy",
+   "text": "The snacks didn't help. You all still got it. Bastards."
+  },
+  {
+   "id": "allRight-f12d",
+   "moment": "allRight",
+   "spice": "filthy",
+   "text": "Everybody right. My heckle is homeless now. Poor thing."
+  },
+  {
+   "id": "allRight-f13d",
+   "moment": "allRight",
+   "spice": "filthy",
+   "text": "[sighs] A flawless round. Even the couch looks smug. Bastards."
+  },
+  {
+   "id": "allRight-h1d",
+   "moment": "allRight",
+   "spice": "hot",
+   "text": "Perfect sweep. I wanted chaos. You brought a study group."
+  },
+  {
+   "id": "allRight-h2d",
+   "moment": "allRight",
+   "spice": "hot",
+   "text": "Everybody got it. Damn. I clapped early. Unprofessional."
+  },
+  {
+   "id": "allRight-h3d",
+   "moment": "allRight",
+   "spice": "hot",
+   "text": "Everybody got it. The couch bet against you. The couch lost."
+  },
+  {
+   "id": "allRight-h4d",
+   "moment": "allRight",
+   "spice": "hot",
+   "text": "All of you. Sloppy guessing. Clean result. I hate that."
+  },
+  {
+   "id": "allRight-h5d",
+   "moment": "allRight",
+   "spice": "hot",
+   "text": "All correct. The phones didn't argue. I find that suspicious."
+  },
+  {
+   "id": "allRight-h6d",
+   "moment": "allRight",
+   "spice": "hot",
+   "text": "Everyone nailed it. I checked the phones again. Still right."
+  },
+  {
+   "id": "allRight-h7d",
+   "moment": "allRight",
+   "spice": "hot",
+   "text": "Everybody nailed it. Damn. Fast, correct, and smug."
+  },
+  {
+   "id": "allRight-h8d",
+   "moment": "allRight",
+   "spice": "hot",
+   "text": "Every one correct. Crap. Nobody left in the room to blame."
+  },
+  {
+   "id": "allRight-h9d",
+   "moment": "allRight",
+   "spice": "hot",
+   "text": "Perfect. [gasps] All of you. I did not budget for unanimity."
+  },
+  {
+   "id": "allRight-m1d",
+   "moment": "allRight",
+   "spice": "mild",
+   "text": "Everyone got it. Clap first. Then learn something."
+  },
+  {
+   "id": "allRight-m2d",
+   "moment": "allRight",
+   "spice": "mild",
+   "text": "Everybody nailed it. I practiced a roast. It died unused."
+  },
+  {
+   "id": "allRight-m3d",
+   "moment": "allRight",
+   "spice": "mild",
+   "text": "Perfect round. Teasing cancelled due to competence."
+  },
+  {
+   "id": "allRight-m4d",
+   "moment": "allRight",
+   "spice": "mild",
+   "text": "Everyone right. I'm clapping. Reluctantly. Still clapping."
+  },
+  {
+   "id": "allRight-m5d",
+   "moment": "allRight",
+   "spice": "mild",
+   "text": "All correct! I came ready to gloat. Gloating cancelled."
+  },
+  {
+   "id": "allRight-m6d",
+   "moment": "allRight",
+   "spice": "mild",
+   "text": "Every phone got it. Even the one under a cushion."
+  },
+  {
+   "id": "allRight-m7d",
+   "moment": "allRight",
+   "spice": "mild",
+   "text": "Nobody missed. I saved a dramatic sigh. [sighs] Wasted."
+  },
+  {
+   "id": "allRight-m8d",
+   "moment": "allRight",
+   "spice": "mild",
+   "text": "All correct. My gasp had nowhere to go. [gasps]"
+  },
+  {
+   "id": "allRight-m9d",
+   "moment": "allRight",
+   "spice": "mild",
+   "text": "Clean sweep. The lecture I prepared just expired."
+  },
+  {
+   "id": "allRight-m10d",
+   "moment": "allRight",
+   "spice": "mild",
+   "text": "Everyone right. Brains and speed. Disgustingly impressive. [scoffs]"
+  },
+  {
+   "id": "allRight-m11d",
+   "moment": "allRight",
+   "spice": "mild",
+   "text": "Every answer correct. Even my old parrot would clap."
+  },
+  {
+   "id": "allRight-m12d",
+   "moment": "allRight",
+   "spice": "mild",
+   "text": "All of you right. My cheeks hurt from grinning."
+  },
+  {
+   "id": "allRight-m13d",
+   "moment": "allRight",
+   "spice": "mild",
+   "text": "Clean sweep. That confidence needs a seatbelt."
+  },
+  {
+   "id": "allRight-s1d",
+   "moment": "allRight",
+   "spice": "spicy",
+   "text": "[sighs] All of you. Right. I already spent the shocked look."
+  },
+  {
+   "id": "allRight-s2d",
+   "moment": "allRight",
+   "spice": "spicy",
+   "text": "I practiced looking shocked. You all got it. Waste of rehearsal."
+  },
+  {
+   "id": "allRight-s3d",
+   "moment": "allRight",
+   "spice": "spicy",
+   "text": "Everyone's correct. I clapped last on purpose. Petty. Fair."
+  },
+  {
+   "id": "allRight-s4d",
+   "moment": "allRight",
+   "spice": "spicy",
+   "text": "A clean sweep. Even the couch looks impressed. It hates effort."
+  },
+  {
+   "id": "allRight-s5d",
+   "moment": "allRight",
+   "spice": "spicy",
+   "text": "Nobody yelled at the TV. Everyone's right. Personal growth."
+  },
+  {
+   "id": "allRight-s6d",
+   "moment": "allRight",
+   "spice": "spicy",
+   "text": "Blame is cancelled. I can't pin this on the wifi. Shame."
+  },
+  {
+   "id": "allRight-s7d",
+   "moment": "allRight",
+   "spice": "spicy",
+   "text": "Nobody missed. I panicked alone. We're very different."
+  },
+  {
+   "id": "allRight-s8d",
+   "moment": "allRight",
+   "spice": "spicy",
+   "text": "I checked under the cushions. All correct. No cheats. Rude."
+  },
+  {
+   "id": "allRight-s9d",
+   "moment": "allRight",
+   "spice": "spicy",
+   "text": "Right answers only. I waited for a groan. Got applause."
+  },
+  {
+   "id": "allRight-s10d",
+   "moment": "allRight",
+   "spice": "spicy",
+   "text": "[scoffs] I saved my best scoff. Everyone's correct. Still using it."
+  },
+  {
+   "id": "allWrong-f1d",
+   "moment": "allWrong",
+   "spice": "filthy",
+   "text": "Nobody got it. You treated the truth like a suggestion."
+  },
+  {
+   "id": "allWrong-f2d",
+   "moment": "allWrong",
+   "spice": "filthy",
+   "text": "Brains called in sick, so everybody missed. Rude."
+  },
+  {
+   "id": "allWrong-f3d",
+   "moment": "allWrong",
+   "spice": "filthy",
+   "text": "[whispers] Total wipeout. Even the snacks look disappointed."
+  },
+  {
+   "id": "allWrong-f4d",
+   "moment": "allWrong",
+   "spice": "filthy",
+   "text": "My parrot left over less. This was worse."
+  },
+  {
+   "id": "allWrong-f5d",
+   "moment": "allWrong",
+   "spice": "filthy",
+   "text": "Everybody wrong. Hot speed, fucking cold accuracy."
+  },
+  {
+   "id": "allWrong-h1d",
+   "moment": "allWrong",
+   "spice": "hot",
+   "text": "[annoyed] I asked for answers. Every phone sent fan fiction."
+  },
+  {
+   "id": "allWrong-h2d",
+   "moment": "allWrong",
+   "spice": "hot",
+   "text": "[sighs] You answered. Technically. Every phone sent a suggestion."
+  },
+  {
+   "id": "allWrong-h3d",
+   "moment": "allWrong",
+   "spice": "hot",
+   "text": "Hell. All of you treated the right answer as optional."
+  },
+  {
+   "id": "allWrong-h4d",
+   "moment": "allWrong",
+   "spice": "hot",
+   "text": "The snacks are gloating openly. You missed it. All of you."
+  },
+  {
+   "id": "allWrong-m1d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "Oof, nobody. You guessed like the couch was helping. The couch cannot read."
+  },
+  {
+   "id": "allWrong-m2d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "Nobody got it! The answer lit up alone. It looked embarrassed for you."
+  },
+  {
+   "id": "allWrong-m3d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "Nobody got that. The sad horn agrees with me. We are both disappointed. [dramatically]"
+  },
+  {
+   "id": "allWrong-m4d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "All wrong! My parrot would have nailed it. Then left anyway. [sighs]"
+  },
+  {
+   "id": "allWrong-m5d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "Nobody got it. The crash arrived right on time. Very punctual. Very rude."
+  },
+  {
+   "id": "allWrong-m6d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "I believed in you. Briefly. Nobody, and the crash corrected me. [sighs]"
+  },
+  {
+   "id": "allWrong-m7d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "All wrong! You answered like the phones were suggestions. [scoffs]"
+  },
+  {
+   "id": "allWrong-m8d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "Nobody got it. The confidence was huge. The result was tiny. [sighs]"
+  },
+  {
+   "id": "allWrong-m9d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "All of you! Wrong together. That's teamwork. Terrible teamwork. [laughs]"
+  },
+  {
+   "id": "allWrong-m10d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "All wrong! Even the snacks stayed quiet. They only cheer for right."
+  },
+  {
+   "id": "allWrong-m11d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "All missed! Speed was great. Direction was... a different game. [sarcastic]"
+  },
+  {
+   "id": "allWrong-m12d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "All of you missed. The couch saw everything. The couch is judging. [whispers]"
+  },
+  {
+   "id": "allWrong-m13d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "All wrong! The drum roll was fancy. The crash was honest. [deadpan]"
+  },
+  {
+   "id": "allWrong-m14d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "Nobody! The question waited. Every phone wandered off. [annoyed]"
+  },
+  {
+   "id": "allWrong-m15d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "All of you! Wrong in unison. That's a choir. A wrong choir. [dramatically]"
+  },
+  {
+   "id": "allWrong-m16d",
+   "moment": "allWrong",
+   "spice": "mild",
+   "text": "Nobody right! I asked the sad horn. It played the same sad note. [sarcastic]"
+  },
+  {
+   "id": "allWrong-s1d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "The reveal crash did more work than any of you."
+  },
+  {
+   "id": "allWrong-s2d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "Everyone missed it. A group project with nobody holding the pencil."
+  },
+  {
+   "id": "allWrong-s3d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "Confidence showed up. Accuracy called in sick."
+  },
+  {
+   "id": "allWrong-s4d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "My lost ship navigated better than this entire room."
+  },
+  {
+   "id": "allWrong-s5d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "You guessed like someone mashing a jammed elevator button."
+  },
+  {
+   "id": "allWrong-s6d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "Somewhere, a goldfish is feeling extremely superior."
+  },
+  {
+   "id": "allWrong-s7d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "Synchronized shrug. Beautiful form. Completely useless."
+  },
+  {
+   "id": "allWrong-s8d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "[scoffs] Gift-wrapped. You returned it without opening the box."
+  },
+  {
+   "id": "allWrong-s9d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "[sighs] I set the table. You ate the napkins."
+  },
+  {
+   "id": "allWrong-s10d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "A coin flip would have been less insulting."
+  },
+  {
+   "id": "allWrong-s11d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "The ice maker makes smarter sounds than those guesses."
+  },
+  {
+   "id": "allWrong-s12d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "[dramatically] The drum roll died for absolutely nothing."
+  },
+  {
+   "id": "allWrong-s13d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "Speed was lovely. The thinking took a long nap."
+  },
+  {
+   "id": "allWrong-s14d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "[annoyed] I warmed the plate. You dropped it on the rug."
+  },
+  {
+   "id": "allWrong-s15d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "Fast fingers, empty results, and a whole lot of nerve."
+  },
+  {
+   "id": "allWrong-s16d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "[whispers] Keep this from the snacks. They gloat for weeks."
+  },
+  {
+   "id": "allWrong-s17d",
+   "moment": "allWrong",
+   "spice": "spicy",
+   "text": "The whole room missed and somehow looked pleased."
+  },
+  {
+   "id": "final-f1d",
+   "moment": "final",
+   "spice": "filthy",
+   "text": "Show's over! Winner, enjoy being unbearable. The rest of you guessed with the confidence of a drunk uncle at a wedding. Loved it. Night!"
+  },
+  {
+   "id": "final-f2d",
+   "moment": "final",
+   "spice": "filthy",
+   "text": "That's it, you degenerates! Winner, well fucking played. Everyone else, put the phones down and pretend this was strategy. It wasn't. I'm Salty. Goodnight!"
+  },
+  {
+   "id": "final-f3d",
+   "moment": "final",
+   "spice": "filthy",
+   "text": "Done! Winner, that was clean and infuriating. Everyone else answered like a text to an ex: fast, sure, and stupid. Goodnight!"
+  },
+  {
+   "id": "final-f4d",
+   "moment": "final",
+   "spice": "filthy",
+   "text": "And we're finished! Winner, that grin is earned and annoying. Losers, go explain yourselves to the snacks. They won't care. Goodnight!"
+  },
+  {
+   "id": "final-f5d",
+   "moment": "final",
+   "spice": "filthy",
+   "text": "That's the show! Winner, insufferable and correct. Losers, go tell the couch you tried. It already knows you didn't. Goodnight!"
+  },
+  {
+   "id": "final-f6d",
+   "moment": "final",
+   "spice": "filthy",
+   "text": "And that's the game! Winner, you magnificent bastard. The rest of you played like my parrot: loud, then gone. I'm signing off."
+  },
+  {
+   "id": "final-f7d",
+   "moment": "final",
+   "spice": "filthy",
+   "text": "Hell yes, that's the end! Winner, you showed off and it worked. Everyone else, stop staring at the board like it'll apologize. It won't. I'm out."
+  },
+  {
+   "id": "final-f8d",
+   "moment": "final",
+   "spice": "filthy",
+   "text": "And we're out! Winner, take it before someone demands a recount. They'd still lose. Losers, get a drink. I'm Salty. Night!"
+  },
+  {
+   "id": "final-f9d",
+   "moment": "final",
+   "spice": "filthy",
+   "text": "That's the end! Winner, you glorious show-off. Everyone else, the phones did their job. You did a bit. I loved the bit. Goodnight!"
+  },
+  {
+   "id": "final-f10d",
+   "moment": "final",
+   "spice": "filthy",
+   "text": "Wrapped it! Winner, the top looks good on you, unfortunately. Losers, confidence showed up. Answers didn't. I'm Salty. Kindly fuck off. Night!"
+  },
+  {
+   "id": "final-f11d",
+   "moment": "final",
+   "spice": "filthy",
+   "text": "Circus is over! Winner, bow, you smart shit. Everyone else, invent a better story for the group chat. I won't back you. Night!"
+  },
+  {
+   "id": "final-f12d",
+   "moment": "final",
+   "spice": "filthy",
+   "text": "Done for the night! Winner, congratulations. Losers, you hunted answers in the couch cushions. Nothing was there. I'm Salty. Out."
+  },
+  {
+   "id": "final-h1d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "And we're done. Winner, sharp. Everyone else said it out loud, then typed the wrong one. Damn. Lobby."
+  },
+  {
+   "id": "final-h2d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "[deadpan] Game over. Winner, clean run. The rest of you second-guessed the first guess and lost both. Night!"
+  },
+  {
+   "id": "final-h3d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "Winner on top. The rest of you ran this like a group project. Nobody submitted. Damn. Goodbye!"
+  },
+  {
+   "id": "final-h4d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "Winner, you earned it. Everyone else kept one eye on the snack bowl. The bowl won. Night!"
+  },
+  {
+   "id": "final-h5d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "Congrats, winner. The rest of you answered like you were texting an apology. Damn. That's a wrap."
+  },
+  {
+   "id": "final-h6d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "Winner, enjoy the top. The rest of you refreshed the phone like the board would change. It won't. Out!"
+  },
+  {
+   "id": "final-h7d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "Winner, hell of a run. Everyone else autocorrected a fine guess into the wrong one. Damn. See you."
+  },
+  {
+   "id": "final-h8d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "Winner, take the bow. The rest of you typed like the phone was melting. It wasn't. Goodnight, damn it."
+  },
+  {
+   "id": "final-h9d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "That's the show. Winner, soak it in. The rest of you can workshop excuses in the lobby. Night!"
+  },
+  {
+   "id": "final-h10d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "Winner, congrats. The rest of you stared like the screen owed a hint. It doesn't do hints. Night!"
+  },
+  {
+   "id": "final-h11d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "Winner, take it. Yell at your phones in the lobby if you must. I'm still ignoring you. Goodnight!"
+  },
+  {
+   "id": "final-h12d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "Winner, nice work. The rest of you were speedy at being wrong. A talent. A useless one. Night!"
+  },
+  {
+   "id": "final-h13d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "That's a wrap. Confetti likes the winner. It is not taking applications from the rest of you. Lobby!"
+  },
+  {
+   "id": "final-h14d",
+   "moment": "final",
+   "spice": "hot",
+   "text": "[mischievously] Winner, take the victory lap around the coffee table. The rest of you can hold the coats. Night!"
+  },
+  {
+   "id": "final-m1d",
+   "moment": "final",
+   "spice": "mild",
+   "text": "Somewhere my old ship is still missing. Our winner is not. Everyone else drifted, politely."
+  },
+  {
+   "id": "final-m2d",
+   "moment": "final",
+   "spice": "mild",
+   "text": "Somebody skipped being correct. Our winner did not. And we're out!"
+  },
+  {
+   "id": "final-s1d",
+   "moment": "final",
+   "spice": "spicy",
+   "text": "Game over! Winner, that was quick. Everybody else, you stared at the phone like it might apologize. It won't. Good night!"
+  },
+  {
+   "id": "final-s2d",
+   "moment": "final",
+   "spice": "spicy",
+   "text": "That's the game! Winner, nice. Everyone else, your phones tried to save you. You talked them out of it. Thanks for playing!"
+  },
+  {
+   "id": "final-s3d",
+   "moment": "final",
+   "spice": "spicy",
+   "text": "That's the game! Winner, well played. Everyone else, that was a group project nobody turned in. Thanks!"
+  },
+  {
+   "id": "final-s4d",
+   "moment": "final",
+   "spice": "spicy",
+   "text": "Final! Winner, grin. The rest of you waited like the question might change its mind. It didn't. Bye!"
+  },
+  {
+   "id": "final-s5d",
+   "moment": "final",
+   "spice": "spicy",
+   "text": "That's it! Winner, you earned it. Everybody else, put the phone down before it starts a support group. Thanks for playing!"
+  },
+  {
+   "id": "final-s6d",
+   "moment": "final",
+   "spice": "spicy",
+   "text": "Game over! Winner, nice work. Everyone else, the phones are innocent. The thumbs did this. Good night!"
+  },
+  {
+   "id": "final-s7d",
+   "moment": "final",
+   "spice": "spicy",
+   "text": "Done! Winner, you may brag. Everyone else, tell the story. Just delete the losing part. Good night!"
+  },
+  {
+   "id": "final-s8d",
+   "moment": "final",
+   "spice": "spicy",
+   "text": "Game over! Congrats to the winner. Everyone else, brave performance. Terrible facts. Bye!"
+  },
+  {
+   "id": "hello-f1d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, and speed scores more. I started drinking before you sat down. Let's fucking go!"
+  },
+  {
+   "id": "hello-f2d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hey, everybody! I'm Salty. The TV asks, your phone answers, speed scores. Do not text your ex between turns. Here we go!"
+  },
+  {
+   "id": "hello-f3d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone, fast answers score more. I hid the good snacks. Find worse ones. Let's fucking go!"
+  },
+  {
+   "id": "hello-f4d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, speed scores. Keep your drink off the remote, you sloppy bastards. Everyone ready?!"
+  },
+  {
+   "id": "hello-f5d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone, faster scores more. No sharing screens under a blanket. I see the lump. Let's get going!"
+  },
+  {
+   "id": "hello-f6d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Well, hello, everybody! I'm Salty. Questions on the TV, answers on your phone, fast answers score more. This living room is a bar with homework. Let's fucking go!"
+  },
+  {
+   "id": "hello-f7d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, speed scores. Answer fast, look sure, and regret it later. Here we go!"
+  },
+  {
+   "id": "hello-f8d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone, fast answers score more. This couch has seen worse decisions. Here we go!"
+  },
+  {
+   "id": "hello-f9d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, speed scores. The parrot left. The volume did not. Here we go!"
+  },
+  {
+   "id": "hello-f10d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hey, everybody! I'm Salty. Questions on the TV, answers on your phone, fast answers score more. If you blank, blame the snacks. You were chewing. Here we go!"
+  },
+  {
+   "id": "hello-f11d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone, fast answers score more. I am past tipsy and fully in charge. Let's fucking go!"
+  },
+  {
+   "id": "hello-f12d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Well, hello, everybody! I'm Salty. The TV asks, your phone answers, speed scores. Cheat if you must. Lie with your whole chest. Let's get going!"
+  },
+  {
+   "id": "hello-f13d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone, fast answers score more. I lost a ship and kept the swagger. Let's fucking go!"
+  },
+  {
+   "id": "hello-f14d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone, fast answers score more. Don't shout it. The neighbors already hate us. Let's get going!"
+  },
+  {
+   "id": "hello-f15d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, speed scores. I brought whiskey and a mean streak. Here we go!"
+  },
+  {
+   "id": "hello-f16d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, speed scores. Guessing is legal. Whining is pathetic. Everyone ready?!"
+  },
+  {
+   "id": "hello-f17d",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, speed scores. I grin when you miss. Consider it hospitality. Let's fucking go!"
+  },
+  {
+   "id": "hello-h1d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. TV question, phone answer, speed scores. Don't read someone else's screen. That's cheating with bad posture. Everyone ready?!"
+  },
+  {
+   "id": "hello-h2d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. Questions up here, answers on your phone. Quick taps win. A group huddle is just whispering with extra steps. Here we go!"
+  },
+  {
+   "id": "hello-h3d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, speed scores more. Don't rehearse it out loud. We all heard the wrong guess. Everyone ready?!"
+  },
+  {
+   "id": "hello-h4d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. Questions up here, answers on your phone. Speed matters. Autocorrect will betray you mid-word. Everyone ready?!"
+  },
+  {
+   "id": "hello-h5d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. TV asks, phone answers, speed scores. A bathroom break right now is a confession. Everyone ready?!"
+  },
+  {
+   "id": "hello-h6d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, faster is better. Don't refresh like a delivery tracker. Nothing else is coming. Everyone ready?!"
+  },
+  {
+   "id": "hello-h7d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. Question on the TV, answer on your phone, speed scores. Leave the group chat. It has never known a fact. Let's get going!"
+  },
+  {
+   "id": "hello-h8d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. Questions up here, phones ready, fast answers score more. Calling your aunt is not a lifeline. Everyone ready?!"
+  },
+  {
+   "id": "hello-h9d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone. Fast scores more. Don't stare at the ceiling like it has notes. Let's get going!"
+  },
+  {
+   "id": "hello-h10d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. Question on the TV, answer on your phone. Speed counts. Still unlocking it? Move your damn thumbs. Let's get going!"
+  },
+  {
+   "id": "hello-h11d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. TV asks, phone answers, hurry up. Checking your texts first is a bold plan. It loses. Here we go!"
+  },
+  {
+   "id": "hello-h12d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. Questions up top, answers on your phone, fast scores more. Don't ask the room. The room is guessing too. Everyone ready?!"
+  },
+  {
+   "id": "hello-h13d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, speed counts. Snacks can wait. A chip is not an answer. Here we go!"
+  },
+  {
+   "id": "hello-h14d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. TV question, phone answer, faster scores more. If your battery dies now, that's a crap excuse. Here we go!"
+  },
+  {
+   "id": "hello-h15d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. The TV asks, you type, fast answers score more. Don't wait for a drumroll. There isn't one. Let's get going!"
+  },
+  {
+   "id": "hello-h16d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone. Fast is the trick. Overthinking is just typing later, and wrong. Let's get going!"
+  },
+  {
+   "id": "hello-h17d",
+   "moment": "hello",
+   "spice": "hot",
+   "text": "Hello, everybody! I'm Salty. TV question, phone answer, fast scores more. Still hunting for the app? It's the one in your hand. Let's get going!"
+  },
+  {
+   "id": "hello-m1d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone, quicker is better. Your snack cannot answer. It is busy being a snack. Here we go!"
+  },
+  {
+   "id": "hello-m2d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. TV question, phone answer, fast taps score more. Do not ask the couch. The couch just sits there. Everyone ready?!"
+  },
+  {
+   "id": "hello-m3d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, speed scores. This is not a meeting. Nobody is taking minutes. Let's get going!"
+  },
+  {
+   "id": "hello-m4d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone, quick counts more. Leave the remote alone. It only changes channels. Here we go!"
+  },
+  {
+   "id": "hello-m5d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, speed scores more. [deadpan] Phones up. Not your fork. Forks cannot tap. Let's get going!"
+  },
+  {
+   "id": "hello-m6d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. Read the question on the TV, send the answer from your phone. Faster scores more. No do-overs. We are not baking cookies. Everyone ready?!"
+  },
+  {
+   "id": "hello-m7d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, and speed scores more. Call it a race. A very seated race. Everyone ready?!"
+  },
+  {
+   "id": "hello-m8d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone, faster scores more. This is not homework. Homework has no confetti. Let's get going!"
+  },
+  {
+   "id": "hello-m9d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. The TV shows the question, your phone takes the answer. Fast scores more. Shouting at the TV does nothing. The TV is busy. Everyone ready?!"
+  },
+  {
+   "id": "hello-m10d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone, quicker scores more. Easier than parallel parking. And nobody honks. Here we go!"
+  },
+  {
+   "id": "hello-m11d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. The TV asks, you tap, speed scores more. No huddles. Huddles are for sports and birthday surprises. Everyone ready?!"
+  },
+  {
+   "id": "hello-m12d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. Read the TV, answer on your phone, and be quick. Staring at the ceiling scores nothing. The ceiling knows nothing. Let's get going!"
+  },
+  {
+   "id": "hello-m13d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. Look up for the question, tap down to answer. Faster scores more. [laughs] Freezing is for popsicles. You are not a popsicle. Here we go!"
+  },
+  {
+   "id": "hello-m14d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. Question on the TV, answer on your phone, fast scores more. Think quick. Overthinking can wait in the kitchen. Here we go!"
+  },
+  {
+   "id": "hello-m15d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. Read it on the TV, tap it on your phone. Speed scores more. The timer will not wait. It has no manners. Let's get going!"
+  },
+  {
+   "id": "hello-m16d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. Look at the TV, answer on your phone, hurry. Do not bargain with the question. It does not do deals. Here we go!"
+  },
+  {
+   "id": "hello-m17d",
+   "moment": "hello",
+   "spice": "mild",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, fast scores more. Inventing a brand-new answer is bold. It is also wrong. Let's get going!"
+  },
+  {
+   "id": "hello-s1d",
+   "moment": "hello",
+   "spice": "spicy",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone. Fast answers score more. This is a race, not a book report. Let's get going!"
+  },
+  {
+   "id": "hello-s2d",
+   "moment": "hello",
+   "spice": "spicy",
+   "text": "[deadpan] Hello, everybody! I'm Salty. The TV asks, your phone answers, fast answers score more. Do not ask the room. The room will lie to look clever. Everyone ready?!"
+  },
+  {
+   "id": "hello-s3d",
+   "moment": "hello",
+   "spice": "spicy",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, and fast answers score more. Answer before your brain opens a group chat. Group chats never agree. Everyone ready?!"
+  },
+  {
+   "id": "hello-s4d",
+   "moment": "hello",
+   "spice": "spicy",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, and fast answers score more. No raised hands. The question is not taking volunteers. Let's get going!"
+  },
+  {
+   "id": "hello-s5d",
+   "moment": "hello",
+   "spice": "spicy",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, and fast answers score more. If you need a committee, form it after. Let's get going!"
+  },
+  {
+   "id": "hello-s6d",
+   "moment": "hello",
+   "spice": "spicy",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone. Fast answers score more. Waiting for someone else to type is loitering. Everyone ready?!"
+  },
+  {
+   "id": "hello-s7d",
+   "moment": "hello",
+   "spice": "spicy",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, and fast answers score more. If you blank, type anyway. Bravery looks like typos. Let's get going!"
+  },
+  {
+   "id": "hello-s8d",
+   "moment": "hello",
+   "spice": "spicy",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, fast answers score more. No passing notes. We are not in the back row. Let's get going!"
+  },
+  {
+   "id": "hello-s9d",
+   "moment": "hello",
+   "spice": "spicy",
+   "text": "Hello, everybody! I'm Salty. Questions on the TV, answers on your phone. Fast answers score more. This couch has hosted slower crowds. Do not join them. Let's get going!"
+  },
+  {
+   "id": "hello-s10d",
+   "moment": "hello",
+   "spice": "spicy",
+   "text": "Hello, everybody! I'm Salty. The TV asks, your phone answers, fast answers score more. The timer will not wait while you look thoughtful. Everyone ready?!"
+  },
+  {
+   "id": "intro-f1d",
+   "moment": "intro",
+   "spice": "filthy",
+   "text": "Another round. If your gut says yes, your gut is drunk."
+  },
+  {
+   "id": "intro-f2d",
+   "moment": "intro",
+   "spice": "filthy",
+   "text": "Look at those standings. Someone climbed. Someone face-planted. Beautiful."
+  },
+  {
+   "id": "intro-f3d",
+   "moment": "intro",
+   "spice": "filthy",
+   "text": "Leaderboard's up. Smile now. It won't last, you cocky bastards."
+  },
+  {
+   "id": "intro-f4d",
+   "moment": "intro",
+   "spice": "filthy",
+   "text": "Standings shifted. Pride went up. Common sense stayed on the couch."
+  },
+  {
+   "id": "intro-f5d",
+   "moment": "intro",
+   "spice": "filthy",
+   "text": "New round, same phones. Try answering before you finish the drink."
+  },
+  {
+   "id": "intro-f6d",
+   "moment": "intro",
+   "spice": "filthy",
+   "text": "New questions. Hesitation builds losers. Tap before courage sobers up."
+  },
+  {
+   "id": "intro-f7d",
+   "moment": "intro",
+   "spice": "filthy",
+   "text": "[sarcastic] Oh good. Everyone's confident. That's usually the warning."
+  },
+  {
+   "id": "intro-f8d",
+   "moment": "intro",
+   "spice": "filthy",
+   "text": "Snacks can wait. This round wants thumbs, not crumbs. Focus, damn it."
+  },
+  {
+   "id": "intro-f9d",
+   "moment": "intro",
+   "spice": "filthy",
+   "text": "Somebody's winning and acting normal. Suspicious. Answer faster, you frauds."
+  },
+  {
+   "id": "intro-f10d",
+   "moment": "intro",
+   "spice": "filthy",
+   "text": "Look who climbed. Clap now. Clapping doesn't pick an answer."
+  },
+  {
+   "id": "intro-f11d",
+   "moment": "intro",
+   "spice": "filthy",
+   "text": "Drink if you must. Just don't miss the damn button. Go."
+  },
+  {
+   "id": "intro-h1d",
+   "moment": "intro",
+   "spice": "hot",
+   "text": "Hell of a shuffle. Quit staring and answer."
+  },
+  {
+   "id": "intro-h2d",
+   "moment": "intro",
+   "spice": "hot",
+   "text": "Crap, the order twitched. Phones up, mouths shut."
+  },
+  {
+   "id": "intro-m1d",
+   "moment": "intro",
+   "spice": "mild",
+   "text": "[mischievously] The board moved. Pretend that was strategy. Go!"
+  },
+  {
+   "id": "intro-m2d",
+   "moment": "intro",
+   "spice": "mild",
+   "text": "[whispers] Quiet. The leader can hear gloating. Just tap. Go!"
+  },
+  {
+   "id": "intro-m3d",
+   "moment": "intro",
+   "spice": "mild",
+   "text": "Leaderboard moved! Smile like you meant that. Go!"
+  },
+  {
+   "id": "intro-m4d",
+   "moment": "intro",
+   "spice": "mild",
+   "text": "Sit up! The couch already quit. You haven't. Ready!"
+  },
+  {
+   "id": "intro-m5d",
+   "moment": "intro",
+   "spice": "mild",
+   "text": "Phone only! Shouting doesn't score. Tapping does. Go!"
+  },
+  {
+   "id": "intro-m6d",
+   "moment": "intro",
+   "spice": "mild",
+   "text": "Snacks down! Sticky thumbs miss buttons. Wipe first. Ready!"
+  },
+  {
+   "id": "intro-m7d",
+   "moment": "intro",
+   "spice": "mild",
+   "text": "Scores shifted! Some grins, some groans. Tap anyway. Go!"
+  },
+  {
+   "id": "intro-m8d",
+   "moment": "intro",
+   "spice": "mild",
+   "text": "[annoyed] I was cozy. You people weren't. Phones up. Go!"
+  },
+  {
+   "id": "intro-s1d",
+   "moment": "intro",
+   "spice": "spicy",
+   "text": "Your brain called a meeting. Hang up. Tap."
+  },
+  {
+   "id": "intro-s2d",
+   "moment": "intro",
+   "spice": "spicy",
+   "text": "Put the snacks down. Crumbs cannot press buttons."
+  },
+  {
+   "id": "intro-s3d",
+   "moment": "intro",
+   "spice": "spicy",
+   "text": "Leaderboard's up. Confidence just peaked. That's usually fatal."
+  },
+  {
+   "id": "intro-s4d",
+   "moment": "intro",
+   "spice": "spicy",
+   "text": "Debate club ended. Your thumb is captain now."
+  },
+  {
+   "id": "intro-s5d",
+   "moment": "intro",
+   "spice": "spicy",
+   "text": "[dramatically] Ship's gone. Timer's not. Beat the timer."
+  },
+  {
+   "id": "join-f1d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Oh, another one. Sit down before the couch starts taking bets."
+  },
+  {
+   "id": "join-f2d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Another one. Grab a drink and a phone. In that order, you bastard."
+  },
+  {
+   "id": "join-f3d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Another one! The parrot left. You can have its spot. It was smarter."
+  },
+  {
+   "id": "join-f4d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Sit, another one. If you freeze, the throw pillows will answer for you."
+  },
+  {
+   "id": "join-f5d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Look, another one. Hopeful little bastard. The scores will fix that."
+  },
+  {
+   "id": "join-f6d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Another one just walked in. Too late to pretend this is book club."
+  },
+  {
+   "id": "join-f7d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Another one! Don't wave at the TV. It doesn't love you back."
+  },
+  {
+   "id": "join-f8d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Another one. Smile now. The first wrong answer kills that."
+  },
+  {
+   "id": "join-f9d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Look, another one. Fresh thumbs, same doomed confidence. Adorable."
+  },
+  {
+   "id": "join-f10d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Another one joined. The lobby just got louder and dumber. Perfect."
+  },
+  {
+   "id": "join-f11d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Oh good, another one. We needed someone who still thinks speed is a personality."
+  },
+  {
+   "id": "join-f12d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Another one. Don't kiss the screen. It has seen enough bad decisions."
+  },
+  {
+   "id": "join-f13d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Another one. Phones up. If you stall, I'm drinking your turn."
+  },
+  {
+   "id": "join-f14d",
+   "moment": "join",
+   "spice": "filthy",
+   "text": "Welcome, another one. Confidence is cute until the first question murders it."
+  },
+  {
+   "id": "join-h1d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Look, another one. Your phone just got hired. Don't embarrass it."
+  },
+  {
+   "id": "join-h2d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Oh, another one. Now we have a fresh person to blame for frozen phones."
+  },
+  {
+   "id": "join-h3d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Another one, welcome. Yelling at the TV is a personality, not a strategy."
+  },
+  {
+   "id": "join-h4d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Oh hell, another one. Phone out, brain optional, confidence mandatory."
+  },
+  {
+   "id": "join-h5d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Another one! Welcome. We answer fast and we apologize slower."
+  },
+  {
+   "id": "join-h6d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Another one! Relax, nobody here is smart. We're just loud and fast."
+  },
+  {
+   "id": "join-h7d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Look, another one. We were doing great, which is a complete lie."
+  },
+  {
+   "id": "join-h8d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Another one. [deadpan] More confidence, same shortage of actual answers."
+  },
+  {
+   "id": "join-h9d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Another one! Welcome. Answers go on the phone, not out your mouth."
+  },
+  {
+   "id": "join-h10d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Another one! [gasps] Someone who might know things. Please ruin that."
+  },
+  {
+   "id": "join-h11d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Another one. [mischievously] That confidence is cute, and also doomed."
+  },
+  {
+   "id": "join-h12d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Hell yes, another one. Grab a phone before the rules speech starts."
+  },
+  {
+   "id": "join-h13d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Another one. Speed first, swagger second, knowing things optional."
+  },
+  {
+   "id": "join-h14d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Another one! This isn't a meeting, your phone is the whole assignment."
+  },
+  {
+   "id": "join-h15d",
+   "moment": "join",
+   "spice": "hot",
+   "text": "Oh, another one. Perfect, we needed fresh confidence to mock."
+  },
+  {
+   "id": "join-m1d",
+   "moment": "join",
+   "spice": "mild",
+   "text": "Hello, another one! Sit anywhere. Not on the remote. It holds grudges."
+  },
+  {
+   "id": "join-m2d",
+   "moment": "join",
+   "spice": "mild",
+   "text": "Another one! Hi! Snacks are for sharing. My pretzels are classified. [whispers]"
+  },
+  {
+   "id": "join-m3d",
+   "moment": "join",
+   "spice": "mild",
+   "text": "Another one! Welcome! Grab a seat before the cat takes it."
+  },
+  {
+   "id": "join-m4d",
+   "moment": "join",
+   "spice": "mild",
+   "text": "Welcome, another one! Your character landed. No bumps. Very professional."
+  },
+  {
+   "id": "join-m5d",
+   "moment": "join",
+   "spice": "mild",
+   "text": "Look, another one! The couch shifted. Make room. Don't thank it. [deadpan]"
+  },
+  {
+   "id": "join-m6d",
+   "moment": "join",
+   "spice": "mild",
+   "text": "Another one! Hi! Big screen now. Act natural. Already too late."
+  },
+  {
+   "id": "join-s1d",
+   "moment": "join",
+   "spice": "spicy",
+   "text": "[gasps] Another one! Hide the good snacks. They always find them first."
+  },
+  {
+   "id": "join-s2d",
+   "moment": "join",
+   "spice": "spicy",
+   "text": "Scoot over. Another one is here, and the couch already has opinions."
+  },
+  {
+   "id": "join-s3d",
+   "moment": "join",
+   "spice": "spicy",
+   "text": "Perfect timing, another one. We were about to fake having fun."
+  },
+  {
+   "id": "join-s4d",
+   "moment": "join",
+   "spice": "spicy",
+   "text": "Fresh suspect for the Wi-Fi. Welcome to the excuses, another one."
+  },
+  {
+   "id": "join-s5d",
+   "moment": "join",
+   "spice": "spicy",
+   "text": "Well, another one. I needed a fresh target for side-eye."
+  },
+  {
+   "id": "join-s6d",
+   "moment": "join",
+   "spice": "spicy",
+   "text": "Welcome aboard, another one. Sadly, the couch still refuses to sail."
+  },
+  {
+   "id": "join-s7d",
+   "moment": "join",
+   "spice": "spicy",
+   "text": "The snacks picked a favorite. Sorry, another one, it was not you."
+  },
+  {
+   "id": "littleRight-m1d",
+   "moment": "littleRight",
+   "spice": "mild",
+   "text": "Don't eat the confetti! You still nailed it!"
+  },
+  {
+   "id": "littleRight-m2d",
+   "moment": "littleRight",
+   "spice": "mild",
+   "text": "I might squeak! Smiling too hard! You did it!"
+  },
+  {
+   "id": "littleRight-m3d",
+   "moment": "littleRight",
+   "spice": "mild",
+   "text": "Yes! Happy dance time! Watch my terrible moves!"
+  },
+  {
+   "id": "littleRight-m4d",
+   "moment": "littleRight",
+   "spice": "mild",
+   "text": "Tiny bow, please! You earned it! So fancy!"
+  },
+  {
+   "id": "littleRight-m5d",
+   "moment": "littleRight",
+   "spice": "mild",
+   "text": "Cheering so loud the couch shook! Correct! Wow!"
+  },
+  {
+   "id": "littleRight-m6d",
+   "moment": "littleRight",
+   "spice": "mild",
+   "text": "Snacks stood up and clapped! Correct! I'm shocked!"
+  },
+  {
+   "id": "littleRight-m7d",
+   "moment": "littleRight",
+   "spice": "mild",
+   "text": "Victory lap... around the couch! You earned it!"
+  },
+  {
+   "id": "littleRight-m8d",
+   "moment": "littleRight",
+   "spice": "mild",
+   "text": "Everybody bounce! I'll bounce too! Right picture!"
+  },
+  {
+   "id": "littleRight-m9d",
+   "moment": "littleRight",
+   "spice": "mild",
+   "text": "The TV threw a party! Right one! I'm invited!"
+  },
+  {
+   "id": "littleRight-m10d",
+   "moment": "littleRight",
+   "spice": "mild",
+   "text": "Bigger party horn needed! You did it! Yes!"
+  },
+  {
+   "id": "littleWrong-m1d",
+   "moment": "littleWrong",
+   "spice": "mild",
+   "text": "Good guess! It was this card. I nodded too early."
+  },
+  {
+   "id": "littleWrong-m2d",
+   "moment": "littleWrong",
+   "spice": "mild",
+   "text": "Lovely guess! This one is right. I clapped too soon."
+  },
+  {
+   "id": "littleWrong-m3d",
+   "moment": "littleWrong",
+   "spice": "mild",
+   "text": "Nice try! This picture is right. Your finger had plans."
+  },
+  {
+   "id": "littleWrong-m4d",
+   "moment": "littleWrong",
+   "spice": "mild",
+   "text": "Great try! This one is it. I miss pictures too."
+  },
+  {
+   "id": "littleWrong-m5d",
+   "moment": "littleWrong",
+   "spice": "mild",
+   "text": "Nice swing! This picture wins. I held my breath."
+  },
+  {
+   "id": "littleWrong-m6d",
+   "moment": "littleWrong",
+   "spice": "mild",
+   "text": "Fine attempt! This card wins. Ships get lost too."
+  },
+  {
+   "id": "lobby-f1d",
+   "moment": "lobby",
+   "spice": "filthy",
+   "text": "[annoyed] Grab a phone and scan the code. You found a bathroom in a stranger's house after midnight. This is easier, bastards."
+  },
+  {
+   "id": "lobby-f2d",
+   "moment": "lobby",
+   "spice": "filthy",
+   "text": "Still standing there? Type the letters. You texted your ex after last call. This is the cleaner fuckup."
+  },
+  {
+   "id": "lobby-f3d",
+   "moment": "lobby",
+   "spice": "filthy",
+   "text": "[sarcastic] Scan the code, or I brief the couch. It already nodded. Smug little bastard."
+  },
+  {
+   "id": "lobby-f4d",
+   "moment": "lobby",
+   "spice": "filthy",
+   "text": "Type the letters. You signed a waiver for something dumber than this. Commit, cowards."
+  },
+  {
+   "id": "lobby-f5d",
+   "moment": "lobby",
+   "spice": "filthy",
+   "text": "[scoffs] You found snacks with the lights off. Scan the damn code. It's the bright rectangle, champ."
+  },
+  {
+   "id": "lobby-f6d",
+   "moment": "lobby",
+   "spice": "filthy",
+   "text": "[sarcastic] Phones out. Scan the code. You've been about to join since the ice died. Riveting."
+  },
+  {
+   "id": "lobby-h1d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "Type the code before someone reads it to you like a bedtime story. I will. I'll use voices. Don't test me."
+  },
+  {
+   "id": "lobby-h2d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "Scan it now. Waiting is how lobbies become potlucks. Someone brings dip. Nobody plays. Hell no."
+  },
+  {
+   "id": "lobby-h3d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "Grab a phone and scan the square. It doesn't wave. It doesn't beep hello. It just sits there, judging you. Join."
+  },
+  {
+   "id": "lobby-h4d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "Phone dead? Borrow one. A dead phone is a paperweight with opinions. Paperweights don't join. [deadpan]"
+  },
+  {
+   "id": "lobby-h5d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "Another one in. The tiles are filling without you. That's not a mystery. That's you, still holding a snack. Scan."
+  },
+  {
+   "id": "lobby-h6d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "Snacks can wait a moment. Your phone can't read the code from inside a chip bag. Dig it out. Join."
+  },
+  {
+   "id": "lobby-h7d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "Four letters. You remember song lyrics longer than that. Use the same brain. Type them. Then gloat."
+  },
+  {
+   "id": "lobby-h8d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "Phones up before this lobby becomes a waiting room. Waiting rooms have magazines. We have a QR code. Scan it."
+  },
+  {
+   "id": "lobby-h9d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "Aim the camera at the square. Not the lamp. Not the dog. The square. I've seen the lamp bit. It's crap."
+  },
+  {
+   "id": "lobby-h10d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "[whispers] The four letters are not a secret. Stop cupping your phone like a spy. Type them. Join the damn game."
+  },
+  {
+   "id": "lobby-h11d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "No phone in hand means you're audience. Audience doesn't play. Borrow one before I start charging admission. Hell."
+  },
+  {
+   "id": "lobby-h12d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "The QR code is a square, not a modern art piece. Scan it. Save the interpretation for later. Much later."
+  },
+  {
+   "id": "lobby-h13d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "[gasps] Still hunting the camera app? It's the camera. Point it at the square. This is not a quest. Join."
+  },
+  {
+   "id": "lobby-h14d",
+   "moment": "lobby",
+   "spice": "hot",
+   "text": "The room code will not scan itself out of pity. Aim, tap, type if needed. Pity is my job. I'm off duty."
+  },
+  {
+   "id": "lobby-m1d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Borrow a phone from the basket or a patient grown-up. Scan. Return the grown-up. Keep the glory."
+  },
+  {
+   "id": "lobby-m2d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Another one! The lobby isn't a waiting room. Waiting rooms have old magazines. We have me. Scan."
+  },
+  {
+   "id": "lobby-m3d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Grab a phone and join. The TV is waiting. It has the patience of a goldfish. A very judgmental goldfish."
+  },
+  {
+   "id": "lobby-m4d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Scan the code. Holding a snack does not count as joining. The snack already has a seat. You don't. Yet."
+  },
+  {
+   "id": "lobby-m5d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Open the camera and aim up. Toddlers find that button faster. Ask one. Then thank them. [laughs]"
+  },
+  {
+   "id": "lobby-m6d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Type the letters and hop in. The couch would play if it could. It can't. It's furniture. [deadpan]"
+  },
+  {
+   "id": "lobby-m7d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Type the letters. Forwards. Backwards gets you a confused phone and a disappointed captain. Me. Disappointed."
+  },
+  {
+   "id": "lobby-m8d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Who's left in the hallway? Scan in. Player tiles line up like polite ducks. Be a polite duck."
+  },
+  {
+   "id": "lobby-m9d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Another phone, another player. Scan the code. Sharing one phone means sharing one turn. That's a treaty. Sign it."
+  },
+  {
+   "id": "lobby-m10d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Phones up. The parrot isn't coming back to help. Scan the code yourselves. I'm fine. Totally. [sighs]"
+  },
+  {
+   "id": "lobby-m11d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "If the phone asks to use the camera, tap yes. It's a square, not a stranger. I vetted the square."
+  },
+  {
+   "id": "lobby-m12d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Join, then sit. Standing in the doorway blocks the snacks. And the fun. Mostly the snacks."
+  },
+  {
+   "id": "lobby-m13d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Lost? Look up. The code is on the TV. Still lost? Hand the phone to a kid. They've done this. [whispers]"
+  },
+  {
+   "id": "lobby-m14d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Everybody in before I start naming the cushions. They already have names. Scan. Don't ask. [mischievously]"
+  },
+  {
+   "id": "lobby-m15d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "Grab a phone. The room code doesn't expire from boredom. I might. Scan it. Please. [dramatically]"
+  },
+  {
+   "id": "lobby-m16d",
+   "moment": "lobby",
+   "spice": "mild",
+   "text": "If two of you reach for one phone, rock paper scissors. Winner scans. Loser fetches water. Fair. [deadpan]"
+  },
+  {
+   "id": "lobby-s1d",
+   "moment": "lobby",
+   "spice": "spicy",
+   "text": "Saving a photo of the code for later is not a plan. Later never sits down."
+  },
+  {
+   "id": "lobby-s2d",
+   "moment": "lobby",
+   "spice": "spicy",
+   "text": "[scoffs] Whispering the letters at the TV does nothing. The TV is rude."
+  },
+  {
+   "id": "lobby-s3d",
+   "moment": "lobby",
+   "spice": "spicy",
+   "text": "[sarcastic] Type it yourself. Autocorrect wrecks every party it joins."
+  },
+  {
+   "id": "lobby-s4d",
+   "moment": "lobby",
+   "spice": "spicy",
+   "text": "Aim at the square, not your shoes. A shoe photo is not a login."
+  },
+  {
+   "id": "lobby-s5d",
+   "moment": "lobby",
+   "spice": "spicy",
+   "text": "The lock-screen dog can wait. Scan the code. This is not a photoshoot."
+  },
+  {
+   "id": "lobby-s6d",
+   "moment": "lobby",
+   "spice": "spicy",
+   "text": "Skip the letter committee. They pick a leader and still never start."
+  },
+  {
+   "id": "lobbyEmpty-m1d",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "Grab a phone and scan the code. I set out snacks for a crowd. The crowd is crumbs. And me."
+  },
+  {
+   "id": "lobbyEmpty-m2d",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "[mischievously] Scan the code. The snacks tried to join. No thumbs. They looked so sure. Incorrect."
+  },
+  {
+   "id": "lobbyEmpty-m3d",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "Still just me and a patient code. It cannot clap. Scan it. Then clap. For me."
+  },
+  {
+   "id": "lobbyEmpty-m4d",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "[gasps] Scan the code. I looked down the hall like a hopeful dog. The hall was empty. Typical hall."
+  },
+  {
+   "id": "lobbyEmpty-m5d",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "I saved my best grin for a crowd. It hit a houseplant. Scan the code. The plant is overwhelmed."
+  },
+  {
+   "id": "lobbyEmpty-m6d",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "Come in and scan the code. I practiced cheering. The echo cheered back. Off-key. Humiliating."
+  },
+  {
+   "id": "lobbyEmpty-m7d",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "[sighs] Phones out. Scan the code. I asked the ceiling fan for a team. It spun. Then it quit."
+  },
+  {
+   "id": "lobbyEmpty-m8d",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "Find your phone and scan the code. It has been hiding like it owes rent. Coward."
+  },
+  {
+   "id": "lobbyEmpty-m9d",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "Cheerful host, empty room. Awful pairing. Grab a phone, scan the code, and give me someone to tease."
+  },
+  {
+   "id": "lobbyEmpty-m10d",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "[laughs] Scan the code. I told the room a joke. It kept a straight face. Rude room."
+  },
+  {
+   "id": "lobbyEmpty-m11d",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "Scan the code. I asked the parrot for company. The parrot left. Smart bird. Rude bird."
+  },
+  {
+   "id": "lobbyWaiting-f1d",
+   "moment": "lobbyWaiting",
+   "spice": "filthy",
+   "text": "A drink in your hand isn't a signup. That's loitering. Scan your phone."
+  },
+  {
+   "id": "lobbyWaiting-f2d",
+   "moment": "lobbyWaiting",
+   "spice": "filthy",
+   "text": "Stop staring at the picker like it owes you dinner. Press start, cowards."
+  },
+  {
+   "id": "lobbyWaiting-f3d",
+   "moment": "lobbyWaiting",
+   "spice": "filthy",
+   "text": "Don't stall. I'll answer for you, wrong and vicious. Press start."
+  },
+  {
+   "id": "lobbyWaiting-f4d",
+   "moment": "lobbyWaiting",
+   "spice": "filthy",
+   "text": "That's not joining, that's flirting with a button. Commit, for fuck's sake."
+  },
+  {
+   "id": "lobbyWaiting-f5d",
+   "moment": "lobbyWaiting",
+   "spice": "filthy",
+   "text": "[deadpan] I can outwait you. I packed liquor and grudges. Press start anyway."
+  },
+  {
+   "id": "lobbyWaiting-f6d",
+   "moment": "lobbyWaiting",
+   "spice": "filthy",
+   "text": "[laughs] Hiding in the lobby like it's a group text. Press start, bastards."
+  },
+  {
+   "id": "lobbyWaiting-h1d",
+   "moment": "lobbyWaiting",
+   "spice": "hot",
+   "text": "We're loaded in and doing nothing. That's not strategy. That's a nap with the lights on. [deadpan]"
+  },
+  {
+   "id": "lobbyWaiting-h2d",
+   "moment": "lobbyWaiting",
+   "spice": "hot",
+   "text": "Tiles are up. Phones are out. A grown-up still hasn't hit start. I'm smiling. It's a threat. [mischievously]"
+  },
+  {
+   "id": "lobbyWaiting-h3d",
+   "moment": "lobbyWaiting",
+   "spice": "hot",
+   "text": "Nobody hits start, I open the snacks alone. That's not a threat. That's the catering plan."
+  },
+  {
+   "id": "lobbyWaiting-h4d",
+   "moment": "lobbyWaiting",
+   "spice": "hot",
+   "text": "Hit start already. This lobby and I are in a staring contest, and I'm losing on purpose."
+  },
+  {
+   "id": "lobbyWaiting-h5d",
+   "moment": "lobbyWaiting",
+   "spice": "hot",
+   "text": "Not in yet? Scan the code. It won't bite. I might. [mischievously]"
+  },
+  {
+   "id": "lobbyWaiting-h6d",
+   "moment": "lobbyWaiting",
+   "spice": "hot",
+   "text": "Stop treating start like a vote. Democracy is slow. This button isn't. Press it."
+  },
+  {
+   "id": "lobbyWaiting-h7d",
+   "moment": "lobbyWaiting",
+   "spice": "hot",
+   "text": "Lobby's ready. You're ready. The start button looks abandoned. Adopt it."
+  },
+  {
+   "id": "lobbyWaiting-h8d",
+   "moment": "lobbyWaiting",
+   "spice": "hot",
+   "text": "The parrot bailed on shorter waits than this. Press start. I could use the backtalk."
+  },
+  {
+   "id": "lobbyWaiting-h9d",
+   "moment": "lobbyWaiting",
+   "spice": "hot",
+   "text": "If your phone is in your pocket, you are not in. Take it out. Scan the code. Damn."
+  },
+  {
+   "id": "lobbyWaiting-m1d",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "[annoyed] I see tiles, smiles, and no game. That's a group photo. Press start and play."
+  },
+  {
+   "id": "lobbyWaiting-m2d",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "Borrow a phone if yours is missing. Yelling at the TV joins nothing. I checked."
+  },
+  {
+   "id": "lobbyWaiting-m3d",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "Still in the kitchen? Grab a phone. The counter isn't a player. You are."
+  },
+  {
+   "id": "lobbyWaiting-m4d",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "A phone in your lap is a paperweight. Lift it. Scan the code. Become a player."
+  },
+  {
+   "id": "lobbyWaiting-m5d",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "[mischievously] I tried starting it with charm. Charm failed. The button wants a grown-up's actual finger."
+  },
+  {
+   "id": "lobbyWaiting-m6d",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "If nobody starts this, I will narrate every tile. Out loud. Forever. With feeling."
+  },
+  {
+   "id": "lobbyWaiting-m7d",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "Kids, deploy the snack face. Point at a grown-up. Demand the start button. Politely. Sort of."
+  },
+  {
+   "id": "lobbyWaiting-m8d",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "I can host, tease, and grin. I cannot reach your remote. Geography is rude. Press start."
+  },
+  {
+   "id": "lobbyWaiting-m9d",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "The parrot left during a wait like this. I kept the couch. Don't let the couch win."
+  },
+  {
+   "id": "lobbyWaiting-m10d",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "The snacks are settled. The people are settled. The button is the holdout. Press it."
+  },
+  {
+   "id": "lobbyWaiting-m11d",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "[sarcastic] We could keep smiling at the menu. Menus love attention. Press start and disappoint the menu."
+  },
+  {
+   "id": "lobbyWaiting-m12d",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "If you're joining, you're another one. Scan the code before I start talking to the lamp."
+  },
+  {
+   "id": "lobbyWaiting-s1d",
+   "moment": "lobbyWaiting",
+   "spice": "spicy",
+   "text": "Somebody press start before the lobby starts charging rent. [annoyed]"
+  },
+  {
+   "id": "lobbyWaiting-s2d",
+   "moment": "lobbyWaiting",
+   "spice": "spicy",
+   "text": "The remote is not a decoration. Press start before I start dusting it. [annoyed]"
+  },
+  {
+   "id": "lobbyWaiting-s3d",
+   "moment": "lobbyWaiting",
+   "spice": "spicy",
+   "text": "Press start before we form a committee. Committees never finish. [sarcastic]"
+  },
+  {
+   "id": "lobbyWaiting-s4d",
+   "moment": "lobbyWaiting",
+   "spice": "spicy",
+   "text": "Not in yet? Scan the code. Then poke the grown-up. Politely. Then louder. [mischievously]"
+  },
+  {
+   "id": "lobbyWaiting-s5d",
+   "moment": "lobbyWaiting",
+   "spice": "spicy",
+   "text": "The couch has claimed me. Press start before I host the whole night from cushions. [annoyed]"
+  },
+  {
+   "id": "lobbyWaiting-s6d",
+   "moment": "lobbyWaiting",
+   "spice": "spicy",
+   "text": "Joining? Scan. Starting? Press. Doing neither? Blink slower. [deadpan]"
+  },
+  {
+   "id": "lobbyWaiting-s7d",
+   "moment": "lobbyWaiting",
+   "spice": "spicy",
+   "text": "We can start, or we can vote on starting. I roast votes. [mischievously]"
+  },
+  {
+   "id": "mixed-f1d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "[laughs] Brains versus bullshit, and bullshit brought friends."
+  },
+  {
+   "id": "mixed-f2d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "Sharp answers here. Pure optimistic bullshit there."
+  },
+  {
+   "id": "mixed-f3d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "Knowledge on one side. Tequila logic on the other."
+  },
+  {
+   "id": "mixed-f4d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "Confident and correct, or confident and cooked. Delicious."
+  },
+  {
+   "id": "mixed-f5d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "Some earned the smirk. Others earned the next pour."
+  },
+  {
+   "id": "mixed-f6d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "Winners toast the brains. Losers toast the audacity. Cheers."
+  },
+  {
+   "id": "mixed-f7d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "[sarcastic] Part of the room is brilliant. The rest is loud."
+  },
+  {
+   "id": "mixed-f8d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "[scoffs] You either nailed it or you bluffed like a bastard."
+  },
+  {
+   "id": "mixed-f9d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "[dramatically] Triumph, disaster, and snacks quietly judging you."
+  },
+  {
+   "id": "mixed-f10d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "[annoyed] Got it, or got theatrical. I see both."
+  },
+  {
+   "id": "mixed-f11d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "Actual thinking showed up. So did bad decisions."
+  },
+  {
+   "id": "mixed-f12d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "Scholars kept quiet. Chaos gremlins took the volume."
+  },
+  {
+   "id": "mixed-f13d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "The reveal was fair. Your guessing was a bar fight."
+  },
+  {
+   "id": "mixed-f14d",
+   "moment": "mixed",
+   "spice": "filthy",
+   "text": "Knew it cold, or hoped with embarrassing volume."
+  },
+  {
+   "id": "mixed-h1d",
+   "moment": "mixed",
+   "spice": "hot",
+   "text": "Correct answer walked in. A few guesses were still tying shoes."
+  },
+  {
+   "id": "mixed-h2d",
+   "moment": "mixed",
+   "spice": "hot",
+   "text": "Hell of a split. Right side quiet. Wrong side campaigning."
+  },
+  {
+   "id": "mixed-h3d",
+   "moment": "mixed",
+   "spice": "hot",
+   "text": "[deadpan] Educational evening. Mostly for the people who missed."
+  },
+  {
+   "id": "mixed-h4d",
+   "moment": "mixed",
+   "spice": "hot",
+   "text": "A few stuck it. The rest guessed with full-ass confidence."
+  },
+  {
+   "id": "mixed-m1d",
+   "moment": "mixed",
+   "spice": "mild",
+   "text": "Some knew it cold. The rest invented a very brave answer."
+  },
+  {
+   "id": "mixed-m2d",
+   "moment": "mixed",
+   "spice": "mild",
+   "text": "A few nailed it. Everyone else brought enthusiasm and a wish."
+  },
+  {
+   "id": "mixed-m3d",
+   "moment": "mixed",
+   "spice": "mild",
+   "text": "Some of you are sharp. Some of you are just holding phones."
+  },
+  {
+   "id": "mixed-m4d",
+   "moment": "mixed",
+   "spice": "mild",
+   "text": "Some phones earned a medal. Some phones earned a nap."
+  },
+  {
+   "id": "mixed-m5d",
+   "moment": "mixed",
+   "spice": "mild",
+   "text": "Victory wiggles over here. Polite blinking over there. Classic."
+  },
+  {
+   "id": "mixed-m6d",
+   "moment": "mixed",
+   "spice": "mild",
+   "text": "Quiet sure people got it. Loud sure people... nope."
+  },
+  {
+   "id": "mixed-s1d",
+   "moment": "mixed",
+   "spice": "spicy",
+   "text": "A few got it. The confident misses are taking this personally."
+  },
+  {
+   "id": "mixed-s2d",
+   "moment": "mixed",
+   "spice": "spicy",
+   "text": "Right crew cheers. Wrong crew is bargaining with the crash."
+  },
+  {
+   "id": "mixed-s3d",
+   "moment": "mixed",
+   "spice": "spicy",
+   "text": "Right side looks smug. Wrong side is inventing a house rule."
+  },
+  {
+   "id": "mixed-s4d",
+   "moment": "mixed",
+   "spice": "spicy",
+   "text": "Winners exhale. Misses are polishing brand-new excuses."
+  },
+  {
+   "id": "mixed-s5d",
+   "moment": "mixed",
+   "spice": "spicy",
+   "text": "[deadpan] The misses want a recount. The screen already voted."
+  },
+  {
+   "id": "mixed-s6d",
+   "moment": "mixed",
+   "spice": "spicy",
+   "text": "Nailed it, a few of you. The rest typed with closed eyes."
+  },
+  {
+   "id": "mixed-s7d",
+   "moment": "mixed",
+   "spice": "spicy",
+   "text": "Right answers look proud. Wrong answers are blaming autocorrect."
+  },
+  {
+   "id": "mixed-s8d",
+   "moment": "mixed",
+   "spice": "spicy",
+   "text": "Sharp work, a pocket of you. The others played charades."
+  },
+  {
+   "id": "mixed-s9d",
+   "moment": "mixed",
+   "spice": "spicy",
+   "text": "Split room. Fast fingers, wrong thumbs. Embarrassing combo."
+  },
+  {
+   "id": "mixed-s10d",
+   "moment": "mixed",
+   "spice": "spicy",
+   "text": "Knowers look calm. Guessers look personally offended."
+  },
+  {
+   "id": "mixed-s11d",
+   "moment": "mixed",
+   "spice": "spicy",
+   "text": "[annoyed] Stop consulting the snacks. They picked wrong too."
+  },
+  {
+   "id": "question-f1d",
+   "moment": "question",
+   "spice": "filthy",
+   "text": "Drunk guesses count. Type something."
+  },
+  {
+   "id": "question-f2d",
+   "moment": "question",
+   "spice": "filthy",
+   "text": "Tap before your doubts unionize."
+  },
+  {
+   "id": "question-f3d",
+   "moment": "question",
+   "spice": "filthy",
+   "text": "Don't workshop it. This isn't brunch."
+  },
+  {
+   "id": "question-f4d",
+   "moment": "question",
+   "spice": "filthy",
+   "text": "Guess, shitheads. Silence isn't clever."
+  },
+  {
+   "id": "question-f5d",
+   "moment": "question",
+   "spice": "filthy",
+   "text": "Commit. Wrong still beats blank."
+  },
+  {
+   "id": "question-f6d",
+   "moment": "question",
+   "spice": "filthy",
+   "text": "[mischievously] Wrong is sexy. Blank isn't."
+  },
+  {
+   "id": "question-f7d",
+   "moment": "question",
+   "spice": "filthy",
+   "text": "Stop dating the options. Pick."
+  },
+  {
+   "id": "question-f8d",
+   "moment": "question",
+   "spice": "filthy",
+   "text": "[deadpan] Any tap beats heroic staring."
+  },
+  {
+   "id": "question-f9d",
+   "moment": "question",
+   "spice": "filthy",
+   "text": "Answer now. Hangover can judge."
+  },
+  {
+   "id": "question-f10d",
+   "moment": "question",
+   "spice": "filthy",
+   "text": "We'll blame the drinks. Answer first."
+  },
+  {
+   "id": "question-h1d",
+   "moment": "question",
+   "spice": "hot",
+   "text": "[mischievously] Wrong still beats nothing. Tap."
+  },
+  {
+   "id": "question-h2d",
+   "moment": "question",
+   "spice": "hot",
+   "text": "Pick fast. Regret comes free afterward."
+  },
+  {
+   "id": "question-h3d",
+   "moment": "question",
+   "spice": "hot",
+   "text": "Tap something before the timer taps you."
+  },
+  {
+   "id": "question-h4d",
+   "moment": "question",
+   "spice": "hot",
+   "text": "[sighs] Still thinking. The buttons aren't."
+  },
+  {
+   "id": "question-h5d",
+   "moment": "question",
+   "spice": "hot",
+   "text": "[deadpan] The countdown is winning. Embarrassing."
+  },
+  {
+   "id": "question-h6d",
+   "moment": "question",
+   "spice": "hot",
+   "text": "[sarcastic] Lovely pause. Awful plan. Go."
+  },
+  {
+   "id": "question-h7d",
+   "moment": "question",
+   "spice": "hot",
+   "text": "[gasps] You froze. That clock didn't."
+  },
+  {
+   "id": "question-h8d",
+   "moment": "question",
+   "spice": "hot",
+   "text": "Answer like you mean it. Lying's allowed."
+  },
+  {
+   "id": "question-h9d",
+   "moment": "question",
+   "spice": "hot",
+   "text": "[scoffs] Overthinking a button. Bold. Dumb."
+  },
+  {
+   "id": "question-h10d",
+   "moment": "question",
+   "spice": "hot",
+   "text": "[laughs] Those gears are loud. And rusty."
+  },
+  {
+   "id": "question-h11d",
+   "moment": "question",
+   "spice": "hot",
+   "text": "[annoyed] Blink later. Decide now."
+  },
+  {
+   "id": "question-h12d",
+   "moment": "question",
+   "spice": "hot",
+   "text": "[deadpan] Staring won't rewrite the choices."
+  },
+  {
+   "id": "question-h13d",
+   "moment": "question",
+   "spice": "hot",
+   "text": "Answer wrong proudly. Quiet is worse."
+  },
+  {
+   "id": "question-m1d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "Staring is not a strategy. Tap."
+  },
+  {
+   "id": "question-m2d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "The clock is moving. Your thumb isn't."
+  },
+  {
+   "id": "question-m3d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "Your thumb wants a job. Hire it."
+  },
+  {
+   "id": "question-m4d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "Later is not a button. Pick."
+  },
+  {
+   "id": "question-m5d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "Silence is not an answer. I checked."
+  },
+  {
+   "id": "question-m6d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "Pick one. Your phone is getting bored."
+  },
+  {
+   "id": "question-m7d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "A wild guess beats a blank phone."
+  },
+  {
+   "id": "question-m8d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "Faces don't press buttons. Phones do."
+  },
+  {
+   "id": "question-m9d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "Tap the phone, not the carpet."
+  },
+  {
+   "id": "question-m10d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "[mischievously] Go with the silly guess."
+  },
+  {
+   "id": "question-m11d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "Thinking is adorable. Tapping is better."
+  },
+  {
+   "id": "question-m12d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "Your phone just yawned. Answer it."
+  },
+  {
+   "id": "question-m13d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "[deadpan] Less blinking. More pressing."
+  },
+  {
+   "id": "question-m14d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "Speeches later. Answers now."
+  },
+  {
+   "id": "question-m15d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "Guess on the phone, not across the room."
+  },
+  {
+   "id": "question-m16d",
+   "moment": "question",
+   "spice": "mild",
+   "text": "[gasps] You still haven't picked? Bold."
+  },
+  {
+   "id": "question-s1d",
+   "moment": "question",
+   "spice": "spicy",
+   "text": "Eyebrows are not answers. Use your thumb."
+  },
+  {
+   "id": "question-s2d",
+   "moment": "question",
+   "spice": "spicy",
+   "text": "Guess now. Shame is a problem for later."
+  },
+  {
+   "id": "question-s3d",
+   "moment": "question",
+   "spice": "spicy",
+   "text": "[annoyed] I wanted an answer, not a statue."
+  },
+  {
+   "id": "question-s4d",
+   "moment": "question",
+   "spice": "spicy",
+   "text": "Snacks can wait. That phone cannot. Answer."
+  },
+  {
+   "id": "question-s5d",
+   "moment": "question",
+   "spice": "spicy",
+   "text": "[mischievously] Wrong is allowed. Blank is embarrassing."
+  },
+  {
+   "id": "question-s6d",
+   "moment": "question",
+   "spice": "spicy",
+   "text": "Pick like you mean it. Commit, then panic."
+  },
+  {
+   "id": "question-s7d",
+   "moment": "question",
+   "spice": "spicy",
+   "text": "Stop bargaining with the choices. Pick already."
+  },
+  {
+   "id": "question-s8d",
+   "moment": "question",
+   "spice": "spicy",
+   "text": "Stop staring. Your phone will not tap itself."
+  },
+  {
+   "id": "question-s9d",
+   "moment": "question",
+   "spice": "spicy",
+   "text": "Fast and wrong beats slow and proud."
+  },
+  {
+   "id": "question-s10d",
+   "moment": "question",
+   "spice": "spicy",
+   "text": "Stop hovering. Hovering is not an answer."
+  },
+  {
+   "id": "question-s11d",
+   "moment": "question",
+   "spice": "spicy",
+   "text": "[deadpan] Nice stare. It still needs a tap."
+  },
+  {
+   "id": "question-s12d",
+   "moment": "question",
+   "spice": "spicy",
+   "text": "[laughs] That face says lost. Guess anyway."
+  },
+  {
+   "id": "turn-m1d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "Hands in laps, everyone else. The smallest thumbs are in charge."
+  },
+  {
+   "id": "turn-m2d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "[dramatically] Behold the picture turn! Grown-ups, become very quiet statues."
+  },
+  {
+   "id": "turn-m3d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "I am grinning already. Pick a picture. The whole room is on your side."
+  },
+  {
+   "id": "turn-m4d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "A very small player, a very big moment. Pick, and we will roar."
+  },
+  {
+   "id": "turn-m5d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "Smile at the screen, champ. Grown-ups, smile at the floor."
+  },
+  {
+   "id": "turn-m6d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "[whispers] This room is a library now. Little player, take the pick."
+  },
+  {
+   "id": "turn-m7d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "Look who is up! Give them the quiet, then give them the cheers."
+  },
+  {
+   "id": "turn-m8d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "Picture cards are up! Pick whichever you like. We are ready."
+  },
+  {
+   "id": "turn-m9d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "Quiet, couch crew. A little player is thinking with their whole face."
+  },
+  {
+   "id": "turn-m10d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "Hey, superstar! The TV put up pictures. Tap whichever feels right."
+  },
+  {
+   "id": "turn-m11d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "No hints from the room. Little player, you have got this."
+  },
+  {
+   "id": "turn-m12d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "Snacks paused! Our tiniest player gets the spotlight and the remote."
+  },
+  {
+   "id": "turn-m13d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "[whispers] Let them look. Let them point. Then we burst into cheers."
+  },
+  {
+   "id": "turn-m14d",
+   "moment": "turn",
+   "spice": "mild",
+   "text": "Little hands on the clicker! If you blurt it, I heard you."
   }
  ]
 }
