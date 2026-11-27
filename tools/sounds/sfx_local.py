@@ -4,7 +4,8 @@ writes them with an audition page into OUT_DIR, ready to copy to the server's me
 
 Needs: an NVIDIA GPU (written on an RTX 3090), a Python env with torch (CUDA), diffusers, soundfile and ffmpeg on
 PATH, and a Hugging Face login whose account has accepted the stabilityai/stable-audio-open-1.0 license (it's gated).
-    python tools/sounds/sfx_local.py out/sfx-gen [--takes 3] [--only envelope,dagger]
+    python tools/sounds/sfx_local.py out/sfx-gen [--takes 3] [--only envelope,dagger] [--cues tools/sounds/sfx-hiss.json]
+A cue may carry its own `negative` (the shared one says "hiss noise", which fights a snake's hiss).
 """
 import argparse, html, json, pathlib, subprocess, sys, time
 
@@ -12,10 +13,10 @@ HERE = pathlib.Path(__file__).parent
 MODEL = 'stabilityai/stable-audio-open-1.0'
 
 
-def generate(out: pathlib.Path, takes: int, only: set[str] | None) -> list[dict]:
+def generate(out: pathlib.Path, takes: int, only: set[str] | None, cues: pathlib.Path) -> list[dict]:
     import torch, soundfile as sf
     from diffusers import StableAudioPipeline
-    spec = json.loads((HERE / 'sfx-cues.json').read_text(encoding='utf-8'))
+    spec = json.loads(cues.read_text(encoding='utf-8'))
     pipe = StableAudioPipeline.from_pretrained(MODEL, torch_dtype=torch.float16).to('cuda')
     sr = pipe.vae.sampling_rate
     out.mkdir(parents=True, exist_ok=True)
@@ -29,7 +30,7 @@ def generate(out: pathlib.Path, takes: int, only: set[str] | None) -> list[dict]
                 made.append({**cue, 'take': t, 'file': final.name}); continue
             t0 = time.time()
             g = torch.Generator('cuda').manual_seed(1000 * t + len(cue['id']))
-            audio = pipe(cue['prompt'], negative_prompt=spec['negative'], num_inference_steps=100,
+            audio = pipe(cue['prompt'], negative_prompt=cue.get('negative', spec['negative']), num_inference_steps=100,
                          audio_end_in_s=max(1.0, float(cue['seconds'])), num_waveforms_per_prompt=1, generator=g).audios[0]
             wav = out / f"{cue['id']}-gen{t}.wav"
             sf.write(wav, audio.T.float().cpu().numpy(), sr)
@@ -99,9 +100,10 @@ if __name__ == '__main__':
     ap.add_argument('out')
     ap.add_argument('--takes', type=int, default=3)
     ap.add_argument('--only', default='')
+    ap.add_argument('--cues', default=str(HERE / 'sfx-cues.json'), help='cue list (default sfx-cues.json)')
     a = ap.parse_args()
     out = pathlib.Path(a.out)
-    made = generate(out, a.takes, set(filter(None, a.only.split(','))) or None)
+    made = generate(out, a.takes, set(filter(None, a.only.split(','))) or None, pathlib.Path(a.cues))
     (out / 'index.html').write_text(page(made, a.takes, format(int(time.time()), 'x')), encoding='utf-8')
     print(f'page: {out / "index.html"} · {len(made)} takes', flush=True)
     sys.exit(0)

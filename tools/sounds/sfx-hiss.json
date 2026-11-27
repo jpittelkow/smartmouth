@@ -1,0 +1,14 @@
+{
+  "//": "Second try at Snake Manor's hiss (the first round's shared negative prompt said 'hiss noise', which steered the model away from it). Four prompt styles; the pick replaces the hiss cue in sfx-cues.json. Plays when a banished player turns out to be a Snake.",
+  "negative": "music, melody, speech, voice, words, breathing, wind, steam, white noise, static, radio noise, crowd, reverb, low quality",
+  "cues": [
+    { "id": "hiss-cobra", "use": "Hiss, style A: a big snake, aggressive and close.", "seconds": 3,
+      "prompt": "Snake hiss sound effect. A large cobra hissing aggressively, sharp breathy reptile hiss, close up, dry studio recording, high quality foley" },
+    { "id": "hiss-slow", "use": "Hiss, style B: slow and menacing, swells then fades.", "seconds": 3.5,
+      "prompt": "Slow menacing serpent hiss, long drawn out sss sound, swelling then fading, cinematic horror sound design, isolated, dry" },
+    { "id": "hiss-strike", "use": "Hiss, style C: two short angry hisses, like a warning before a strike.", "seconds": 2.5,
+      "prompt": "Two short angry snake hisses, sharp attack, threatening warning, close microphone, isolated sound effect, nothing else" },
+    { "id": "hiss-rattle", "use": "Hiss, style D: a rattle, then a hiss (more dramatic).", "seconds": 3.5,
+      "prompt": "A rattlesnake shakes its rattle then hisses loudly, real reptile, close microphone, isolated sound effect, high quality recording" }
+  ]
+}
