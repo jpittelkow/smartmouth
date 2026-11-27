@@ -202,6 +202,8 @@ const SPEECH_TAIL_MS = 1200;
         if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
         if (!isSpice(msg.spice)) return error(c, 'bad-message', 'Unknown spice level.');
         room.spiceChosen = msg.spice;
+        // In the lobby Salty speaks again at the new level, so the room hears the change (owner's TV test, 2026-11-27).
+        if (!room.game) room.salty.stageKey = '';
         syncRoom(room, t);
         return broadcast(room);
       }

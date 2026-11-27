@@ -119,3 +119,13 @@ test('each room voice has its own recordings, falls back to the other, and Mild 
   // No nice reading recorded: Mild falls back to the only one.
   assert.equal(bank.reads(7, 20_000, 'female', 'mild').prompt, '/media/voice/f-q.mp3');
 });
+
+test('a recording plays only when it says the line’s current words (a reused id never plays the old joke)', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'sm-text-'));
+  const bank = new VoiceBank(LINES, join(dir, 'manifest.json'));
+  writeFileSync(bank.fileFor('female'), JSON.stringify({ voice: 'f', model: 'f', lines: { a: 'f-a.mp3', b: 'f-b.mp3' }, lineText: { a: 'New joke.', b: 'Old joke.' }, questions: {} }));
+  assert.equal(bank.lineAudio('a', 0, 'female', 'New joke.'), '/media/voice/f-a.mp3');
+  assert.equal(bank.lineAudio('b', 0, 'female', 'New joke.'), null);
+  writeFileSync(bank.fileFor('male'), JSON.stringify({ voice: 'm', model: 'm', lines: { a: 'm-a.mp3' }, questions: {} }));
+  assert.equal(bank.lineAudio('a', 20_000, 'male', 'New joke.'), null, 'a manifest without lineText plays nothing');
+});

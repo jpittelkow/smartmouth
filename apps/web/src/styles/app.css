@@ -49,24 +49,25 @@ button, input { font: inherit; color: inherit; }
   background: var(--stage-2); display: flex; gap: 14px; align-items: center;
 }
 .spice-chip b { color: var(--spot); }
-.tv-main { display: grid; grid-template-columns: 1fr 640px; gap: 72px; align-items: center; }
+/* min-height 0: the middle row must shrink, or a second game card pushes the player tiles off the TV (2026-11-27). */
+.tv-main { display: grid; grid-template-columns: 1fr 640px; gap: 64px; align-items: center; min-height: 0; }
 .join-card {
   background: var(--stage-2); border: var(--outline); border-radius: var(--radius-tv); box-shadow: var(--shadow-tv);
-  padding: 40px 48px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center;
+  padding: 32px 44px; display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: center;
 }
 .join-card .how { font-size: 36px; color: var(--muted); }
 .join-card .url { font-size: 48px; color: var(--paper); }
-.room-code { font-size: 160px; letter-spacing: .12em; color: var(--spot); line-height: 1; margin-top: 12px; }
-.qr { width: 280px; height: 280px; background: var(--paper); border: var(--outline); border-radius: 20px; padding: 16px; }
+.room-code { font-size: 136px; letter-spacing: .12em; color: var(--spot); line-height: 1; margin-top: 12px; }
+.qr { width: 250px; height: 250px; background: var(--paper); border: var(--outline); border-radius: 20px; padding: 16px; }
 .qr img { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
-.games { display: grid; gap: 24px; }
+.games { display: grid; gap: 16px; align-content: center; min-height: 0; }
 .games h2 { font-size: 36px; margin: 0; color: var(--muted); font-weight: 700; }
 .game-card {
-  text-align: left; padding: 32px 36px; border-radius: var(--radius-tv); box-shadow: var(--shadow-tv);
+  text-align: left; padding: 22px 30px; border-radius: var(--radius-tv); box-shadow: var(--shadow-tv);
   display: grid; gap: 8px; outline: none; transition: transform 250ms var(--pop);
 }
-.game-card .name { font-size: 56px; }
-.game-card .pitch { font-size: 30px; color: var(--muted); }
+.game-card .name { font-size: 48px; }
+.game-card .pitch { font-size: 27px; line-height: 1.3; color: var(--muted); }
 .game-card.soon { opacity: .5; }
 .game-card:focus-visible, .game-card.focused { box-shadow: 0 0 0 6px var(--spot), var(--shadow-tv); transform: scale(1.04); }
 .notice { font-size: 30px; color: var(--hot); min-height: 40px; }
@@ -86,7 +87,7 @@ button, input { font: inherit; color: inherit; }
   display: grid; justify-items: center; gap: 6px; text-align: center; animation: arrive 400ms var(--pop);
 }
 .tile.away { opacity: .4; }
-.tile svg { width: 96px; height: 96px; }
+.tile svg { width: 84px; height: 84px; }
 .tile .name { font-size: 32px; font-weight: 700; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tile .band { font-size: 22px; color: var(--muted); }
 .tile.empty { background: transparent; border-style: dashed; border-color: var(--muted); animation: none; place-content: center; font-size: 28px; color: var(--muted); }

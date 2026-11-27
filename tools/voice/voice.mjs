@@ -187,7 +187,7 @@ async function bank() {
   const slot = process.env.SLOT;
   if (!['male', 'female'].includes(slot)) { console.error('Set SLOT=male or SLOT=female'); process.exit(1); }
   const manifestFile = join(PRIVATE, `manifest-${slot}.json`);
-  const manifest = { voice: v.spec, model: v.model, made: new Date().toISOString(), lines: {}, questions: {} };
+  const manifest = { voice: v.spec, model: v.model, made: new Date().toISOString(), lines: {}, lineText: {}, questions: {} };
 
   const jobs = [];
   // Little moments get the warm kids' direction. For directed models, tags like [whispers] become part of the
@@ -199,7 +199,7 @@ async function bank() {
     const style = v.directed && tags.length ? `${base} Delivery cues for this line: ${tags.join(', ')}.` : base;
     // Lines carry their own delivery tags where the joke turns (2026-11-27); only Little moments get the warm lead-in.
     const tag = KID_MOMENTS.has(l.moment) ? NICE : null;
-    jobs.push({ text: l.text, style, tag: /^\[/.test(l.text) ? null : tag, put: (f) => { manifest.lines[l.id] = f; } });
+    jobs.push({ text: l.text, style, tag: /^\[/.test(l.text) ? null : tag, put: (f) => { manifest.lines[l.id] = f; manifest.lineText[l.id] = l.text; } });
   }
   // Questions: Littles' are read nicely only. Everyone else's are read snarkily, plus nicely for Mild rooms when the
   // voice takes tags (directed models get one reading).

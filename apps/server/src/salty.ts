@@ -27,7 +27,7 @@ function tools(room: Room, bank: VoiceBank, now: number): SaltyTools {
       const line = bank.pick(moment, spice, new Set(st.recent));
       if (!line) return null;
       st.recent = [line.id, ...st.recent].slice(0, 12);
-      return { text: line.text, clip: bank.lineAudio(line.id, now, room.voice) };
+      return { text: line.text, clip: bank.lineAudio(line.id, now, room.voice, line.text) };
     },
     reads: (questionId) => bank.reads(questionId, now, room.voice, spice),
   };

@@ -27,6 +27,9 @@ interface Manifest {
   voice: string;
   model: string;
   lines: Record<string, string>;
+  /** The words each line's recording says. A clip plays only when they match the line's current text, so a rewrite
+   * that reuses an id never plays the old joke under the new caption (found in the 2026-11-27 TV test). */
+  lineText?: Record<string, string>;
   /** `nice` holds the warm reading, used at Mild; the top level is the snarky one (or the only one, for Littles). */
   questions: Record<string, Reads & { nice?: Reads }>;
 }
@@ -126,8 +129,11 @@ export class VoiceBank {
     return Math.round(total);
   }
 
-  lineAudio(id: string, now: number, voice?: VoiceId): string | null {
-    return this.url(this.current(now, voice)?.lines[id]);
+  /** The recording of a line, only if it says `text` (manifests made before lineText existed play nothing). */
+  lineAudio(id: string, now: number, voice?: VoiceId, text?: string): string | null {
+    const m = this.current(now, voice);
+    if (!m || (text !== undefined && m.lineText?.[id] !== text)) return null;
+    return this.url(m.lines[id]);
   }
 
   /** At Mild a question is read nicely when there's a nice reading; above it, snarkily. */
