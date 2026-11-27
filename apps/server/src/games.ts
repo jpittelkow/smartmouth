@@ -1,8 +1,8 @@
-// The fixed list of games (ADR 0006). Add a game by importing its manifest here.
+// The games on the lobby's picker (ADR 0006), from the adapters' manifests.
 import type { GameManifest } from '@smartmouth/protocol';
-import { manifest as trivia } from '@smartmouth/game-trivia';
+import { ADAPTERS } from './adapters/index.ts';
 
-export const GAMES: GameManifest[] = [trivia];
+export const GAMES: GameManifest[] = ADAPTERS.map((a) => a.manifest);
 
 export function findGame(id: unknown): GameManifest | undefined {
   return GAMES.find((g) => g.id === id);

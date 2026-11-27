@@ -1,11 +1,13 @@
 // Every message on the socket (ADR 0004). Clients send intents; the server sends views.
 import type { Band } from './bands.ts';
 import type { Spice } from './spice.ts';
-import type { GameManifest } from './game.ts';
+import type { Drama, GameManifest } from './game.ts';
 
 export const MAX_PLAYERS = 10;
 export const NAME_MAX = 16;
 export const AVATAR_COUNT = 8;
+/** The longest typed text a game accepts in one message (ADR 0023): the Snake chat, a Guest's note. */
+export const TEXT_MAX = 140;
 
 /** Salty comes in two voices; a grown-up picks one per room (owner, 2026-11-27). Each has its own recordings. */
 export const VOICES = ['male', 'female'] as const;
@@ -28,6 +30,8 @@ export type ClientMsg =
   | { t: 'player:leave' }
   | { t: 'admin:spice'; spice: Spice }
   | { t: 'admin:voice'; voice: VoiceId }
+  /** Full drama or Quick for staged reveals (ADR 0024). */
+  | { t: 'admin:drama'; drama: Drama }
   | { t: 'admin:kick'; seatId: string }
   | { t: 'admin:start'; gameId: string }
   /** End the current wait (reveal, intro, a stalled turn). */
@@ -80,6 +84,7 @@ export interface HostLobbyView {
   players: PublicSeat[];
   spice: SpiceState;
   voice: VoiceId;
+  drama: Drama;
   games: GameManifest[];
   notice: string | null;
   salty: SaltyCue | null;
@@ -93,6 +98,7 @@ export interface PlayerLobbyView {
   playerCount: number;
   spice: SpiceState;
   voice: VoiceId;
+  drama: Drama;
   games: GameManifest[];
   notice: string | null;
 }

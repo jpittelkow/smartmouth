@@ -1,11 +1,11 @@
 // Rooms live in memory only (ADR 0004, 0005, 0016). Everything here is pure apart from token/code generation:
 // the socket layer (ws.ts) calls these and sends the views.
 import {
-  AVATAR_COUNT, MAX_PLAYERS, type VoiceId, NAME_MAX, PLAYER_COLORS, effectiveSpice, spiceCap,
+  AVATAR_COUNT, MAX_PLAYERS, type Drama, type VoiceId, NAME_MAX, PLAYER_COLORS, effectiveSpice, spiceCap,
   type Band, type ErrorCode, type GameManifest, type HostGameView, type HostLobbyView, type PlayerGameView,
   type PlayerLobbyView, type PublicSeat, type Spice, type SpiceState,
 } from '@smartmouth/protocol';
-import { rules, type TriviaState } from '@smartmouth/game-trivia';
+import { adapterFor } from './adapters/index.ts';
 import { newSalty, type SaltyState } from './salty.ts';
 import { makeCode, makeToken, normalizeCode } from './codes.ts';
 
@@ -30,11 +30,13 @@ export interface Room {
   seats: Seat[];
   spiceChosen: Spice;
   voice: VoiceId;
+  /** Full drama or Quick for staged reveals (ADR 0024). */
+  drama: Drama;
   notice: string | null;
   /** Last time anything was connected or anything happened. */
   lastActive: number;
   nextSeat: number;
-  /** The game being played, if any (only trivia exists so far). */
+  /** The game being played, if any. */
   game: RunningGame | null;
   /** Questions asked in this room tonight, so the next game doesn't repeat them (ADR 0010). */
   asked: Set<number>;
@@ -43,8 +45,11 @@ export interface Room {
 }
 
 export interface RunningGame {
-  id: 'trivia';
-  state: TriviaState;
+  id: string;
+  /** The game's own state; only its adapter (adapters/) reads it. */
+  state: unknown;
+  /** The random seed the game started from (ADR 0023). */
+  seed: number;
   /** How many of state.log's plays have been recorded in the library. */
   logged: number;
 }
@@ -67,7 +72,7 @@ export class RoomStore {
   create(now: number): Room {
     const code = makeCode((c) => this.rooms.has(c));
     const room: Room = {
-      code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy', voice: 'male',
+      code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy', voice: 'male', drama: 'full',
       notice: null, lastActive: now, nextSeat: 1, game: null, asked: new Set(), salty: newSalty(),
     };
     this.rooms.set(code, room);
@@ -157,14 +162,14 @@ export function hostView(
   if (room.game) {
     return {
       role: 'host', phase: 'game', gameId: room.game.id, code: room.code, joinUrl,
-      players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, game: rules.hostView(room.game.state),
+      players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, game: adapterFor(room.game.id).hostView(room.game.state),
       salty: room.salty.cue, reads,
     };
   }
   return {
     role: 'host', phase: 'lobby', code: room.code, joinUrl,
-    players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, games, notice: room.notice,
-    salty: room.salty.cue,
+    players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama, games,
+    notice: room.notice, salty: room.salty.cue,
   };
 }
 
@@ -173,11 +178,11 @@ export function playerView(room: Room, seat: Seat, games: GameManifest[]): Playe
     return {
       role: 'player', phase: 'game', gameId: room.game.id, code: room.code, you: publicSeat(room, seat),
       playerCount: room.seats.length, players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice,
-      game: rules.playerView(room.game.state, seat.id),
+      game: adapterFor(room.game.id).playerView(room.game.state, seat.id),
     };
   }
   return {
     role: 'player', phase: 'lobby', code: room.code, you: publicSeat(room, seat),
-    playerCount: room.seats.length, spice: spiceState(room), voice: room.voice, games, notice: room.notice,
+    playerCount: room.seats.length, spice: spiceState(room), voice: room.voice, drama: room.drama, games, notice: room.notice,
   };
 }

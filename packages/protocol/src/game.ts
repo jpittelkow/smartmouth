@@ -20,7 +20,19 @@ export interface GamePlayer {
 
 export interface GameSettings {
   spice: Spice;
+  /**
+   * The platform's random seed for this game (ADR 0023). Anything random in the rules (dealing roles, breaking ties)
+   * comes from it, so a game replays exactly from its seed and its intents.
+   */
+  seed: number;
+  /** How long a game's staged reveals run (ADR 0024). Games without reveals ignore it. */
+  drama: Drama;
 }
+
+/** Full drama, or Quick: every held pause cut to a third (ADR 0024). */
+export type Drama = 'full' | 'quick';
+export const DRAMAS: readonly Drama[] = ['full', 'quick'];
+export const isDrama = (v: unknown): v is Drama => v === 'full' || v === 'quick';
 
 export interface GameModule<State, Intent, HostView, PlayerView> {
   manifest: GameManifest;

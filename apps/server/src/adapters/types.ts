@@ -1,0 +1,59 @@
+// What the platform needs from each game (ADR 0006). A game's rules package stays pure; its adapter here is the
+// server-side glue: picking content, checking a client's raw intent, and choosing what Salty says at each stage.
+import type { Drama, ErrorCode, GameManifest, GamePlayer, QuestionReads, Spice } from '@smartmouth/protocol';
+import type { Db } from '../db.ts';
+import type { Moment } from '../voice.ts';
+
+export type Actor = { kind: 'host' } | { kind: 'player'; seatId: string };
+export type Fail = { ok: false; code: ErrorCode; message: string };
+
+export interface StartInput {
+  players: GamePlayer[];
+  spice: Spice;
+  seed: number;
+  drama: Drama;
+  db: Db;
+  /** Questions already asked in this room tonight. */
+  exclude: ReadonlySet<number>;
+  now: number;
+}
+
+/** One question played, for the library's stats (per question, never per person: ADR 0016). */
+export interface Play { questionId: number; right: boolean; ms: number | null }
+
+/** What Salty can use when a game decides what he says (salty.ts supplies these). */
+export interface SaltyTools {
+  /** A line for a moment at or below the room's spice, avoiding recent ones; with its recording, if any. */
+  line(moment: Moment): { text: string; clip: string | null } | null;
+  /** Recordings for a question. */
+  reads(questionId: number): QuestionReads;
+}
+
+/** What Salty says now: the caption text (before bleeping) and the clips to play in order. */
+export interface Say { text: string | null; clips: string[] }
+
+export interface GameAdapter<S = unknown> {
+  manifest: GameManifest;
+  start(input: StartInput): { ok: true; state: S } | Fail;
+  /** A raw intent from a socket, checked here. Returns the same state object when nothing changed. */
+  intent(state: S, actor: Actor, raw: unknown, now: number): S;
+  /** A grown-up pressed Next: end the current wait. */
+  skip(state: S, now: number): S;
+  tick(state: S, now: number): S;
+  deadline(state: S): number | null;
+  /** Players joined or left, or the spice changed. */
+  sync(state: S, players: GamePlayer[], spice: Spice, now: number): S;
+  hostView(state: S): unknown;
+  playerView(state: S, seatId: string): unknown;
+  isOver(state: S): boolean;
+  /** Points each seat earned, added to the night's totals when the game ends. */
+  scores(state: S): Record<string, number>;
+  /** Every question played so far (the platform records the new ones). */
+  plays(state: S): readonly Play[];
+  /** Changes whenever Salty should say something new. */
+  stageKey(state: S): string;
+  /** What Salty says at the current stage. */
+  say(state: S, tools: SaltyTools): Say;
+  /** Recordings the TV may hold ahead of their moment (trivia's Little turn). */
+  reads?(state: S, tools: SaltyTools): { question: QuestionReads | null; turn: QuestionReads | null };
+}

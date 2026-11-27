@@ -5,8 +5,12 @@
 import { readFileSync, statSync } from 'node:fs';
 import { SPICES, VOICES, isSpice, spiceAllows, spiceRank, type Spice, type VoiceId } from '@smartmouth/protocol';
 
-export type Moment = 'lobby' | 'join' | 'intro' | 'question' | 'allRight' | 'allWrong' | 'mixed' | 'turn'
-  | 'littleRight' | 'littleWrong' | 'final';
+/**
+ * A moment Salty has lines for: the platform's own ('lobby', 'join'), trivia's ('intro', 'question', 'allRight',
+ * 'allWrong', 'mixed', 'turn', 'littleRight', 'littleWrong', 'final') and each other game's, which carry the game's
+ * prefix ('sm-…' for Snake Manor).
+ */
+export type Moment = string;
 
 export interface Line { id: string; moment: Moment; spice: Spice; text: string }
 
