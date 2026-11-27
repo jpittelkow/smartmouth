@@ -24,10 +24,70 @@ polishing things that can't be played yet.
 8. Current-events questions (ADR 0012).
 9. Optional live roasts (ADR 0013).
 
-**Milestone 3: game two**, chosen by the owner, which tests ADR 0006.
+**Milestone 3: game two, Snake Manor** ([ADR 0022](0022-game-two-snake-manor.md), chosen by the owner on 2026-11-27),
+which tests ADR 0006. Planned 2026-11-27. The platform is still hard-wired to trivia: `startGame` refuses any other
+game ID, and Salty's line picker imports trivia's rules. So the first step makes room for a second game.
+
+10. **Platform ready for a second game** (no Snake Manor yet):
+    - the runtime picks a game from the registry instead of assuming trivia
+    - Salty gets the current moment from the game module, not from trivia's rules
+    - `init` gets a random seed (ADR 0023)
+    - a typed-text intent with a 140-character cap and a rate limit
+    - a rule and a test that the admin phone sees only what the TV sees
+
+    Done when trivia runs through the shared path unchanged and `npm run check` passes.
+11. **Snake Manor rules, headless** (`packages/games/snakes`):
+    - the role deal (Kids always Guests) and the round loop
+    - the Round Table vote and its tie rules, banishment, and the night murder
+    - shields, Ghosts, both kinds of recruitment, and the endgame vote
+    - missions stubbed out
+    - the four ADR 0023 tests, plus simulated full games with bot players at every size from 5 to 10
+
+    Done when a whole game plays out in tests and replays exactly from its seed.
+12. **Plain screens and the first playtest:**
+    - bare TV and phone views
+    - the identical night screens (free-text chat and tap chips)
+    - hold-to-show role cards
+    - the Round Table vote and reveal
+
+    Done when six grown-ups play a full game on the couch with a dummy mission.
+13. **Missions:**
+    - trivia's question picking moved into a shared helper
+    - "Everyone answers" with the target, pot, Daggers, Overboard and shields, with reveals that show totals only
+    - then The Chain and Pairs
+
+    Done when a mission can be sunk untraceably, in a test and in a playtest.
+14. **The look** ([design guide §8](../design/design-guide.md#8-snake-manor)):
+    - the three fonts, self-hosted
+    - the coat-of-arms component, vellum cards, the candle timer, the wax-seal votes and the night palette
+
+    Done when the screens match [the mockups](../design/mockups/snake-manor.html) and the book face reads at 3 m on
+    the office TV.
+15. **Salty as Lord of the Manor:**
+    - about 20 new moments per spice level, with reveal lines in two parts
+    - a grown-up reviews the lines, then the voice bank is generated
+    - a test that the line picker never reads hidden roles
+
+    Done when every phase has voiced lines at every spice level the game allows.
+16. **Drama** ([ADR 0024](0024-drama-sequences.md)):
+    - the sequence type in the protocol, and the TV's sequence player
+    - a recorded sound bank paired with the visuals
+    - Full or Quick, and Skip
+    - resuming mid-reveal after the TV reconnects
+
+    Done when a real-TV banishment matches the demo's timing and pulling the TV's plug mid-reveal resumes at the right beat.
+17. **Family playtest and tuning:**
+    - kids in the room
+    - tune the knobs: night length, mission target, the Dagger menu, how often shields come up
+    - the owner accepts or revises ADRs 0022 to 0024
+
+Steps 14 and 15 change styles and lines, not rules, so they can run alongside step 13 once step 12 is done. Step 16
+needs step 15's two-part clips. The playtest at step 12 comes before any polish on purpose: the riskiest question is
+whether the hidden-role loop is fun with this family.
 
 ## Consequences
 - The first playtest has real voice and real kids, before any AI pipeline exists.
+- Game two is playtested in plain screens before any of its look, voice or drama is built.
 
 ## Alternatives
 AI pipeline first: lots of content and nothing to play it in.
