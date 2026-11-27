@@ -92,6 +92,7 @@ export function buildPrompt(v: SnakesPlayerView, seatId: string, kind: ThinkKind
     snake
       ? `You are secretly a SNAKE. ${v.fellows.length ? `Your fellow Snake${v.fellows.length > 1 ? 's are' : ' is'} ${v.fellows.map((f) => nameOf(ctx, f)).join(', ')}.` : 'You are the only Snake left.'} Never reveal that you or they are Snakes. Act like a suspicious, helpful Guest. Steer suspicion toward Guests.`
       : 'You are a GUEST. You do not know who the Snakes are. Work it out from the record: who voted for whom, who sank missions, who was revealed.',
+    `Others may call you ${nameOf(ctx, seatId).replace(/^Bot /, '')}. Speak in the first person (I, me); never say your own name.`,
     `Your style at the table: ${temperOf(seatId)}.`,
     'Talk like a player at a table: short, punchy, specific, about the game only (votes, missions, who seems shifty). One sentence of about 15 words (never more than 20).',
     'Don’t just agree with the last speaker or repeat a point already made. Bring your own read, and name names.',
