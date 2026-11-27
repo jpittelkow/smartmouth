@@ -26,3 +26,11 @@ each chunk's base64 mp3 is in `choices[0].delta.audio.data`. Without both, you'r
 
 If an effect doesn't work from Lyria (it's a music model), the page links CC0 and royalty-free libraries: the Sonniss
 GDC bundle, Freesound (CC0 only), Pixabay sound effects. Anything used goes in `CREDITS.md`.
+
+## Library effects (2026-11-27)
+Lyria is a music model, so its "effects" came out as songs. The effects page,
+`https://play.303.social/media/sounds/library/index.html`, offers CC0 sounds from Freesound instead: two or three per
+cue, trimmed (silence off the front, capped per cue) and levelled with ffmpeg `loudnorm` (I=-18, beds are -20).
+The candidates, authors and links are in [library.json](library.json). The page and clips were built on the dev PC
+and copied to `DATA_DIR/media/sounds/library/`; Freesound previews were fetched slowly (its search rate-limits fast
+callers with 429).

@@ -1,0 +1,129 @@
+{
+ "//": "Freesound effects on the library audition page (tools/sounds/README.md), 2026-11-27. All CC0 by the search filter. Credit the picked ones in CREDITS.md.",
+ "candidates": {
+  "heartbeat": [
+   {
+    "id": "332821",
+    "title": "heartbeat-60bpm.wav",
+    "author": "loudernoises",
+    "url": "https://freesound.org/people/loudernoises/sounds/332821/",
+    "license": "CC0 1.0"
+   },
+   {
+    "id": "688735",
+    "title": "Heartbeat 97 BPM",
+    "author": "Cloud-10",
+    "url": "https://freesound.org/people/Cloud-10/sounds/688735/",
+    "license": "CC0 1.0"
+   },
+   {
+    "id": "333486",
+    "title": "Heartbeat.wav",
+    "author": "Jeffreys2",
+    "url": "https://freesound.org/people/Jeffreys2/sounds/333486/",
+    "license": "CC0 1.0"
+   }
+  ],
+  "hiss": [
+   {
+    "id": "553374",
+    "title": "Snake Hiss",
+    "author": "xoiziox",
+    "url": "https://freesound.org/people/xoiziox/sounds/553374/",
+    "license": "CC0 1.0"
+   },
+   {
+    "id": "678971",
+    "title": "Snake Tongue Hiss.WAV",
+    "author": "bowlingballout",
+    "url": "https://freesound.org/people/bowlingballout/sounds/678971/",
+    "license": "CC0 1.0"
+   },
+   {
+    "id": "241562",
+    "title": "hiss.wav",
+    "author": "Reitanna",
+    "url": "https://freesound.org/people/Reitanna/sounds/241562/",
+    "license": "CC0 1.0"
+   }
+  ],
+  "seal": [
+   {
+    "id": "362623",
+    "title": "Stamp",
+    "author": "kermite607",
+    "url": "https://freesound.org/people/kermite607/sounds/362623/",
+    "license": "CC0 1.0"
+   },
+   {
+    "id": "814249",
+    "title": "stamp_4presses_paper.wav / Old mechanical stamp, pressing four times, paper hits",
+    "author": "Mihacappy",
+    "url": "https://freesound.org/people/Mihacappy/sounds/814249/",
+    "license": "CC0 1.0"
+   },
+   {
+    "id": "448474",
+    "title": "es-stamp.wav",
+    "author": "eddies2000",
+    "url": "https://freesound.org/people/eddies2000/sounds/448474/",
+    "license": "CC0 1.0"
+   }
+  ],
+  "quill": [
+   {
+    "id": "507864",
+    "title": "Quill and Parchment.WAV",
+    "author": "Nickh69",
+    "url": "https://freesound.org/people/Nickh69/sounds/507864/",
+    "license": "CC0 1.0"
+   },
+   {
+    "id": "194905",
+    "title": "Quill pen writing on hard paper various speed.wav",
+    "author": "marcoman89",
+    "url": "https://freesound.org/people/marcoman89/sounds/194905/",
+    "license": "CC0 1.0"
+   }
+  ],
+  "wind": [
+   {
+    "id": "185070",
+    "title": "howling_wind.wav",
+    "author": "juryduty",
+    "url": "https://freesound.org/people/juryduty/sounds/185070/",
+    "license": "CC0 1.0"
+   },
+   {
+    "id": "557380",
+    "title": "AMB_Wind_Howling_empty Church close to window_48kHz.wav",
+    "author": "Tonmeister88",
+    "url": "https://freesound.org/people/Tonmeister88/sounds/557380/",
+    "license": "CC0 1.0"
+   },
+   {
+    "id": "159509",
+    "title": "Halloween - Graveyard At Night Howling Wind.mp3",
+    "author": "mistersherlock",
+    "url": "https://freesound.org/people/mistersherlock/sounds/159509/",
+    "license": "CC0 1.0"
+   }
+  ],
+  "candles": [
+   {
+    "id": "204531",
+    "title": "Candle flicker/ blown out x4",
+    "author": "peridactyloptrix",
+    "url": "https://freesound.org/people/peridactyloptrix/sounds/204531/",
+    "license": "CC0 1.0"
+   },
+   {
+    "id": "656818",
+    "title": "Candle blow.wav",
+    "author": "JacobEmanuelMadrid",
+    "url": "https://freesound.org/people/JacobEmanuelMadrid/sounds/656818/",
+    "license": "CC0 1.0"
+   }
+  ]
+ }
+}
