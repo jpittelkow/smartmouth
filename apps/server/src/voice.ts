@@ -94,10 +94,12 @@ export class VoiceBank {
 
   /**
    * Picks a line for a moment: never above `spice`, preferring the room's exact level, then the next level down,
-   * and avoiding the lines in `recent`.
+   * and avoiding the lines in `recent`. With `voiced`, lines that have a recording come first, so a newly written line
+   * isn't shown silently while the bank is still recording it (2026-11-27).
    */
-  pick(moment: Moment, spice: Spice, recent: ReadonlySet<string>, rand: () => number = Math.random): Line | null {
-    const allowed = this.lines.filter((l) => l.moment === moment && spiceAllows(spice, l.spice));
+  pick(moment: Moment, spice: Spice, recent: ReadonlySet<string>, rand: () => number = Math.random, voiced?: (l: Line) => boolean): Line | null {
+    let allowed = this.lines.filter((l) => l.moment === moment && spiceAllows(spice, l.spice));
+    if (voiced) { const rec = allowed.filter(voiced); if (rec.length) allowed = rec; }
     for (let r = spiceRank(spice); r >= 0; r--) {
       const level = allowed.filter((l) => l.spice === SPICES[r]);
       const fresh = level.filter((l) => !recent.has(l.id));

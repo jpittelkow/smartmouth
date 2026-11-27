@@ -42,6 +42,13 @@ test('the room’s exact level is preferred, and recent lines are avoided', () =
   assert.equal(bank.pick('intro', 'hot', recent)?.id, all[0]);
 });
 
+test('recorded lines come first, so a new line isn’t shown silently while it is being recorded', () => {
+  const bank = new VoiceBank(LINES, join(tmpdir(), 'no-manifest.json'));
+  const one = bank.lines.find((l) => l.moment === 'intro' && l.spice === 'mild')!;
+  for (let i = 0; i < 20; i++) assert.equal(bank.pick('intro', 'hot', new Set(), Math.random, (l) => l.id === one.id)?.id, one.id);
+  assert.ok(bank.pick('intro', 'hot', new Set(), Math.random, () => false), 'nothing recorded: any line still plays');
+});
+
 test('captions drop delivery tags and bleep strong words as four stars', () => {
   assert.equal(caption('[sighs] Holy shit, people showed up.'), 'Holy ★★★★, people showed up.');
   assert.equal(caption("That's a fucking full house."), "That's a ★★★★ full house.");

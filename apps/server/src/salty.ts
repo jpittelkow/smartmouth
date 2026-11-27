@@ -50,7 +50,7 @@ function tools(room: Room, bank: VoiceBank, now: number): SaltyTools {
   const st = room.salty;
   return {
     line(moment) {
-      const line = bank.pick(moment, spice, new Set(st.recent));
+      const line = bank.pick(moment, spice, new Set(st.recent), Math.random, (l) => !!bank.lineAudio(l.id, now, room.voice, l.text));
       if (!line) return null;
       st.recent = [line.id, ...st.recent].slice(0, 12);
       return { text: line.text, clip: bank.lineAudio(line.id, now, room.voice, line.text) };
