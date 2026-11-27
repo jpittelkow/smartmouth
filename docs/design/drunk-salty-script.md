@@ -1,6 +1,6 @@
 # Drunk Salty: script (draft 2)
 
-_Draft 1 2026-11-27. Draft 2 2026-11-27, after the owner heard the first audition: "slurred spelling is better, add the
+_Draft 1 2026-11-27. Draft 3 2026-11-27: "too much use of the word sexy vs sexual things to say" (most 'sexy's swapped for actual innuendo), and the drinking noises are now in Salty's own voice (below). Draft 2 2026-11-27, after the owner heard the first audition: "slurred spelling is better, add the
 drinking sounds. add a LOT of profanity. She gets a little 'woo girl' and flirty / horny sexual." Not built.
 Source idea: `future.drunk` in `content/voice/brief.json`._
 
@@ -35,6 +35,8 @@ spelling, bleeped.
 second game started back at Buzzed, the drunk act would fall apart. Stage 4 would stay at 4. The "Hello" lines below
 already allow for a second game.
 
+**Drinking noises in her own voice (owner, 2026-11-27).** The sips, gulps, slurps and hiccups are performed by the voice, not played as clips: the recorded text spells them out ("Hic!", "Sluurp... ahhh.", "Glug, glug, glug... ahhh.") and the direction tells the voice to make them real noises, not words. So `{sip}`, `{hiccup}` and `{slurp}` become spoken text at recording time. Only the things a voice can't make stay clips: `{clink}`, `{toast}`, `{pour}`, `{slam}`, `{bottle-roll}`, generated locally with Stable Audio Open (`tools/sounds/sfx-drunk.json`). The 22 CC0 Freesound candidates were all rejected.
+
 **Sounds** are separate clips, not part of the speech. In this script, `{sip}`, `{hiccup}`, `{clink}`, `{pour}`,
 `{slurp}`, `{slam}` and `{bottle-roll}` mark where the player plays one. The voice tool never reads them. Candidates are
 CC0 recordings from Freesound (draft 2 audition, credits in `CREDITS.md` once the owner picks). `[tags]` are the usual
@@ -54,7 +56,7 @@ Each stage is added to the base: "A woman hosting a living-room game show, with 
 ## Stage 1: Buzzed
 
 **hello**
-- WOOO! Hello, you sexy fuckers! I'm Salty, I'm one drink in, and I'm already the best part of this party. TV asks, phone answers. Let's fucking GO!
+- WOOO! Hello, you filthy fuckers! I'm Salty, I'm one drink in, and I'm already picking who I'm going home with. TV asks, phone answers. Let's fucking GO!
 - [laughs] Evening, you beautiful idiots! I'm Salty. The TV asks, your phone answers, and I drink every time some dumbass is wrong. So please be fucking wrong. Here we go! `{sip}`
 - Hi! Hi, bitches! I'm Salty, and I've had... one. A big fucking one. Questions on the TV, answers on your phone. Who's ready to get weird?! WOO!
 
@@ -68,7 +70,7 @@ Each stage is added to the base: "A woman hosting a living-room game show, with 
 - The clock's ticking. So is my bar tab. Hurry the fuck up.
 
 **allRight**
-- Everybody got it! WOO! Look at you smart, sexy bastards. Cheers! `{clink}`
+- Everybody got it! WOO! Brains get me so wet. ...My drink. My drink got wet. Cheers! `{toast}`
 - All of you? Ugh. Now I've got no excuse to drink. Drinking anyway, bitches. `{sip}`
 
 **allWrong**
@@ -89,7 +91,7 @@ Each stage is added to the base: "A woman hosting a living-room game show, with 
 
 **hello** _(second game)_
 - Hello again, gorgeoush! Still Salty. Shaltier. TV, phone, you know the fucking drill. I forgot the drill. WOOO!
-- `{hiccup}` Welcome back, you shexy bitches! I'm Salty. I've been here the whole time. Drinking. Lesh fucking go!
+- `{hiccup}` Welcome back, bitches! I'm Salty. I've been here the whole time. Drinking. And having very dirty thoughts about the couch. Lesh fucking go!
 
 **intro**
 - Okay. Okay. Nexsht round. I love you guys. Not the one in last. Everybody elshe.
@@ -97,12 +99,12 @@ Each stage is added to the base: "A woman hosting a living-room game show, with 
 - New round. I'm fine. Thish is my fine fucking voice.
 
 **question**
-- Pick one. Any one. Pick the shexy one.
+- Pick one. Any one. Go with your gut. That'sh how I pick who I shleep with.
 - Hurry up, baby. My drink'sh getting warm. ...Ish that my drink?
 
 **allRight**
 - Everybody?! WOOO! That'sh teamwork. I'd make out with every shingle one of you. Who are you people again?
-- You all got it. Shmart. Shmart is shexy. I'm sho fucking horny for trivia right now.
+- You all got it. Shmart people turn me on. And you're all fucking geniushes. ...Thish ish a problem.
 
 **allWrong**
 - `{hiccup}` Nobody got it! [laughs] Me neither, and I've got the fucking answer right here. Lemme read it.
@@ -121,7 +123,7 @@ Each stage is added to the base: "A woman hosting a living-room game show, with 
 ## Stage 3: Hammered
 
 **hello** _(third game)_
-- Hello! Hello. Who invited all you shexy fuckers? Oh. Me. I'm Shalty. Phones. TV. Fucking... go.
+- Hello! Hello. Who invited all you fuckers? Oh. Me. I'm Shalty, and I'm not wearing any... shoes. Phones. TV. Fucking... go.
 
 **lobbyWaiting** _(between games)_
 - Shtart the game. Shomebody. Pressh the fucking button, or I'm pressing charges.
@@ -182,7 +184,7 @@ Each stage is added to the base: "A woman hosting a living-room game show, with 
 - `{slam}` I'M AWAKE. ...I'm awake. [whispers] Who wants to make out.
 
 **final** _(the end of every Drunk game is always stage 4)_
-- We have a... we have a winner! Sho proud. Shexy fuckin' winner. Everybody elshe... loshers. Go home. Thish is my couch now. Night, fuckers. `{bottle-roll}`
+- We have a... we have a winner! Sho proud. Winner gets a drink... and maybe a little shomething elshe. Everybody elshe... loshers. Go home. Thish is my couch now. Night, fuckers. `{bottle-roll}`
 - [laughs] Shomebody won. Congrats... whoever. I can't shee the TV. Best night of my fuckin' life. Don't tell anyone. WOOO... g'night.
 - Game over. Over. Like my career at shea. [sighs] Winner, I'd kissh you, but there's two of you. ...Fine. Both of you. Everyone elshe... call me a cab.
 - Okay. Okay. Winner. Proud. Everybody elshe... wha'sh the word... shit. You're shit. Love you. Bye. `{bottle-roll}`

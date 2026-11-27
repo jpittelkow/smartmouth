@@ -1,0 +1,22 @@
+{
+  "//": "Drunk Salty's drinking sounds, generated with Stable Audio Open (sfx_local.py --cues). Round 2: the owner called all 22 CC0 Freesound candidates 'terrible' (2026-11-27). Close bar foley, one action per clip, no people talking.",
+  "negative": "music, melody, singing, speech, talking, voice, words, crowd, applause, laughter, reverb hall, white noise, hiss, static, low quality, distorted",
+  "cues": [
+    { "id": "sip", "use": "A sip between lines.", "seconds": 1.6,
+      "prompt": "Close-up foley of a single small sip of liquor from a glass tumbler, lips on the glass, one swallow, quiet room, high quality sound effect" },
+    { "id": "hiccup", "use": "A hiccup (Tipsy and later).", "seconds": 1.0,
+      "prompt": "A single drunk hiccup, short involuntary hic sound from the throat, close microphone, isolated sound effect" },
+    { "id": "clink", "use": "Ice swirled in a glass.", "seconds": 2.0,
+      "prompt": "Ice cubes clinking in a heavy whiskey glass as it is swirled, crisp glass and ice, close foley, high quality sound effect" },
+    { "id": "toast", "use": "Cheers: two glasses touching.", "seconds": 1.5,
+      "prompt": "Two glass tumblers clinking together in a toast, one bright glass clink with a short ring, close foley, high quality" },
+    { "id": "pour", "use": "A drink poured from the bottle.", "seconds": 3.5,
+      "prompt": "Pouring liquor from a glass bottle into a tumbler over ice, glugging pour, liquid splashing on ice, close foley, high quality" },
+    { "id": "slurp", "use": "The last drops, slurped loudly.", "seconds": 1.6,
+      "prompt": "Loud rude slurp through a straw at the bottom of an empty cocktail glass, gurgling straw sound, close foley" },
+    { "id": "slam", "use": "The glass slammed down (stage 4).", "seconds": 1.5,
+      "prompt": "A heavy glass tumbler slammed down hard on a wooden bar counter, single loud thud with a glass rattle, close foley" },
+    { "id": "roll", "use": "A bottle falls over and rolls away (stage 4).", "seconds": 4.0,
+      "prompt": "An empty glass bottle tipping over onto a hardwood floor and rolling away, glass rolling on wood, close foley, high quality" }
+  ]
+}
