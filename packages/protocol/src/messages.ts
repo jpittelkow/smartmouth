@@ -42,6 +42,12 @@ export type ServerMsg =
   | { t: 'pong'; serverNow: number };
 
 // ---- views ----
+/** What Salty says now (ADR 0013): a caption (bleeped) and audio clips to play in order. `key` changes per line. */
+export interface SaltyCue { key: string; caption: string | null; clips: string[] }
+
+/** Recordings for a question: the prompt read aloud, each answer (picture questions), the follow-up line. */
+export interface QuestionReads { prompt: string | null; answers: Array<string | null>; explain: string | null }
+
 export interface PublicSeat {
   id: string;
   name: string;
@@ -68,6 +74,7 @@ export interface HostLobbyView {
   spice: SpiceState;
   games: GameManifest[];
   notice: string | null;
+  salty: SaltyCue | null;
 }
 
 export interface PlayerLobbyView {
@@ -91,6 +98,9 @@ export interface HostGameView {
   players: PublicSeat[];
   spice: SpiceState;
   game: unknown;
+  salty: SaltyCue | null;
+  /** Recordings for the TV's question and the Little turn's question (answers are read as focus moves). */
+  reads: { question: QuestionReads | null; turn: QuestionReads | null };
 }
 
 export interface PlayerGameView {

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { APP_NAME } from '@smartmouth/protocol';
 import { startServer } from './http.ts';
 import { loadSeeds } from './seeds.ts';
+import { VoiceBank } from './voice.ts';
 
 const env = process.env;
 const list = (s: string | undefined) => (s ?? '').split(',').map((x) => x.trim()).filter(Boolean);
@@ -19,6 +20,8 @@ const { server } = await startServer({
   trustedProxies: list(env.TRUSTED_PROXIES),
   webDir: env.WEB_DIR ?? repo('apps/web/dist'),
   dbPath: join(dataDir, 'smartmouth.db'),
+  mediaDir: join(dataDir, 'media'),
+  voice: new VoiceBank(repo('content/voice/lines.json'), join(dataDir, 'media')),
   onDb: (db) => {
     const { added, problems } = loadSeeds(db, repo('content/seed'), Date.now());
     if (added) console.log(`added ${added} seed questions`);

@@ -1,7 +1,7 @@
 // HTTP: the built web app, a health check, and the WebSocket upgrade at /ws (ADR 0015).
 import { createServer, type Server } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
-import { extname, join, normalize, resolve } from 'node:path';
+import { extname, isAbsolute, join, normalize, relative, resolve } from 'node:path';
 import { WebSocketServer } from 'ws';
 import { APP_NAME } from '@smartmouth/protocol';
 import type { IncomingMessage, ServerResponse } from 'node:http';
@@ -11,6 +11,7 @@ import { AdminAuth, COOKIE, readCookie, sessionCookie } from './admin.ts';
 import { clientAddress, fromHomeNetwork, trustedProxies } from './limits.ts';
 import { openDb, type Db } from './db.ts';
 import { handleQuestionsApi } from './adminApi.ts';
+import type { VoiceBank } from './voice.ts';
 
 export interface ServerConfig {
   port: number;
@@ -26,6 +27,10 @@ export interface ServerConfig {
   dbPath?: string;
   /** Runs once the database is open, before the server listens (main.ts imports the seed questions here). */
   onDb?: (db: Db) => void;
+  /** Salty's line bank and recordings (voice.ts). */
+  voice?: VoiceBank | null;
+  /** Where recordings and pictures live (DATA_DIR/media), served at /media. */
+  mediaDir?: string | null;
   now?: () => number;
 }
 
@@ -57,7 +62,7 @@ function isHttps(req: IncomingMessage): boolean {
 const TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml',
   '.png': 'image/png', '.woff2': 'font/woff2', '.woff': 'font/woff', '.json': 'application/json',
-  '.mp3': 'audio/mpeg', '.webp': 'image/webp', '.ico': 'image/x-icon',
+  '.mp3': 'audio/mpeg', '.wav': 'audio/wav', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.ico': 'image/x-icon',
 };
 
 /** Routes the single-page app answers. */
@@ -121,6 +126,27 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
       json(res, 404, { error: 'Not found.' });
       return;
     }
+    // Recordings and pictures from the data folder (ADR 0013). Paths must stay inside the media folder.
+    if (url.pathname.startsWith('/media/') && cfg.mediaDir) {
+      const root = resolve(cfg.mediaDir);
+      let rel: string;
+      try { rel = decodeURIComponent(url.pathname.slice('/media/'.length)); } catch { res.writeHead(400).end(); return; }
+      const file = normalize(join(root, rel));
+      const inside = relative(root, file);
+      if (!inside || inside.startsWith('..') || isAbsolute(inside) || rel.includes(String.fromCharCode(0))) { res.writeHead(400).end(); return; }
+      try {
+        const st = await stat(file);
+        if (!st.isFile()) throw new Error('not a file');
+        res.writeHead(200, {
+          'content-type': TYPES[extname(file)] ?? 'application/octet-stream', 'content-length': st.size,
+          'cache-control': 'public, max-age=31536000, immutable', 'x-content-type-options': 'nosniff',
+        });
+        res.end(await readFile(file));
+      } catch {
+        res.writeHead(404, { 'content-type': 'text/plain' }).end('Not found');
+      }
+      return;
+    }
     // Static files. Paths are resolved and must stay inside webRoot.
     const path = APP_ROUTES.has(url.pathname) ? '/index.html' : url.pathname;
     const file = normalize(join(webRoot, decodeURIComponent(path)));
@@ -147,6 +173,7 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
     publicUrl: cfg.publicUrl,
     trusted,
     db,
+    voice: cfg.voice ?? null,
     allowedOrigins: new Set([...(cfg.publicUrl ? [new URL(cfg.publicUrl).origin] : []), ...cfg.allowedOrigins]),
   });
   server.on('upgrade', (req, socket, head) => {

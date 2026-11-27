@@ -6,6 +6,7 @@ import {
   type PlayerLobbyView, type PublicSeat, type Spice, type SpiceState,
 } from '@smartmouth/protocol';
 import { rules, type TriviaState } from '@smartmouth/game-trivia';
+import { newSalty, type SaltyState } from './salty.ts';
 import { makeCode, makeToken, normalizeCode } from './codes.ts';
 
 /** A room with no host and no players connected is deleted after this long. */
@@ -36,6 +37,8 @@ export interface Room {
   game: RunningGame | null;
   /** Questions asked in this room tonight, so the next game doesn't repeat them (ADR 0010). */
   asked: Set<number>;
+  /** What Salty is saying (salty.ts). */
+  salty: SaltyState;
 }
 
 export interface RunningGame {
@@ -64,7 +67,7 @@ export class RoomStore {
     const code = makeCode((c) => this.rooms.has(c));
     const room: Room = {
       code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy',
-      notice: null, lastActive: now, nextSeat: 1, game: null, asked: new Set(),
+      notice: null, lastActive: now, nextSeat: 1, game: null, asked: new Set(), salty: newSalty(),
     };
     this.rooms.set(code, room);
     return room;
@@ -147,16 +150,20 @@ function publicSeat(room: Room, s: Seat): PublicSeat {
   };
 }
 
-export function hostView(room: Room, joinUrl: string, games: GameManifest[]): HostLobbyView | HostGameView {
+export function hostView(
+  room: Room, joinUrl: string, games: GameManifest[], reads: HostGameView['reads'] = { question: null, turn: null },
+): HostLobbyView | HostGameView {
   if (room.game) {
     return {
       role: 'host', phase: 'game', gameId: room.game.id, code: room.code, joinUrl,
       players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), game: rules.hostView(room.game.state),
+      salty: room.salty.cue, reads,
     };
   }
   return {
     role: 'host', phase: 'lobby', code: room.code, joinUrl,
     players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), games, notice: room.notice,
+    salty: room.salty.cue,
   };
 }
 

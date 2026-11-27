@@ -8,6 +8,8 @@ import { RateLimit, clientAddress, originAllowed } from './limits.ts';
 import { normalizeCode } from './codes.ts';
 import type { Db } from './db.ts';
 import { deadline, drainLog, endGame, gameIntent, skip, startGame, syncRoom, tickGame } from './gameRuntime.ts';
+import { cueJoin, readsFor, updateSalty } from './salty.ts';
+import type { VoiceBank } from './voice.ts';
 
 export interface SocketOptions {
   /** The address phones use, shown on the TV. Falls back to the host page's own origin. */
@@ -17,6 +19,8 @@ export interface SocketOptions {
   trusted?: (addr: string | undefined) => boolean;
   /** The question library, for picking a game's questions and recording plays. */
   db: Db;
+  /** Salty's lines and recordings; null in tests that don't need him. */
+  voice?: VoiceBank | null;
   now?: () => number;
 }
 
@@ -64,6 +68,7 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
   function settle(room: Room) {
     const t = now();
     drainLog(room, opts.db, t);
+    updateSalty(room, opts.voice ?? null, t);
     clearTimeout(timers.get(room.code));
     timers.delete(room.code);
     const due = deadline(room);
@@ -81,7 +86,7 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
     const t = now();
     for (const c of clients) {
       if (c.conn.kind === 'host' && c.conn.code === room.code) {
-        send(c, { t: 'view', view: hostView(room, joinUrlFor(c, room), GAMES), serverNow: t });
+        send(c, { t: 'view', view: hostView(room, joinUrlFor(c, room), GAMES, readsFor(room, opts.voice ?? null, t)), serverNow: t });
       } else if (c.conn.kind === 'player' && c.conn.code === room.code) {
         const seatId = c.conn.seatId;
         const seat = room.seats.find((s) => s.id === seatId);
@@ -153,6 +158,7 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
         send(c, { t: 'player:welcome', code: room.code, token: r.value.token, seatId: r.value.id });
         refreshPresence(room);
         syncRoom(room, t);
+        cueJoin(room);
         return broadcast(room);
       }
 

@@ -1,15 +1,30 @@
 # Salty's voice
 
-Salty's voice is made through OpenRouter speech (ADR 0013), not Piper. The default model is `elevenlabs/eleven-v4`.
+Salty's recordings come from OpenRouter speech (ADR 0013), not Piper. `voice.mjs` runs **inside the server's
+container**, which holds `OPENROUTER_API_KEY` and the data folder, so the key never leaves the server.
 
-## Picking a voice (build step 4)
-1. Choose a few candidate voices for the model. They must be stock or designed voices, never a clone or an
-   imitation of a real person (ADR 0014).
-2. Preview what will be made, without a key: `DRY=1 VOICES=a,b node tools/voice/generate.mjs`.
-3. Make the clips where the key lives (inside the server's container):
-   `VOICES=a,b,c OUT=/tmp/salty node tools/voice/generate.mjs`.
-4. Copy `/tmp/salty` back and open `audition.html`. Every candidate reads the same 12 lines, across all four spice levels.
-5. Record the pick in an ADR (it supersedes the open voice choice in ADR 0013), and note the voice's retirement
-   date, if it has one.
+A voice is written `<model>:<voice>`:
+- `elevenlabs/eleven-v4:<name>`: acts from tags in the text (`[sighs]`, `[scoffs]`). Returns mp3. ElevenLabs' stock voices
+  (callum, bill, roger, george and others) **retire on 2026-12-31**. Files already made keep working, but new lines after
+  that need another voice.
+- `google/gemini-3.8-flash-tts:<Name>`: acts from a written description of Salty (`STYLE` in `voice.mjs`). Tags are
+  stripped from its text so it doesn't read them out. Returns wav.
 
-The test lines are in [audition-lines.json](audition-lines.json). The line bank, question reads and levelling come later (ADR 0019 step 4).
+## Audition (pick a voice by ear)
+```bash
+docker exec -e VOICES="elevenlabs/eleven-v4:callum,google/gemini-3.8-flash-tts:Fenrir" smartmouth node tools/voice/voice.mjs audition
+```
+This writes `DATA_DIR/media/voice/audition/`, and the page is at `https://play.303.social/media/voice/audition/index.html`.
+The lines are in [audition-lines.json](audition-lines.json).
+
+## Bank (everything the game says)
+```bash
+docker exec -e VOICE="elevenlabs/eleven-v4:callum" -e MAX_USD=5 smartmouth node tools/voice/voice.mjs bank
+```
+This makes every line in `content/voice/lines.json`, plus, for every live question, its prompt, its answers (picture questions only) and
+its follow-up line. Little questions use a warmer, slower direction. Files that already exist are kept, so after you add
+questions or lines a re-run only makes what's new. It writes `manifest.json` last, and the server picks it up within
+10 seconds; there's no restart. Switching voices means running `bank` again with the new `VOICE`. `DRY=1` counts the clips and
+characters without making anything. `MAX_USD` stops the run once the key's usage has grown by that much.
+
+Voices must be stock or designed voices. Never a clone or an imitation of a real person (ADR 0013, 0014).
