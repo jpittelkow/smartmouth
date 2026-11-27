@@ -235,3 +235,29 @@ test('the TV sets up a game: pick, difficulty, Ready; phones ready up; an un-rea
     await srv.close();
   }
 });
+
+test('Ready on the TV checks the game can start first: no countdown when there are too few players', async () => {
+  const srv = await startServer({ port: 0, publicUrl: null, allowedOrigins: [], webDir: '.' });
+  const port = (srv.server.address() as { port: number }).port;
+  type V = { setup: { step: string } | null; notice: string | null };
+  const lobbyOf = (m: Msg) => (m.t === 'view' && m.view.phase === 'lobby' ? (m.view as unknown as V) : undefined);
+  try {
+    const host = client(port);
+    await host.open;
+    host.send({ t: 'host:create' });
+    const w = await host.next((m) => m.t === 'host:welcome');
+    if (w.t !== 'host:welcome') return assert.fail();
+    const a = client(port); await a.open;
+    a.send({ t: 'player:join', code: w.code, name: 'Solo', band: 'grownups', avatar: 0 });
+    await a.next((m) => m.t === 'player:welcome');
+    host.send({ t: 'setup:pick', gameId: 'snakes' });
+    await host.next((m) => lobbyOf(m)?.setup?.step === 'options');
+    host.send({ t: 'setup:ready' });
+    const v = lobbyOf(await host.next((m) => !!lobbyOf(m)?.notice));
+    assert.equal(v?.setup?.step, 'options', 'still setting up: no waiting, no countdown');
+    assert.match(v?.notice ?? '', /at least/);
+    for (const c of [host, a]) c.close();
+  } finally {
+    await srv.close();
+  }
+});

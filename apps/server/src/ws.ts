@@ -7,7 +7,7 @@ import { GAMES, findGame } from './games.ts';
 import { RateLimit, clientAddress, originAllowed } from './limits.ts';
 import { normalizeCode } from './codes.ts';
 import type { Db } from './db.ts';
-import { botMovesFor, holdForSpeech, pauseGame, resumeGame, deadline, drainLog, endGame, gameIntent, pruneLimits, skip, startGame, syncRoom, tickGame } from './gameRuntime.ts';
+import { startProblem, botMovesFor, holdForSpeech, pauseGame, resumeGame, deadline, drainLog, endGame, gameIntent, pruneLimits, skip, startGame, syncRoom, tickGame } from './gameRuntime.ts';
 import { idleCue, cueJoin, readsFor, updateSalty } from './salty.ts';
 import type { VoiceBank } from './voice.ts';
 import type { BotMinds } from './botMinds.ts';
@@ -92,6 +92,9 @@ const SPEECH_TAIL_MS = 1200;
     const people = room.seats.filter((x) => !x.bot && x.connected);
     const allReady = people.length > 0 && people.every((x) => s.ready.has(x.id));
     if (s.step === 'waiting' && allReady) {
+      // Someone may have left since the TV was ready: check again before counting down.
+      const problem = startProblem(room, s.gameId, opts.db, now());
+      if (problem) { room.notice = problem; s.step = 'options'; s.ready.clear(); return; }
       s.step = 'countdown';
       s.startsAt = now() + COUNTDOWN_MS;
       clearTimeout(setupTimers.get(room.code));
@@ -406,6 +409,10 @@ const SPEECH_TAIL_MS = 1200;
         const room = roomOf(c);
         if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only the TV or a grown-up can do that.');
         if (!room.setup || room.setup.step !== 'options') return;
+        // Check now, not after the countdown: not enough players, the wrong ages, no questions.
+        const problem = startProblem(room, room.setup.gameId, opts.db, t);
+        if (problem) { room.notice = problem; return broadcast(room); }
+        room.notice = null;
         room.setup.step = 'waiting';
         room.setup.ready = new Set();
         return broadcast(room);

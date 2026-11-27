@@ -14,7 +14,16 @@ export type { Actor } from './adapters/types.ts';
 
 const players = (room: Room): GamePlayer[] => room.seats.filter((s) => isBand(s.band)).map((s) => ({ id: s.id, band: s.band }));
 
-export function startGame(room: Room, gameId: string, db: Db, now: number, seed: number = randomInt(2 ** 31)): { ok: true } | Fail {
+/**
+ * Why this game couldn't start right now (or null): the same checks as startGame, run without starting it, so the TV
+ * can say so before the countdown (owner, 2026-11-27: Snake Manor counted down, then said there weren't enough players).
+ */
+export function startProblem(room: Room, gameId: string, db: Db, now: number): string | null {
+  const r = startGame(room, gameId, db, now, 1, true);
+  return r.ok ? null : r.message;
+}
+
+export function startGame(room: Room, gameId: string, db: Db, now: number, seed: number = randomInt(2 ** 31), dryRun = false): { ok: true } | Fail {
   const manifest = findGame(gameId);
   if (!manifest) return { ok: false, code: 'bad-message', message: 'Unknown game.' };
   if (room.game) return { ok: false, code: 'not-allowed', message: 'A game is already running.' };
@@ -33,6 +42,7 @@ export function startGame(room: Room, gameId: string, db: Db, now: number, seed:
   const adapter = adapterFor(manifest.id);
   const r = adapter.start({ players: players(room), spice: spiceState(room).effective, seed, drama: room.drama, length: room.length, level: room.level, db, exclude: room.asked, now });
   if (!r.ok) return r;
+  if (dryRun) return { ok: true };
   room.game = { id: manifest.id, state: r.state, seed, logged: 0 };
   room.notice = null;
   return { ok: true };
