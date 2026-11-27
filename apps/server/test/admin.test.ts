@@ -72,3 +72,30 @@ test('over HTTP: admin routes need the session cookie', async () => {
     await srv.close();
   }
 });
+
+test('the client address ignores forwarding headers unless the request comes through the tunnel', async () => {
+  const { clientAddress } = await import('../src/limits.ts');
+  const spoof = { 'x-forwarded-for': '1.2.3.4', 'cf-connecting-ip': '5.6.7.8' };
+  assert.equal(clientAddress(spoof, '203.0.113.9'), '203.0.113.9', 'a direct visitor cannot pick their own address');
+  assert.equal(clientAddress(spoof, '172.18.0.5'), '5.6.7.8', 'from the tunnel, Cloudflare says who it is');
+  assert.equal(clientAddress({ 'x-forwarded-for': '1.2.3.4' }, '127.0.0.1'), '127.0.0.1', 'X-Forwarded-For is never used');
+});
+
+test('wrong guesses spread over many addresses still hit a global limit', () => {
+  const auth = new AdminAuth('pw');
+  for (let i = 0; i < 50; i++) auth.login('nope', `10.0.0.${i}`, 0);
+  const r = auth.login('pw', '10.0.1.1', 0);
+  assert.ok(!r.ok && r.code === 'rate');
+});
+
+test('a malformed cookie is just "not signed in", not a crash', async () => {
+  const srv = await startServer({ port: 0, publicUrl: null, allowedOrigins: [], webDir: '.', adminPassword: 'pw' });
+  const base = `http://127.0.0.1:${(srv.server.address() as { port: number }).port}`;
+  try {
+    const r = await fetch(`${base}/api/admin/me`, { headers: { cookie: 'sm_admin=%E0%A4%A' } });
+    assert.equal(r.status, 200);
+    assert.deepEqual(await r.json(), { enabled: true, signedIn: false });
+  } finally {
+    await srv.close();
+  }
+});

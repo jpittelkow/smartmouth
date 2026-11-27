@@ -17,6 +17,8 @@ export class AdminAuth {
   sessions = new Map<string, number>();
   /** Five wrong guesses per address per 15 minutes. */
   limit = new RateLimit(5, 15 * 60 * 1000);
+  /** And 50 wrong guesses in total per 15 minutes, whatever addresses they come from. */
+  globalFails = new RateLimit(50, 15 * 60 * 1000);
 
   constructor(password: string | null | undefined) {
     const pw = password?.trim();
@@ -28,9 +30,11 @@ export class AdminAuth {
   login(password: unknown, ip: string, now: number): LoginResult {
     if (!this.passwordDigest) return { ok: false, code: 'off' };
     if (!this.limit.allow(ip, now)) return { ok: false, code: 'rate' };
+    const g = this.globalFails.hits.get('all');
+    if (g && now - g.start < this.globalFails.windowMs && g.count >= this.globalFails.max) return { ok: false, code: 'rate' };
     // Compare digests so the comparison takes the same time whatever the length of the guess.
     const right = typeof password === 'string' && timingSafeEqual(digest(password), this.passwordDigest);
-    if (!right) return { ok: false, code: 'wrong' };
+    if (!right) { this.globalFails.allow('all', now); return { ok: false, code: 'wrong' }; }
     this.limit.hits.delete(ip);
     const token = makeToken();
     this.sessions.set(token, now + SESSION_MS);
@@ -59,11 +63,12 @@ export function readCookie(header: string | undefined, name: string): string | u
   if (!header) return undefined;
   for (const part of header.split(';')) {
     const i = part.indexOf('=');
-    if (i > 0 && part.slice(0, i).trim() === name) return decodeURIComponent(part.slice(i + 1).trim());
+    // Tokens are base64url, so there is nothing to decode; a malformed value just doesn't match a session.
+    if (i > 0 && part.slice(0, i).trim() === name) return part.slice(i + 1).trim();
   }
   return undefined;
 }
 
 export function sessionCookie(token: string, secure: boolean, maxAgeMs = SESSION_MS): string {
-  return `${COOKIE}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${Math.floor(maxAgeMs / 1000)}${secure ? '; Secure' : ''}`;
+  return `${COOKIE}=${token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${Math.floor(maxAgeMs / 1000)}${secure ? '; Secure' : ''}`;
 }

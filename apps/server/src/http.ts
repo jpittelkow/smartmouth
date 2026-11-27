@@ -8,6 +8,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { RoomStore } from './rooms.ts';
 import { attachSockets } from './ws.ts';
 import { AdminAuth, COOKIE, readCookie, sessionCookie } from './admin.ts';
+import { clientAddress } from './limits.ts';
 
 export interface ServerConfig {
   port: number;
@@ -40,9 +41,7 @@ function readJson(req: IncomingMessage): Promise<unknown> {
 }
 
 function clientIp(req: IncomingMessage): string {
-  const cf = req.headers['cf-connecting-ip'];
-  const fwd = req.headers['x-forwarded-for'];
-  return (typeof cf === 'string' && cf) || (typeof fwd === 'string' && fwd.split(',')[0]?.trim()) || req.socket.remoteAddress || '?';
+  return clientAddress(req.headers, req.socket.remoteAddress);
 }
 
 /** Behind the tunnel the app sees plain HTTP; Cloudflare says the original scheme in X-Forwarded-Proto. */
@@ -65,7 +64,16 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
   const now = cfg.now ?? Date.now;
   const admin = new AdminAuth(cfg.adminPassword);
 
-  const server = createServer(async (req, res) => {
+  // Any unexpected error answers 500 instead of leaving a rejected promise behind.
+  const server = createServer((req, res) => {
+    handle(req, res).catch((e: unknown) => {
+      console.error('request failed:', e instanceof Error ? e.message : e);
+      if (!res.headersSent) res.writeHead(500, { 'content-type': 'text/plain' });
+      res.end();
+    });
+  });
+
+  async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
     const url = new URL(req.url ?? '/', 'http://x');
     if (url.pathname === '/api/health') {
       json(res, 200, { ok: true, app: APP_NAME, rooms: store.rooms.size });
@@ -121,7 +129,7 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
     } catch {
       res.writeHead(404, { 'content-type': 'text/plain' }).end('Not found');
     }
-  });
+  }
 
   const wss = new WebSocketServer({ noServer: true, maxPayload: 8192 });
   const sockets = attachSockets(wss, store, {

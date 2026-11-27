@@ -26,6 +26,25 @@ export class RateLimit {
   }
 }
 
+/** Loopback and private-range addresses: where the Cloudflare tunnel (cloudflared) reaches us from. */
+export function isPrivateAddress(addr: string | undefined): boolean {
+  if (!addr) return false;
+  const a = addr.replace(/^::ffff:/, '');
+  return a === '127.0.0.1' || a === '::1' || /^10\./.test(a) || /^192\.168\./.test(a)
+    || /^172\.(1[6-9]|2\d|3[01])\./.test(a) || /^f[cd][0-9a-f]{2}:/i.test(a);
+}
+
+/**
+ * The client's address for rate limits. CF-Connecting-IP is believed only when the connection itself comes from a
+ * private address (the tunnel); Cloudflare overwrites that header, so a visitor through the tunnel can't fake it.
+ * X-Forwarded-For is never used: anyone can set it.
+ */
+export function clientAddress(headers: Record<string, string | string[] | undefined>, remote: string | undefined): string {
+  const cf = headers['cf-connecting-ip'];
+  if (isPrivateAddress(remote) && typeof cf === 'string' && cf.length > 0 && cf.length < 64) return cf;
+  return remote ?? '?';
+}
+
 export function originAllowed(origin: string | undefined, allowed: ReadonlySet<string>, requestHost?: string): boolean {
   // Browsers always send Origin on a WebSocket; tools and tests don't. Only a browser can be tricked into
   // connecting from another site, so a missing Origin is fine.

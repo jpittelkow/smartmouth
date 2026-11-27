@@ -4,7 +4,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { isBand, isSpice, type ClientMsg, type ErrorCode, type ServerMsg } from '@smartmouth/protocol';
 import { RoomStore, hostView, playerView, adminSeatId, type Room } from './rooms.ts';
 import { GAMES, findGame } from './games.ts';
-import { RateLimit, originAllowed } from './limits.ts';
+import { RateLimit, clientAddress, originAllowed } from './limits.ts';
 import { normalizeCode } from './codes.ts';
 
 export interface SocketOptions {
@@ -195,9 +195,7 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
   wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
     const origin = req.headers.origin;
     if (!originAllowed(origin, opts.allowedOrigins, req.headers.host)) { ws.close(4003, 'origin'); return; }
-    const fwd = req.headers['x-forwarded-for'];
-    const ip = (typeof fwd === 'string' ? fwd.split(',')[0]?.trim() : undefined)
-      || (req.headers['cf-connecting-ip'] as string | undefined) || req.socket.remoteAddress || '?';
+    const ip = clientAddress(req.headers, req.socket.remoteAddress);
     const c: Client = { ws, ip, origin, conn: { kind: 'none' }, msgWindow: 0, msgCount: 0 };
     clients.add(c);
 
