@@ -15,6 +15,13 @@ Trimmed and levelled for the game (tools/sounds/README.md).
 | wind | [Halloween - Graveyard At Night Howling Wind](https://freesound.org/people/mistersherlock/sounds/159509/) | mistersherlock | Under the night music |
 | candles | [Candle blow](https://freesound.org/people/JacobEmanuelMadrid/sounds/656818/) | JacobEmanuelMadrid | The candles going out when a Guest is banished |
 
+## Generated sound effects (Snake Manor)
+Generated on our own GPU with **Stable Audio Open 1.0** (`stabilityai/stable-audio-open-1.0`) on 2026-11-27, from
+the prompts in `tools/sounds/sfx-cues.json` (each says what the sound is for), and picked by ear on the audition
+page. Files: `media/sounds/game/<cue>.g1.mp3` for envelope, unfold, letter, dagger, shield, cards, whoosh, knock,
+gasp, fanfare, misfanfare, chime, birds, tick and lute. Powered by Stability AI, under the Stability AI Community
+License (https://stability.ai/community-license-agreement).
+
 ## Music and the bell (Snake Manor)
 Generated with **Google Lyria 3** (`google/lyria-3-clip-preview`) through OpenRouter on 2026-11-27, from our own
 prompts in `tools/sounds/sounds.mjs`. The files carry Google's content credentials (a C2PA tag).
