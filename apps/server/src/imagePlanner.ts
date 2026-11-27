@@ -10,7 +10,7 @@ import type { ImageRef, Question } from '@smartmouth/protocol';
 import type { Chat, ChatPart } from './ai.ts';
 import { parseJsonObject } from './ai.ts';
 import type { Db } from './db.ts';
-import { fetchCommons, searchCommons, type CommonsCandidate } from './images.ts';
+import { fetchCommons, searchCommons, wikimedia, type CommonsCandidate } from './images.ts';
 
 export const PLAN_MODEL = 'anthropic/claude-sonnet-5.5';
 export const LOOK_MODEL = 'anthropic/claude-sonnet-5.5';
@@ -51,7 +51,7 @@ Return JSON only: {"question": {"query": "...", "shows": "what the photo should 
 /** Loads a small preview as a data URL, so the vision model sees exactly what we'd show. */
 async function preview(c: CommonsCandidate): Promise<string | null> {
   try {
-    const r = await fetch(c.preview, { headers: { 'User-Agent': 'SmartmouthTrivia/0.1 (private family party game)' }, signal: AbortSignal.timeout(20_000) });
+    const r = await wikimedia(c.preview, fetch, 20_000);
     if (!r.ok) return null;
     const type = r.headers.get('content-type') ?? 'image/jpeg';
     return `data:${type};base64,${Buffer.from(await r.arrayBuffer()).toString('base64')}`;

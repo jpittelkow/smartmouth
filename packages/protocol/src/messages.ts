@@ -113,6 +113,8 @@ export interface HostLobbyView {
   games: GameManifest[];
   /** A game being set up on the TV (null: still picking). */
   setup: SetupView | null;
+  /** Seats that have tapped Ready (bots always are); a phone can ready up before the TV is ready. */
+  ready: string[];
   notice: string | null;
   salty: SaltyCue | null;
 }
@@ -130,6 +132,8 @@ export interface PlayerLobbyView {
   games: GameManifest[];
   /** A game being set up on the TV (null: still picking). */
   setup: SetupView | null;
+  /** Seats that have tapped Ready (bots always are); a phone can ready up before the TV is ready. */
+  ready: string[];
   notice: string | null;
 }
 

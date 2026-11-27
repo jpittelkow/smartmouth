@@ -90,11 +90,11 @@ const SPEECH_TAIL_MS = 1200;
     if (!s || room.game) { if (room.game) room.setup = null; return; }
     if (s.step === 'options') return;
     const people = room.seats.filter((x) => !x.bot && x.connected);
-    const allReady = people.length > 0 && people.every((x) => s.ready.has(x.id));
+    const allReady = people.length > 0 && people.every((x) => room.ready.has(x.id));
     if (s.step === 'waiting' && allReady) {
       // Someone may have left since the TV was ready: check again before counting down.
       const problem = startProblem(room, s.gameId, opts.db, now());
-      if (problem) { room.notice = problem; s.step = 'options'; s.ready.clear(); return; }
+      if (problem) { room.notice = problem; s.step = 'options'; return; }
       s.step = 'countdown';
       s.startsAt = now() + COUNTDOWN_MS;
       clearTimeout(setupTimers.get(room.code));
@@ -102,8 +102,8 @@ const SPEECH_TAIL_MS = 1200;
         setupTimers.delete(room.code);
         if (!store.rooms.has(room.code) || room.setup !== s || s.step !== 'countdown') return;
         const r = startGame(room, s.gameId, opts.db, now());
-        if (r.ok) room.setup = null;
-        else { room.notice = r.message; s.step = 'options'; s.ready.clear(); s.startsAt = null; }
+        if (r.ok) { room.setup = null; room.ready.clear(); }
+        else { room.notice = r.message; s.step = 'options'; s.startsAt = null; }
         broadcast(room);
       }, COUNTDOWN_MS));
     } else if (s.step === 'countdown' && !allReady) {
@@ -393,7 +393,7 @@ const SPEECH_TAIL_MS = 1200;
         if (!game) return error(c, 'bad-message', 'Unknown game.');
         if (!game.ready) { room.notice = `${game.name} isn't built yet. Salty is "rehearsing".`; return broadcast(room); }
         room.notice = null;
-        room.setup = { gameId: game.id, step: 'options', ready: new Set(), startsAt: null };
+        room.setup = { gameId: game.id, step: 'options', startsAt: null };
         return broadcast(room);
       }
 
@@ -414,7 +414,6 @@ const SPEECH_TAIL_MS = 1200;
         if (problem) { room.notice = problem; return broadcast(room); }
         room.notice = null;
         room.setup.step = 'waiting';
-        room.setup.ready = new Set();
         return broadcast(room);
       }
 
@@ -426,14 +425,15 @@ const SPEECH_TAIL_MS = 1200;
         clearTimeout(setupTimers.get(room.code));
         setupTimers.delete(room.code);
         if (s.step === 'options') room.setup = null;
-        else { s.step = 'options'; s.ready.clear(); s.startsAt = null; }
+        else { s.step = 'options'; s.startsAt = null; }
         return broadcast(room);
       }
 
       case 'player:ready': {
         const room = roomOf(c);
-        if (!room || c.conn.kind !== 'player' || !room.setup || room.setup.step === 'options') return;
-        if (msg.ready) room.setup.ready.add(c.conn.seatId); else room.setup.ready.delete(c.conn.seatId);
+        // Any time in the lobby, even before the TV has picked a game or pressed Ready.
+        if (!room || c.conn.kind !== 'player' || room.game) return;
+        if (msg.ready) room.ready.add(c.conn.seatId); else room.ready.delete(c.conn.seatId);
         return broadcast(room);
       }
 

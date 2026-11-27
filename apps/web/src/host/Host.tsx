@@ -191,7 +191,7 @@ function Lobby({ view, send, problem }: { view: HostLobbyView; send: (m: ClientM
       <div className={`tiles${view.players.length > 6 ? ' two-rows' : ''}`}>
         {view.players.map((p) => (
           <div key={p.id} className={`tile${p.connected ? '' : ' away'}`}>
-            {view.setup && view.setup.step !== 'options' && view.setup.ready.includes(p.id) && <span className="tile-badge"><Tick size={40} /></span>}
+            {view.ready.includes(p.id) && <span className="tile-badge"><Tick size={40} /></span>}
             <Blob avatar={p.avatar} color={p.color} />
             <div className="name">{p.name}</div>
             <div className="band">{BANDS.find((b) => b.id === p.band)?.label}{p.isAdmin ? ' · host' : ''}{p.connected ? '' : ' · away'}</div>

@@ -13,6 +13,28 @@ import type { Db } from './db.ts';
 /** Wikimedia asks automated clients for a descriptive User-Agent (no personal details here). */
 const UA = 'SmartmouthTrivia/0.1 (private family party game; images credited on screen)';
 
+/**
+ * Every request to Wikimedia goes through here: one at a time, at least 1.2 s apart, and on 429 (slow down) a wait of
+ * 5, 15, then 45 s before trying again (the first run, 2026-11-27, was rate-limited after a few questions).
+ */
+let lastCall = 0;
+let queue: Promise<unknown> = Promise.resolve();
+export function wikimedia(url: string, fetchFn: typeof fetch = fetch, timeoutMs = 30_000): Promise<Response> {
+  const run = async () => {
+    for (let attempt = 0; ; attempt++) {
+      const wait = lastCall + 1200 - Date.now();
+      if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+      lastCall = Date.now();
+      const r = await fetchFn(url, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(timeoutMs) });
+      if (r.status !== 429 || attempt >= 3) return r;
+      await new Promise((ok) => setTimeout(ok, 5000 * 3 ** attempt));
+    }
+  };
+  const p = queue.then(run, run);
+  queue = p.catch(() => undefined);
+  return p;
+}
+
 export interface CommonsCandidate {
   title: string;
   /** About 1280 px wide: what we download and show on the TV. */
@@ -43,7 +65,7 @@ export async function searchCommons(query: string, limit = 8, fetchFn: typeof fe
     gsrsearch: `${query} filetype:bitmap`, gsrlimit: String(Math.min(30, limit * 3)),
     prop: 'imageinfo', iiprop: 'url|size|mime|extmetadata', iiurlwidth: '1280',
   });
-  const r = await fetchFn(url, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(20_000) });
+  const r = await wikimedia(url, fetchFn, 20_000);
   if (!r.ok) throw new Error(`Commons search: ${r.status}`);
   const j = await r.json() as { query?: { pages?: Record<string, { title: string; index?: number; imageinfo?: Array<Record<string, unknown>> }> } };
   const pages = Object.values(j.query?.pages ?? {}).sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
@@ -60,7 +82,8 @@ export async function searchCommons(query: string, limit = 8, fetchFn: typeof fe
     const thumb = String(i.thumburl ?? i.url ?? '');
     out.push({
       title: p.title.replace(/^File:/, '').replace(/\.\w+$/, ''),
-      url: thumb, preview: thumb.replace(/\/\d+px-/, '/400px-'),
+      // 330 px is one of Wikimedia's standard (cached) thumbnail widths; odd sizes are rate-limited.
+      url: thumb, preview: thumb.replace(/\/\d+px-/, '/330px-'),
       license, author: strip(meta.Artist?.value ?? '').slice(0, 80) || 'Unknown',
       pageUrl: String(i.descriptionurl ?? ''), description: strip(meta.ImageDescription?.value ?? '').slice(0, 300),
       width, height,
@@ -95,7 +118,7 @@ export function storeImage(db: Db, mediaDir: string, img: {
 
 /** Downloads a Commons candidate at TV size and stores it. */
 export async function fetchCommons(db: Db, mediaDir: string, c: CommonsCandidate, alt: string, fetchFn: typeof fetch = fetch): Promise<ImageRef> {
-  const r = await fetchFn(c.url, { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(30_000) });
+  const r = await wikimedia(c.url, fetchFn);
   if (!r.ok) throw new Error(`Commons download: ${r.status}`);
   const type = r.headers.get('content-type') ?? '';
   const ext = type.includes('png') ? 'png' : type.includes('webp') ? 'webp' : 'jpg';

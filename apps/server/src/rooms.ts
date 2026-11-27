@@ -39,7 +39,9 @@ export interface Room {
   /** How hard the next game's questions are (picked on the TV). */
   level: QuestionLevel;
   /** A game being set up on the TV, or null. */
-  setup: null | { gameId: string; step: SetupView['step']; ready: Set<string>; startsAt: number | null };
+  setup: null | { gameId: string; step: SetupView['step']; startsAt: number | null };
+  /** Seats that tapped Ready in the lobby (any time, even before the TV picks a game); cleared when a game starts. */
+  ready: Set<string>;
   /** When a grown-up paused the game (every clock stops), or null. */
   pausedAt: number | null;
   notice: string | null;
@@ -84,7 +86,7 @@ export class RoomStore {
   create(now: number): Room {
     const code = makeCode((c) => this.rooms.has(c));
     const room: Room = {
-      code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy', voice: 'female', drama: 'full', length: 'short', level: 'mixed', setup: null, pausedAt: null,
+      code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy', voice: 'female', drama: 'full', length: 'short', level: 'mixed', setup: null, ready: new Set(), pausedAt: null,
       notice: null, lastActive: now, nextSeat: 1, game: null, asked: new Set(), salty: newSalty(),
     };
     this.rooms.set(code, room);
@@ -162,12 +164,16 @@ function freeColor(room: Room): string {
 }
 
 /** The first grown-up to join is the admin; it moves on when they leave (ADR 0005). A bot never is. */
-/** The setup as the TV and phones see it; bots are always ready. */
+/** Who is ready in the lobby; bots always are. */
+export function readyIds(room: Room): string[] {
+  return room.seats.filter((x) => x.bot || room.ready.has(x.id)).map((x) => x.id);
+}
+
+/** The setup as the TV and phones see it. */
 export function setupView(room: Room): SetupView | null {
   const s = room.setup;
   if (!s || room.game) return null;
-  const ready = room.seats.filter((x) => x.bot || s.ready.has(x.id)).map((x) => x.id);
-  return { gameId: s.gameId, step: s.step, asksLevel: s.gameId === 'trivia', level: room.level, ready, startsAt: s.startsAt };
+  return { gameId: s.gameId, step: s.step, asksLevel: s.gameId === 'trivia', level: room.level, ready: readyIds(room), startsAt: s.startsAt };
 }
 
 export function adminSeatId(room: Room): string | null {
@@ -201,7 +207,7 @@ export function hostView(
   }
   return {
     role: 'host', phase: 'lobby', code: room.code, joinUrl,
-    players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama, length: room.length, games, setup: setupView(room),
+    players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama, length: room.length, games, setup: setupView(room), ready: readyIds(room),
     notice: room.notice, salty: room.salty.cue,
   };
 }
@@ -216,6 +222,6 @@ export function playerView(room: Room, seat: Seat, games: GameManifest[]): Playe
   }
   return {
     role: 'player', phase: 'lobby', code: room.code, you: publicSeat(room, seat),
-    playerCount: room.seats.length, spice: spiceState(room), voice: room.voice, drama: room.drama, length: room.length, games, setup: setupView(room), notice: room.notice,
+    playerCount: room.seats.length, spice: spiceState(room), voice: room.voice, drama: room.drama, length: room.length, games, setup: setupView(room), ready: readyIds(room), notice: room.notice,
   };
 }

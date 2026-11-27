@@ -261,3 +261,39 @@ test('Ready on the TV checks the game can start first: no countdown when there a
     await srv.close();
   }
 });
+
+test('phones can tap Ready before the TV: when the TV is ready too, the countdown starts at once', async () => {
+  const { loadSeeds } = await import('../src/seeds.ts');
+  const seedDir = new URL('../../../content/seed', import.meta.url);
+  const srv = await startServer({
+    port: 0, publicUrl: null, allowedOrigins: [], webDir: '.',
+    onDb: (db) => { loadSeeds(db, (seedDir.pathname.replace(/^\/([A-Za-z]:)/, '$1')), Date.now()); },
+  });
+  const port = (srv.server.address() as { port: number }).port;
+  type L = { setup: { step: string } | null; ready: string[] };
+  const lobbyOf = (m: Msg) => (m.t === 'view' && m.view.phase === 'lobby' ? (m.view as unknown as L) : undefined);
+  try {
+    const host = client(port);
+    await host.open;
+    host.send({ t: 'host:create' });
+    const w = await host.next((m) => m.t === 'host:welcome');
+    if (w.t !== 'host:welcome') return assert.fail();
+    const players = [];
+    for (const name of ['Ann', 'Bo']) {
+      const p = client(port); await p.open;
+      p.send({ t: 'player:join', code: w.code, name, band: 'grownups', avatar: 0 });
+      await p.next((m) => m.t === 'player:welcome');
+      p.send({ t: 'player:ready', ready: true }); // before the TV has even picked a game
+      players.push(p);
+    }
+    await host.next((m) => lobbyOf(m)?.ready.length === 2 && !lobbyOf(m)?.setup);
+    host.send({ t: 'setup:pick', gameId: 'trivia' });
+    await host.next((m) => lobbyOf(m)?.setup?.step === 'options');
+    host.send({ t: 'setup:ready' });
+    await host.next((m) => lobbyOf(m)?.setup?.step === 'countdown');
+    await host.next((m) => m.t === 'view' && m.view.phase === 'game', 5000);
+    for (const c of [host, ...players]) c.close();
+  } finally {
+    await srv.close();
+  }
+});

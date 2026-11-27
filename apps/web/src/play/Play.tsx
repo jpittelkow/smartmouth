@@ -121,10 +121,10 @@ function Waiting({ view, send, online, onLeave }: {
       <div className="waiting">
         <Blob avatar={view.you.avatar} color={view.you.color} />
         <div className="display" style={{ fontSize: 34 }}>{view.you.name}</div>
-        {view.phase === 'lobby' && view.setup && view.setup.step !== 'options' ? (
-          <ReadyButton ready={view.setup.ready.includes(view.you.id)} countdown={view.setup.step === 'countdown'}
-            onReady={(r) => send({ t: 'player:ready', ready: r })} />
-        ) : <div className="look display">{view.phase === 'lobby' && view.setup ? 'The TV is setting up a game' : 'Look at the TV'}</div>}
+        {view.phase === 'lobby' ? (
+          <ReadyButton ready={view.ready.includes(view.you.id)} countdown={view.setup?.step === 'countdown'}
+            waitingOnTv={!view.setup || view.setup.step === 'options'} onReady={(r) => send({ t: 'player:ready', ready: r })} />
+        ) : <div className="look display">Look at the TV</div>}
         <div className="muted">{view.playerCount} in room {view.code}</div>
       </div>
       {view.you.isAdmin && (
@@ -185,13 +185,13 @@ function AdminSheet({ view, onSpice, onVoice, onDrama, onLength, onBots }: {
 }
 
 /** Ready-up on the phone while the TV waits for everyone (owner, 2026-11-27). Tap again to un-ready. */
-function ReadyButton({ ready, countdown, onReady }: { ready: boolean; countdown: boolean; onReady: (r: boolean) => void }) {
+function ReadyButton({ ready, countdown, waitingOnTv, onReady }: { ready: boolean; countdown: boolean; waitingOnTv: boolean; onReady: (r: boolean) => void }) {
   return (
     <div className="ready-box">
       <button className={`press big-btn ready-btn${ready ? ' is-ready' : ''}`} onClick={() => onReady(!ready)}>
         {ready ? 'Ready ✓' : "I'm ready!"}
       </button>
-      <div className="muted">{countdown ? 'Starting…' : ready ? 'Waiting for everyone else. Tap again if you need a sec.' : 'The game starts when everyone is ready.'}</div>
+      <div className="muted">{countdown ? 'Starting…' : ready ? (waitingOnTv ? 'You’re ready. Waiting for the TV to pick a game.' : 'Waiting for everyone else. Tap again if you need a sec.') : 'The game starts when everyone is ready.'}</div>
     </div>
   );
 }
