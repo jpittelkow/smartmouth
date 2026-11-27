@@ -36,3 +36,11 @@ cue, trimmed (silence off the front, capped per cue) and levelled with ffmpeg `l
 The candidates, authors and links are in [library.json](library.json). The page and clips were built on the dev PC
 and copied to `DATA_DIR/media/sounds/library/`; Freesound previews were fetched slowly (its search rate-limits fast
 callers with 429).
+
+## Trivia's audition (2026-11-27)
+Same recipe. `trivia/search.mjs` searched Freesound (CC0, 7.5 s apart) for 14 cues; the owner approved the 41 previews
+in `trivia/candidates.json` (about 1.6 MB); `trivia/build-effects.mjs` downloaded, trimmed and levelled them with ffmpeg
+on the dev PC; `trivia/music.mjs` (piped into the container) made two Lyria takes of four beds (lobby, think,
+leaderboard, winner); `trivia/build-page.py` wrote the page. All of it lives at
+`https://play.303.social/media/sounds/trivia/index.html` (`DATA_DIR/media/sounds/trivia/`). Credits go in
+`CREDITS.md` once the owner picks.

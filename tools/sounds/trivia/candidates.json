@@ -1,0 +1,524 @@
+[
+ {
+  "id": "join",
+  "label": "Player joins",
+  "q": "pop bubble cartoon",
+  "max": 1.5,
+  "candidates": [
+   {
+    "id": "570459",
+    "author": "SplendidJams",
+    "title": "Simple Pop Sound Effect",
+    "seconds": 0.128125,
+    "downloads": 1110,
+    "rating": 4.9,
+    "preview": "https://cdn.freesound.org/previews/570/570459_8258964-hq.mp3",
+    "page": "https://freesound.org/people/SplendidJams/sounds/570459/"
+   },
+   {
+    "id": "791346",
+    "author": "Losh.id",
+    "title": "Pop up!",
+    "seconds": 1.472,
+    "downloads": 278,
+    "rating": 4.9,
+    "preview": "https://cdn.freesound.org/previews/791/791346_16995461-hq.mp3",
+    "page": "https://freesound.org/people/Losh.id/sounds/791346/"
+   },
+   {
+    "id": "321163",
+    "author": "mikala_oidua",
+    "title": "TOONY pops.wav",
+    "seconds": 0.357333,
+    "downloads": 4145,
+    "rating": 4.8,
+    "preview": "https://cdn.freesound.org/previews/321/321163_5481182-hq.mp3",
+    "page": "https://freesound.org/people/mikala_oidua/sounds/321163/"
+   }
+  ]
+ },
+ {
+  "id": "start",
+  "label": "Game starts",
+  "q": "fanfare short",
+  "max": 4,
+  "candidates": [
+   {
+    "id": "751890",
+    "author": "_def",
+    "title": "monophonic synth fanfare sound",
+    "seconds": 2.5,
+    "downloads": 154,
+    "rating": 5,
+    "preview": "https://cdn.freesound.org/previews/751/751890_909262-hq.mp3",
+    "page": "https://freesound.org/people/_def/sounds/751890/"
+   },
+   {
+    "id": "266454",
+    "author": "InfiniteLifespan",
+    "title": "LevelUp.wav",
+    "seconds": 3.99385,
+    "downloads": 1074,
+    "rating": 4.9,
+    "preview": "https://cdn.freesound.org/previews/266/266454_4911235-hq.mp3",
+    "page": "https://freesound.org/people/InfiniteLifespan/sounds/266454/"
+   },
+   {
+    "id": "538149",
+    "author": "Fupicat",
+    "title": "Notification",
+    "seconds": 0.692245,
+    "downloads": 1449,
+    "rating": 4.8,
+    "preview": "https://cdn.freesound.org/previews/538/538149_7724198-hq.mp3",
+    "page": "https://freesound.org/people/Fupicat/sounds/538149/"
+   }
+  ]
+ },
+ {
+  "id": "round",
+  "label": "Round change (transition)",
+  "q": "whoosh transition swoosh",
+  "max": 1.5,
+  "candidates": [
+   {
+    "id": "786514",
+    "author": "migoreng1",
+    "title": "swoosh_v2",
+    "seconds": 0.3,
+    "downloads": 367,
+    "rating": 5,
+    "preview": "https://cdn.freesound.org/previews/786/786514_16837477-hq.mp3",
+    "page": "https://freesound.org/people/migoreng1/sounds/786514/"
+   },
+   {
+    "id": "856168",
+    "author": "brktkrgll",
+    "title": "Cyberpunk Glitch Hologram Transition Whoosh",
+    "seconds": 3,
+    "downloads": 404,
+    "rating": 4.9,
+    "preview": "https://cdn.freesound.org/previews/856/856168_18901108-hq.mp3",
+    "page": "https://freesound.org/people/brktkrgll/sounds/856168/"
+   },
+   {
+    "id": "558827",
+    "author": "Kinoton",
+    "title": "Deep Whoosh #5",
+    "seconds": 3.17979,
+    "downloads": 1937,
+    "rating": 4.8,
+    "preview": "https://cdn.freesound.org/previews/558/558827_2247456-hq.mp3",
+    "page": "https://freesound.org/people/Kinoton/sounds/558827/"
+   }
+  ]
+ },
+ {
+  "id": "lock",
+  "label": "Someone locks in an answer",
+  "q": "click button pop ui",
+  "max": 0.6,
+  "candidates": [
+   {
+    "id": "686542",
+    "author": "Troube",
+    "title": "bop sound effect button",
+    "seconds": 0.166168,
+    "downloads": 1206,
+    "rating": 4.9,
+    "preview": "https://cdn.freesound.org/previews/686/686542_12843138-hq.mp3",
+    "page": "https://freesound.org/people/Troube/sounds/686542/"
+   },
+   {
+    "id": "467951",
+    "author": "benzix2",
+    "title": "UI Button Click",
+    "seconds": 0.123356,
+    "downloads": 5735,
+    "rating": 4.7,
+    "preview": "https://cdn.freesound.org/previews/467/467951_6769414-hq.mp3",
+    "page": "https://freesound.org/people/benzix2/sounds/467951/"
+   },
+   {
+    "id": "220208",
+    "author": "GameAudio",
+    "title": "Click Pop - two part",
+    "seconds": 0.500317,
+    "downloads": 1780,
+    "rating": 4.6,
+    "preview": "https://cdn.freesound.org/previews/220/220208_4100837-hq.mp3",
+    "page": "https://freesound.org/people/GameAudio/sounds/220208/"
+   }
+  ]
+ },
+ {
+  "id": "tick",
+  "label": "Countdown tick (last 5 seconds)",
+  "q": "clock tick single",
+  "max": 0.6,
+  "candidates": [
+   {
+    "id": "774640",
+    "author": "loganzsound",
+    "title": "Toy Crank Tick Single",
+    "seconds": 0.0807256,
+    "downloads": 130,
+    "rating": 5,
+    "preview": "https://cdn.freesound.org/previews/774/774640_16682330-hq.mp3",
+    "page": "https://freesound.org/people/loganzsound/sounds/774640/"
+   },
+   {
+    "id": "668355",
+    "author": "DeltaCode",
+    "title": "single-tick.wav",
+    "seconds": 0.0792708,
+    "downloads": 366,
+    "rating": 4.8,
+    "preview": "https://cdn.freesound.org/previews/668/668355_3271378-hq.mp3",
+    "page": "https://freesound.org/people/DeltaCode/sounds/668355/"
+   },
+   {
+    "id": "211203",
+    "author": "Diboz",
+    "title": "assymetric_tick.wav",
+    "seconds": 0.962494,
+    "downloads": 784,
+    "rating": 4.7,
+    "preview": "https://cdn.freesound.org/previews/211/211203_3930831-hq.mp3",
+    "page": "https://freesound.org/people/Diboz/sounds/211203/"
+   }
+  ]
+ },
+ {
+  "id": "timeup",
+  "label": "Time's up",
+  "q": "buzzer",
+  "max": 1.5,
+  "candidates": [
+   {
+    "id": "419086",
+    "author": "SomeoneCool15",
+    "title": "Loud Buzzer.mp3",
+    "seconds": 3.22898,
+    "downloads": 1397,
+    "rating": 4.9,
+    "preview": "https://cdn.freesound.org/previews/419/419086_8326967-hq.mp3",
+    "page": "https://freesound.org/people/SomeoneCool15/sounds/419086/"
+   },
+   {
+    "id": "52002",
+    "author": "scarfield",
+    "title": "buzzer_feeback.aif",
+    "seconds": 2.64087,
+    "downloads": 1199,
+    "rating": 4.6,
+    "preview": "https://cdn.freesound.org/previews/52/52002_178246-hq.mp3",
+    "page": "https://freesound.org/people/scarfield/sounds/52002/"
+   },
+   {
+    "id": "510026",
+    "author": "Naïma",
+    "title": "buzzer sportif.wav",
+    "seconds": 3.34665,
+    "downloads": 1180,
+    "rating": 4.6,
+    "preview": "https://cdn.freesound.org/previews/510/510026_8371354-hq.mp3",
+    "page": "https://freesound.org/people/Naïma/sounds/510026/"
+   }
+  ]
+ },
+ {
+  "id": "reveal",
+  "label": "Answer reveal",
+  "q": "drum roll short",
+  "max": 3,
+  "candidates": [
+   {
+    "id": "809824",
+    "author": "CVLTIV8R",
+    "title": "snare Processed - soft roll short - 14 by 6.5 inch Brass Ludwig.wav",
+    "seconds": 1.19721,
+    "downloads": 19,
+    "rating": 5,
+    "preview": "https://cdn.freesound.org/previews/809/809824_2520418-hq.mp3",
+    "page": "https://freesound.org/people/CVLTIV8R/sounds/809824/"
+   },
+   {
+    "id": "375285",
+    "author": "sgossner",
+    "title": "Bass drum (bdrum_roll_short_1.wav)",
+    "seconds": 6.79837,
+    "downloads": 276,
+    "rating": 4.6,
+    "preview": "https://cdn.freesound.org/previews/375/375285_2475994-hq.mp3",
+    "page": "https://freesound.org/people/sgossner/sounds/375285/"
+   },
+   {
+    "id": "77305",
+    "author": "bigjoedrummer",
+    "title": "buzz roll.wav",
+    "seconds": 4.7659,
+    "downloads": 20773,
+    "rating": 4.4,
+    "preview": "https://cdn.freesound.org/previews/77/77305_1105584-hq.mp3",
+    "page": "https://freesound.org/people/bigjoedrummer/sounds/77305/"
+   }
+  ]
+ },
+ {
+  "id": "right",
+  "label": "Correct answer",
+  "q": "correct answer ding chime",
+  "max": 1.8,
+  "candidates": [
+   {
+    "id": "538147",
+    "author": "Fupicat",
+    "title": "Correct Bell",
+    "seconds": 1.59782,
+    "downloads": 2873,
+    "rating": 4.8,
+    "preview": "https://cdn.freesound.org/previews/538/538147_7724198-hq.mp3",
+    "page": "https://freesound.org/people/Fupicat/sounds/538147/"
+   },
+   {
+    "id": "243701",
+    "author": "ertfelda",
+    "title": "correct",
+    "seconds": 0.318549,
+    "downloads": 13822,
+    "rating": 4.7,
+    "preview": "https://cdn.freesound.org/previews/243/243701_3752922-hq.mp3",
+    "page": "https://freesound.org/people/ertfelda/sounds/243701/"
+   },
+   {
+    "id": "580649",
+    "author": "mark205",
+    "title": "ding.wav",
+    "seconds": 0.549955,
+    "downloads": 908,
+    "rating": 4.7,
+    "preview": "https://cdn.freesound.org/previews/580/580649_6952796-hq.mp3",
+    "page": "https://freesound.org/people/mark205/sounds/580649/"
+   }
+  ]
+ },
+ {
+  "id": "allwrong",
+  "label": "Nobody got it",
+  "q": "sad trombone wah wah fail",
+  "max": 3,
+  "candidates": [
+   {
+    "id": "175409",
+    "author": "kirbydx",
+    "title": "wah wah sad trombone.wav",
+    "seconds": 5.20522,
+    "downloads": 23092,
+    "rating": 4.7,
+    "preview": "https://cdn.freesound.org/previews/175/175409_1326576-hq.mp3",
+    "page": "https://freesound.org/people/kirbydx/sounds/175409/"
+   },
+   {
+    "id": "362206",
+    "author": "TaranP",
+    "title": "horn_fail_wahwah_1.wav",
+    "seconds": 4.27756,
+    "downloads": 6151,
+    "rating": 4.7,
+    "preview": "https://cdn.freesound.org/previews/362/362206_6629901-hq.mp3",
+    "page": "https://freesound.org/people/TaranP/sounds/362206/"
+   },
+   {
+    "id": "181351",
+    "author": "unfa",
+    "title": "Fail Jingle (stereo mix)",
+    "seconds": 7.07185,
+    "downloads": 3523,
+    "rating": 4.5,
+    "preview": "https://cdn.freesound.org/previews/181/181351_1038806-hq.mp3",
+    "page": "https://freesound.org/people/unfa/sounds/181351/"
+   }
+  ]
+ },
+ {
+  "id": "applause",
+  "label": "Everyone got it",
+  "q": "applause small crowd clapping",
+  "max": 4,
+  "candidates": [
+   {
+    "id": "858309",
+    "author": "miuziqa",
+    "title": "Small Crowd Applause",
+    "seconds": 5.71404,
+    "downloads": 340,
+    "rating": 4.9,
+    "preview": "https://cdn.freesound.org/previews/858/858309_770193-hq.mp3",
+    "page": "https://freesound.org/people/miuziqa/sounds/858309/"
+   },
+   {
+    "id": "462362",
+    "author": "Breviceps",
+    "title": "Small applause",
+    "seconds": 4.48605,
+    "downloads": 4434,
+    "rating": 4.8,
+    "preview": "https://cdn.freesound.org/previews/462/462362_9159316-hq.mp3",
+    "page": "https://freesound.org/people/Breviceps/sounds/462362/"
+   },
+   {
+    "id": "138113",
+    "author": "snakebarney",
+    "title": "Small Crowd Applause 1",
+    "seconds": 7.84117,
+    "downloads": 2340,
+    "rating": 4.8,
+    "preview": "https://cdn.freesound.org/previews/138/138113_1572282-hq.mp3",
+    "page": "https://freesound.org/people/snakebarney/sounds/138113/"
+   }
+  ]
+ },
+ {
+  "id": "slide",
+  "label": "Leaderboard rows slide",
+  "q": "swoosh slide whoosh short",
+  "max": 1.2,
+  "candidates": [
+   {
+    "id": "878251",
+    "author": "Qvantor",
+    "title": "UI Panel Slide Out",
+    "seconds": 0.262188,
+    "downloads": 39,
+    "rating": 0,
+    "preview": "https://cdn.freesound.org/previews/878/878251_19512113-hq.mp3",
+    "page": "https://freesound.org/people/Qvantor/sounds/878251/"
+   },
+   {
+    "id": "696649",
+    "author": "Johnnie_Holiday",
+    "title": "JH FX Short Whoosh 1",
+    "seconds": 5,
+    "downloads": 734,
+    "rating": 4.9,
+    "preview": "https://cdn.freesound.org/previews/696/696649_4819210-hq.mp3",
+    "page": "https://freesound.org/people/Johnnie_Holiday/sounds/696649/"
+   },
+   {
+    "id": "449996",
+    "author": "DJT4NN3R",
+    "title": "whoosh_short_mid.wav",
+    "seconds": 2.67857,
+    "downloads": 4326,
+    "rating": 4.7,
+    "preview": "https://cdn.freesound.org/previews/449/449996_3217484-hq.mp3",
+    "page": "https://freesound.org/people/DJT4NN3R/sounds/449996/"
+   }
+  ]
+ },
+ {
+  "id": "count",
+  "label": "Scores count up",
+  "q": "coin collect",
+  "max": 1.5,
+  "candidates": [
+   {
+    "id": "402767",
+    "author": "LilMati",
+    "title": "Retro, Coin 03.wav",
+    "seconds": 0.210363,
+    "downloads": 4228,
+    "rating": 4.8,
+    "preview": "https://cdn.freesound.org/previews/402/402767_6142149-hq.mp3",
+    "page": "https://freesound.org/people/LilMati/sounds/402767/"
+   },
+   {
+    "id": "515736",
+    "author": "LilMati",
+    "title": "Retro, Coin 06.wav",
+    "seconds": 0.44381,
+    "downloads": 3085,
+    "rating": 4.8,
+    "preview": "https://cdn.freesound.org/previews/515/515736_6142149-hq.mp3",
+    "page": "https://freesound.org/people/LilMati/sounds/515736/"
+   },
+   {
+    "id": "402067",
+    "author": "LilMati",
+    "title": "Retro, Coin 01.wav",
+    "seconds": 0.445828,
+    "downloads": 5321,
+    "rating": 4.7,
+    "preview": "https://cdn.freesound.org/previews/402/402067_6142149-hq.mp3",
+    "page": "https://freesound.org/people/LilMati/sounds/402067/"
+   }
+  ]
+ },
+ {
+  "id": "sparkle",
+  "label": "A Little's turn starts",
+  "q": "magic sparkle twinkle chime",
+  "max": 2,
+  "candidates": [
+   {
+    "id": "879797",
+    "author": "Qvantor",
+    "title": "Shine Chime",
+    "seconds": 2.36729,
+    "downloads": 285,
+    "rating": 5,
+    "preview": "https://cdn.freesound.org/previews/879/879797_19512113-hq.mp3",
+    "page": "https://freesound.org/people/Qvantor/sounds/879797/"
+   },
+   {
+    "id": "880771",
+    "author": "Qvantor",
+    "title": "Sparkle Burst",
+    "seconds": 2.59729,
+    "downloads": 83,
+    "rating": 5,
+    "preview": "https://cdn.freesound.org/previews/880/880771_19512113-hq.mp3",
+    "page": "https://freesound.org/people/Qvantor/sounds/880771/"
+   },
+   {
+    "id": "878614",
+    "author": "Qvantor",
+    "title": "Gem Sparkle",
+    "seconds": 2.34231,
+    "downloads": 403,
+    "rating": 4.8,
+    "preview": "https://cdn.freesound.org/previews/878/878614_19512113-hq.mp3",
+    "page": "https://freesound.org/people/Qvantor/sounds/878614/"
+   }
+  ]
+ },
+ {
+  "id": "yay",
+  "label": "A Little gets it right",
+  "q": "party horn",
+  "max": 2,
+  "candidates": [
+   {
+    "id": "170583",
+    "author": "audiosmedia",
+    "title": "Party horn.wav",
+    "seconds": 1.78481,
+    "downloads": 9838,
+    "rating": 4.7,
+    "preview": "https://cdn.freesound.org/previews/170/170583_1146698-hq.mp3",
+    "page": "https://freesound.org/people/audiosmedia/sounds/170583/"
+   },
+   {
+    "id": "825292",
+    "author": "qubodup",
+    "title": "Fail Jingle Party Horn",
+    "seconds": 2.9727,
+    "downloads": 548,
+    "rating": 4.4,
+    "preview": "https://cdn.freesound.org/previews/825/825292_71257-hq.mp3",
+    "page": "https://freesound.org/people/qubodup/sounds/825292/"
+   }
+  ]
+ }
+]
