@@ -17,7 +17,7 @@ Change Salty there, never inside a script: every tool reads it.
 | Step | Tool | Reads from the brief |
 |---|---|---|
 | See what's short | `node tools/voice/coverage.mjs` (`--short`) | moments, targets |
-| Draft | `docker exec smartmouth node tools/voice/draft-lines.mjs` (`MOMENTS=`, `SPICES=`, `MAX_USD=`) | everything: Grok writes ~1.6x the gap, another model judges against the rules and keeps the best |
+| Draft | in its own container (below) (`MOMENTS=`, `SPICES=`, `MAX_USD=`) | everything: Grok writes ~1.6x the gap, another model judges against the rules and keeps the best |
 | Review | [build-review.py](build-review.py): the Keep/Cut/Fix page | moment labels and context |
 | Add | curated lines into [lines.json](../../content/voice/lines.json), new ids | |
 | Record | `docker exec smartmouth node tools/voice/voice.mjs bank` | the voice and its directions |
@@ -26,6 +26,14 @@ Change Salty there, never inside a script: every tool reads it.
 moments. A new game adds its moments to the brief with the same fields. Rewritten lines get a **new id** (the review page
 and the recordings are keyed by id). Recording names hash the exact direction text, so editing a direction re-records
 everything in that voice: only do it on purpose.
+
+### Long runs go in their own container
+A deploy (from any session) restarts the app container and kills a `docker exec` run inside it. Long jobs like drafting
+run in a throwaway container from the same image, with the same settings and data, and are resumable:
+```bash
+ssh root@192.168.1.4 'docker run -d --rm --name smartmouth-draft --env-file /mnt/apps/appdata/smartmouth/.env   -e DATA_DIR=/data -e MAX_USD=4 -v /mnt/apps/appdata/smartmouth/data:/data -w /app smartmouth:latest node tools/voice/draft-lines.mjs'
+ssh root@192.168.1.4 'docker logs -f smartmouth-draft'
+```
 
 ## Bank (everything the game says)
 ```bash
