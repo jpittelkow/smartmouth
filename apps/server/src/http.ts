@@ -9,6 +9,8 @@ import { RoomStore } from './rooms.ts';
 import { attachSockets } from './ws.ts';
 import { AdminAuth, COOKIE, readCookie, sessionCookie } from './admin.ts';
 import { clientAddress, fromHomeNetwork, trustedProxies } from './limits.ts';
+import { openDb, type Db } from './db.ts';
+import { handleQuestionsApi } from './adminApi.ts';
 
 export interface ServerConfig {
   port: number;
@@ -20,6 +22,10 @@ export interface ServerConfig {
   adminPassword?: string | null;
   /** TRUSTED_PROXIES: exact addresses allowed to vouch for the client's address (the tunnel). */
   trustedProxies?: string[];
+  /** The SQLite file (ADR 0010). Tests use ':memory:', the default. */
+  dbPath?: string;
+  /** Runs once the database is open, before the server listens (main.ts imports the seed questions here). */
+  onDb?: (db: Db) => void;
   now?: () => number;
 }
 
@@ -28,14 +34,14 @@ function json(res: ServerResponse, status: number, body: unknown, headers: Recor
   res.end(JSON.stringify(body));
 }
 
-/** Reads a small JSON body; anything over 2 KB or not JSON is refused. */
-function readJson(req: IncomingMessage): Promise<unknown> {
+/** Reads a JSON body; anything over `maxBytes` or not JSON is refused. */
+function readJson(req: IncomingMessage, maxBytes = 2048): Promise<unknown> {
   return new Promise((ok, bad) => {
     let size = 0;
     const chunks: Buffer[] = [];
     req.on('data', (c: Buffer) => {
       size += c.length;
-      if (size > 2048) { bad(new Error('too big')); req.destroy(); } else chunks.push(c);
+      if (size > maxBytes) { bad(new Error('too big')); req.destroy(); } else chunks.push(c);
     });
     req.on('end', () => { try { ok(JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}')); } catch (e) { bad(e); } });
     req.on('error', bad);
@@ -57,8 +63,10 @@ const TYPES: Record<string, string> = {
 /** Routes the single-page app answers. */
 const APP_ROUTES = new Set(['/', '/host', '/play', '/admin']);
 
-export function startServer(cfg: ServerConfig): Promise<{ server: Server; store: RoomStore; close: () => Promise<void> }> {
+export function startServer(cfg: ServerConfig): Promise<{ server: Server; store: RoomStore; db: Db; close: () => Promise<void> }> {
   const store = new RoomStore();
+  const db = openDb(cfg.dbPath ?? ':memory:');
+  cfg.onDb?.(db);
   const webRoot = resolve(cfg.webDir);
   const now = cfg.now ?? Date.now;
   const admin = new AdminAuth(cfg.adminPassword);
@@ -107,8 +115,9 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
         json(res, 200, { signedIn: false }, { 'set-cookie': sessionCookie('', isHttps(req), 0) });
         return;
       }
-      // Every other admin route needs a session. None exist yet (milestone 2).
+      // Every other admin route needs a session.
       if (!admin.check(token, now())) { json(res, 401, { error: 'Sign in first.' }); return; }
+      if (await handleQuestionsApi(req, res, url, db, now(), { json, readJson })) return;
       json(res, 404, { error: 'Not found.' });
       return;
     }
@@ -149,12 +158,12 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
 
   return new Promise((ok) => {
     server.listen(cfg.port, () => ok({
-      server, store,
+      server, store, db,
       close: () => new Promise<void>((done) => {
         clearInterval(sweeper);
         for (const c of wss.clients) c.terminate();
         wss.close();
-        server.close(() => done());
+        server.close(() => { db.close(); done(); });
       }),
     }));
   });

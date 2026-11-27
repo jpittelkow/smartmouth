@@ -16,6 +16,8 @@ COPY apps/server ./apps/server
 COPY apps/web/package.json ./apps/web/package.json
 # Voice tooling runs inside the container, where the OpenRouter key is (ADR 0013).
 COPY tools ./tools
+# Seed questions, imported into the library at start-up (ADR 0010).
+COPY content ./content
 RUN npm ci --omit=dev --no-audit --no-fund --workspace @smartmouth/server --include-workspace-root=false \
     && npm cache clean --force
 COPY --from=web /src/apps/web/dist ./apps/web/dist

@@ -19,7 +19,7 @@ the same commit.
 | [0007](0007-the-tv-app-is-a-thin-webview-shell.md) | The Android TV app is a thin WebView shell | Proposed |
 | [0008](0008-age-bands-per-player.md) | Age bands belong to each player; scoring is fair across them | Proposed |
 | [0009](0009-the-little-seat.md) | The Little seat: pictures, read aloud, no timer, TV remote | Proposed |
-| [0010](0010-question-bank-in-sqlite.md) | The question bank: SQLite, per band, provenance, play stats | Proposed |
+| [0010](0010-question-bank-in-sqlite.md) | The question library: SQLite, graded on several axes, managed in /admin | Proposed |
 | [0011](0011-ai-content-through-openrouter-reviewed.md) | AI writes content ahead of time via OpenRouter; a grown-up reviews | Proposed |
 | [0012](0012-current-events-questions.md) | Current-events questions from chosen feeds, with expiry | Proposed |
 | [0013](0013-host-voice-openrouter-tts-as-files.md) | The host's voice: OpenRouter speech, made ahead, played from files | Proposed |

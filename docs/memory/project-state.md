@@ -1,6 +1,6 @@
 # Project state
 
-_Last updated: 2026-11-26_
+_Last updated: 2026-11-26 (evening)_
 
 ## Phase
 Milestone 1, **build step 1 done**. Step 2 (Trivia v1) is next (ADR 0019). All ADRs (0001–0020) are **Proposed**,
@@ -14,7 +14,10 @@ waiting on the owner.
   `/`. 10 tests (rules + real sockets). No database, AI or voice code yet.
 - **Web** (`apps/web`): `/host` TV lobby (code, QR, players, spice chip, game picker with D-pad focus, a caption
   strip with placeholder text lines), `/play` (join with age pictures, blob picker, waiting screen, grown-up spice
-  controls, leave), and `/admin` (password sign-in, nothing behind it yet).
+  controls, leave), and `/admin`: password sign-in, then the **question library** (search, filters for every grade, editor,
+  bulk status, coverage grids, JSON export/import). See ADR 0010.
+- **Question library:** SQLite (`DATA_DIR/smartmouth.db`), 39 seed questions in `content/seed/questions.json`. 31 are live; the 8
+  Little picture questions wait in review until they have pictures, so **the Little band has no live questions yet**.
 - **Code hosting:** public GitHub (ADR 0021), MIT license.
 - **TV app** (`apps/tv`): a Kotlin WebView shell. The debug APK builds (`app.smartmouth.tv`) with 4 unit tests. **Never run on a
   device or emulator yet.**

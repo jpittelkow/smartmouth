@@ -10,7 +10,8 @@ difficulty for the whole room makes it boring for adults or impossible for presc
 ## Decision
 - **Five bands, picked by each player on join** with picture buttons rather than a birthday: **Little 3–5, Kids 6–8,
   Tweens 9–12, Teens 13–17, Grown-ups 18+.** The band is stored on the seat, for this room only.
-- **Every question is written for one band** (ADR 0010), not simplified from an adult question.
+- **Every question is graded with the age range it suits** (youngest to oldest band, ADR 0010), and is written for the
+  youngest age in that range, not simplified from an adult question.
 - **Two kinds of round** in trivia:
   - **Everyone answers:** each phone gets a question for its player's band at the same time. The TV shows the
     question for the oldest band present, with a strip saying "everyone's got their own question".
