@@ -16,6 +16,8 @@ const start = (players: Array<[string, Band]>, rounds = 4, c = content()) =>
   rules.init(players.map(([id, band]) => ({ id, band })), { rounds, spice: 'spicy' }, c, 0);
 
 const toQuestion = (s: TriviaState) => rules.tick(s, s.stageEnds as number);
+/** Ends the current pause, and the leaderboard after it if one comes up. */
+const next = (s0: TriviaState) => { const s = rules.tick(s0, s0.stageEnds as number); return s.stage === 'standings' ? rules.tick(s, s.stageEnds as number) : s; };
 
 test('everyone gets a question for their own band; the TV shows the oldest band', () => {
   let s = toQuestion(start([['g', 'grownups'], ['k', 'kids']]));
@@ -66,7 +68,7 @@ test('a Little player gets a turn every other round, can answer by the TV remote
   s = toQuestion(s); // round 1
   assert.equal(rules.playerView(s, 'l').question, null, 'Little players don’t get the phone question');
   s = rules.intent(s, 'g', { type: 'answer', choice: 1 }, s.questionStart + 1);
-  s = rules.tick(s, s.stageEnds as number); // reveal → round 2
+  s = next(s); // reveal → leaderboard → round 2
   assert.equal(s.round, 2);
   s = rules.intent(s, 'g', { type: 'answer', choice: 1 }, s.questionStart + 1);
   s = rules.tick(s, s.stageEnds as number); // reveal → turn
@@ -84,7 +86,7 @@ test('a wrong Little pick still earns a try point, and the final always crowns L
   let s = start([['g', 'grownups'], ['l', 'little']], 2);
   s = toQuestion(s);
   s = rules.intent(s, 'g', { type: 'answer', choice: 1 }, s.questionStart + 1);
-  s = rules.tick(s, s.stageEnds as number);
+  s = next(s);
   s = rules.intent(s, 'g', { type: 'answer', choice: 1 }, s.questionStart + 1);
   s = rules.tick(s, s.stageEnds as number);
   s = rules.intent(s, 'l', { type: 'answer', choice: 0 }, 5);
@@ -116,5 +118,26 @@ test('skip ends a wait; running out of questions ends the game', () => {
   s = rules.intent(s, 'g', { type: 'skip' }, s.questionStart + 1);
   assert.equal(s.stage, 'reveal');
   s = rules.intent(s, 'g', { type: 'skip' }, s.questionStart + 2);
+  assert.equal(s.stage, 'standings', 'the leaderboard comes between rounds');
+  s = rules.intent(s, 'g', { type: 'skip' }, s.questionStart + 3);
   assert.equal(s.stage, 'final', 'one question per band: nothing left to ask');
+});
+
+test('between rounds the leaderboard ranks everyone and shows who moved; it is skipped after the last round', () => {
+  let s = toQuestion(start([['a', 'grownups'], ['b', 'grownups']], 2));
+  s = rules.intent(s, 'b', { type: 'answer', choice: 1 }, s.questionStart + 1);
+  s = rules.intent(s, 'a', { type: 'answer', choice: 0 }, s.questionStart + 2);
+  s = rules.tick(s, s.stageEnds as number);
+  assert.equal(s.stage, 'standings');
+  const board = rules.hostView(s).standings!;
+  const right = s.current.grownups!.correct === 1 ? 'b' : 'a';
+  assert.equal(board[0]!.id, right, 'best first');
+  assert.ok(board[0]!.gained > 0);
+  assert.equal(board[0]!.prevRank, 1, 'everyone started level');
+  assert.equal(rules.holdStage(s, (s.stageEnds as number) + 5000).stageEnds, (s.stageEnds as number) + 5000, 'it waits for Salty');
+  s = rules.tick(s, s.stageEnds as number);
+  assert.equal(s.round, 2);
+  s = rules.intent(s, 'a', { type: 'skip' }, s.questionStart + 1);
+  s = rules.tick(s, s.stageEnds as number);
+  assert.equal(s.stage, 'final', 'no leaderboard after the last round: the final scores');
 });

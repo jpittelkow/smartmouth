@@ -24,7 +24,8 @@ export interface TriviaSettings {
   spice: Spice;
 }
 
-export type Stage = 'intro' | 'question' | 'reveal' | 'turn' | 'turnReveal' | 'final';
+/** `standings`: the leaderboard between rounds (owner, 2026-11-27). */
+export type Stage = 'intro' | 'question' | 'reveal' | 'turn' | 'turnReveal' | 'standings' | 'final';
 
 export interface TPlayer { band: Band; score: number }
 interface Pick { choice: number; at: number }
@@ -55,6 +56,8 @@ export interface TriviaState {
     helpers: Record<string, Pick>;
   };
   turnCount: number;
+  /** Everyone's score when this round began, so the leaderboard can show who moved. */
+  roundStartScores?: Record<string, number>;
   /** Plays to record in the library's stats; the platform takes them after each step. */
   log: Array<{ questionId: number; right: boolean; ms: number | null }>;
 }
@@ -86,6 +89,8 @@ export interface TriviaHostView {
   explain: string | null;
   players: TPlayerStatus[];
   turn: null | { playerId: string; question: TPublicQuestion; correct: number | null; picked: number | null; helpers: number };
+  /** The leaderboard between rounds, best first, with where each player stood before this round. */
+  standings: null | Array<{ id: string; score: number; gained: number; rank: number; prevRank: number }>;
   /** Final standings, best first; Little players are always superstars. */
   final: null | Array<{ id: string; score: number; rank: number; superstar: boolean }>;
 }

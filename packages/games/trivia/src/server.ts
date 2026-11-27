@@ -13,6 +13,8 @@ import type {
 export const INTRO_MS = 3500;
 export const REVEAL_MS = 8000;
 export const TURN_REVEAL_MS = 6000;
+/** The leaderboard between rounds (held longer while Salty talks). */
+export const STANDINGS_MS = 6000;
 /** A turn that nobody answers moves on after this, so a game can't stall. */
 export const TURN_MAX_MS = 120_000;
 export const BASE_POINTS = 100;
@@ -62,7 +64,7 @@ export function nextDeadline(s: TriviaState): number | null {
 }
 
 /** Pauses that wait for Salty: he finishes talking before the game moves on (owner, 2026-11-27). */
-const HOLDABLE = new Set(['intro', 'reveal', 'turnReveal']);
+const HOLDABLE = new Set(['intro', 'reveal', 'turnReveal', 'standings']);
 /** Keeps the current pause going until `until`, never shortening it; question timers are never touched. */
 export function holdStage(s: TriviaState, until: number): TriviaState {
   if (!HOLDABLE.has(s.stage) || s.stageEnds === null || until <= s.stageEnds) return s;
@@ -81,6 +83,7 @@ export function tick(s: TriviaState, now: number): TriviaState {
     case 'reveal': return turnDue(s) ? startTurn(s, now) : nextRound(s, now);
     case 'turn': return nextRound({ ...s, turn: null }, now); // nobody picked in time
     case 'turnReveal': return nextRound(s, now);
+    case 'standings': return startQuestion({ ...s, round: s.round + 1, turn: null }, now);
     default: return s;
   }
 }
@@ -114,7 +117,7 @@ function takeQuestion(s: TriviaState, band: Band): TQuestion | null {
 }
 
 function startQuestion(s0: TriviaState, now: number): TriviaState {
-  const s: TriviaState = { ...s0, queues: { ...s0.queues }, picks: {}, gained: {}, current: {}, turn: null };
+  const s: TriviaState = { ...s0, queues: { ...s0.queues }, picks: {}, gained: {}, current: {}, turn: null, roundStartScores: scoresNow(s0) };
   for (const b of BAND_IDS) s.queues[b] = [...s0.queues[b]];
   const bands = [...new Set(answerers(s).map((id) => s.players[id]?.band as Band))];
   for (const b of bands) {
@@ -211,9 +214,30 @@ function turnAnswer(s: TriviaState, playerId: string, choice: number, now: numbe
   };
 }
 
+/** After a round: the leaderboard, then the next round (or the final scores after the last one). */
 function nextRound(s: TriviaState, now: number): TriviaState {
   if (s.round >= s.rounds) return finish(s);
-  return startQuestion({ ...s, round: s.round + 1 }, now);
+  return { ...s, stage: 'standings', stageEnds: now + STANDINGS_MS, turn: null };
+}
+
+function scoresNow(s: TriviaState): Record<string, number> {
+  return Object.fromEntries(Object.entries(s.players).map(([id, p]) => [id, p.score]));
+}
+
+/** Rank by score, best first; equal scores share a rank. */
+function rankOf(scores: Record<string, number>): Record<string, number> {
+  const sorted = Object.values(scores).sort((a, b) => b - a);
+  return Object.fromEntries(Object.entries(scores).map(([id, sc]) => [id, sorted.indexOf(sc) + 1]));
+}
+
+function leaderboard(s: TriviaState): NonNullable<TriviaHostView['standings']> {
+  const now = scoresNow(s);
+  const before = { ...now, ...(s.roundStartScores ?? {}) };
+  const rank = rankOf(now);
+  const prev = rankOf(before);
+  return Object.keys(now)
+    .map((id) => ({ id, score: now[id]!, gained: now[id]! - (before[id] ?? now[id]!), rank: rank[id]!, prevRank: prev[id]! }))
+    .sort((a, b) => a.rank - b.rank || b.gained - a.gained);
 }
 
 function finish(s: TriviaState): TriviaState {
@@ -262,6 +286,7 @@ export function hostView(s: TriviaState): TriviaHostView {
       correct: s.stage === 'turnReveal' ? t.question.correct : null,
       picked: t.pick?.choice ?? null, helpers: Object.keys(t.helpers).length,
     } : null,
+    standings: s.stage === 'standings' ? leaderboard(s) : null,
     final: s.stage === 'final' ? standings(s) : null,
   };
 }

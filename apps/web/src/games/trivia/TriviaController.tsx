@@ -62,6 +62,9 @@ export function TriviaController({ view, send }: { view: PlayerGameView; send: (
       body = g.result ? <Result right gained={g.result.gained} correctText={g.result.correctText} score={g.score} rank={g.rank} helper />
         : <Center big="Look at the TV" small={`You have ${g.score} points`} />;
     }
+  } else if (g.stage === 'standings') {
+    const place = g.rank === 1 ? '1st' : g.rank === 2 ? '2nd' : g.rank === 3 ? '3rd' : `${g.rank}th`;
+    body = <Center big={g.rank === 1 ? "You're in the lead!" : `You're in ${place}`} small={`${g.score} points · look at the TV`} star={g.rank === 1} />;
   } else if (g.stage === 'final' && g.final) {
     body = g.final.superstar
       ? <Center big="Superstar!" small={`${g.score} points`} star />

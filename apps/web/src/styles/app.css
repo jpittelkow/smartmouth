@@ -254,3 +254,29 @@ button, input { font: inherit; color: inherit; }
 .caption.talking svg { animation: chatter 220ms steps(2) infinite; }
 @keyframes chatter { 50% { transform: scaleY(1.12) translateY(-2px); } }
 .sound-hint { color: var(--spot); font-size: 26px; margin-left: 10px; }
+
+/* Leaderboard between rounds (owner, 2026-11-27): rows slide from last round's order to the new one. */
+.standings { display: grid; grid-template-rows: auto 1fr; gap: 20px; align-content: start; }
+.standings-head { display: flex; align-items: baseline; gap: 28px; flex-wrap: wrap; }
+.standings-head .big { font-size: 72px; color: var(--spot); }
+.standings-head .sub { font-size: 30px; color: var(--muted); }
+.standings-list { position: relative; }
+.st-row {
+  position: absolute; left: 0; right: 0; top: 0; display: flex; align-items: center; gap: 22px; padding: 0 28px;
+  font-size: 40px; font-weight: 700; background: var(--stage-2); border: var(--outline); border-radius: 24px;
+  transition: transform 900ms var(--pop);
+}
+.st-row.first { background: var(--spot); color: var(--ink); }
+.st-row svg { width: 64px; height: 64px; flex: none; }
+.st-row .rank { width: 50px; text-align: center; }
+.st-row .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.st-row .pts { font-variant-numeric: tabular-nums; min-width: 120px; text-align: right; }
+.st-row .gain { color: var(--zap); font-size: 32px; animation: gain-pop 600ms var(--pop) 300ms both; }
+.st-row.first .gain { color: var(--ink); }
+.st-row .move { font-size: 26px; padding: 2px 12px; border-radius: 999px; animation: gain-pop 500ms var(--pop) both; }
+.st-row .move.up { background: var(--zap); color: var(--ink); }
+.st-row .move.down { background: var(--hot); color: var(--ink); }
+.standings.many .st-row { font-size: 30px; padding: 0 20px; gap: 16px; border-radius: 16px; }
+.standings.many .st-row svg { width: 44px; height: 44px; }
+@keyframes gain-pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .st-row { transition: none; } .st-row .gain, .st-row .move { animation: none; } }

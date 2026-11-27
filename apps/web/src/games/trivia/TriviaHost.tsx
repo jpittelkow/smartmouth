@@ -37,6 +37,7 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
         {g.stage === 'intro' && <Intro round={g.round} rounds={g.rounds} />}
         {(g.stage === 'question' || g.stage === 'reveal') && g.question && <QuestionBoard g={g} q={g.question} />}
         {(g.stage === 'turn' || g.stage === 'turnReveal') && g.turn && <Turn g={g} who={seat(g.turn.playerId)} send={send} answerClips={view.reads.turn?.answers ?? []} />}
+        {g.stage === 'standings' && g.standings && <Standings g={g} seat={seat} />}
         {g.stage === 'final' && g.final && <Final g={g} seat={seat} />}
       </div>
 
@@ -177,6 +178,55 @@ function Turn({ g, who, send, answerClips }: {
       </div>
       <div className="turn-help">
         {g.stage === 'turn' ? `Left and right on the remote, OK to pick. Or tap on a phone.${t.helpers ? ` ${t.helpers} helper${t.helpers === 1 ? '' : 's'} locked in.` : ''}` : ''}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The leaderboard between rounds (owner, 2026-11-27). Rows start in last round's order, then slide to where they stand
+ * now while each score counts up, so the room sees who moved.
+ */
+function Standings({ g, seat }: { g: TriviaHostView; seat: (id: string) => PublicSeat | undefined }) {
+  const rows = g.standings!;
+  const before = [...rows].sort((a, b) => a.prevRank - b.prevRank || (b.score - b.gained) - (a.score - a.gained)).map((r) => r.id);
+  const [settled, setSettled] = useState(false);
+  const [t, setT] = useState(0);
+  useEffect(() => {
+    setSettled(false); setT(0);
+    const go = setTimeout(() => setSettled(true), 450);
+    const start = performance.now() + 450;
+    let raf = 0;
+    const step = (now: number) => { const k = Math.min(1, Math.max(0, (now - start) / 1100)); setT(k); if (k < 1) raf = requestAnimationFrame(step); };
+    raf = requestAnimationFrame(step);
+    return () => { clearTimeout(go); cancelAnimationFrame(raf); };
+  }, [g.round]);
+  const many = rows.length > 6;
+  const rowH = many ? 58 : 92;
+  const gap = many ? 8 : 14;
+  return (
+    <div className={`standings${many ? ' many' : ''}`}>
+      <div className="standings-head">
+        <div className="display big">Leaderboard</div>
+        <div className="sub">After round {g.round} of {g.rounds} · up next: round {g.round + 1}</div>
+      </div>
+      <div className="standings-list" style={{ height: rows.length * (rowH + gap) - gap }}>
+        {rows.map((r, i) => {
+          const p = seat(r.id);
+          const at = settled ? i : before.indexOf(r.id);
+          const shown = Math.round(r.score - r.gained * (1 - t));
+          const moved = r.prevRank - r.rank;
+          return (
+            <div key={r.id} className={`st-row${r.rank === 1 ? ' first' : ''}`} style={{ height: rowH, transform: `translateY(${at * (rowH + gap)}px)` }}>
+              <span className="rank display">{r.rank}</span>
+              {p && <Blob avatar={p.avatar} color={p.color} />}
+              <span className="name">{p?.name ?? 'Gone home'}</span>
+              {settled && moved !== 0 && <span className={`move ${moved > 0 ? 'up' : 'down'}`}>{moved > 0 ? '▲' : '▼'} {Math.abs(moved)}</span>}
+              {r.gained > 0 && <span className="gain display">+{r.gained}</span>}
+              <span className="pts display">{shown}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
