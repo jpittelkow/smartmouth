@@ -1,4 +1,4 @@
-// Security headers (headers.ts): strict policy on the app's pages and API, a sandboxed one on /media, HSTS only over HTTPS.
+// Security headers (headers.ts): strict policy on the app's pages and API, a no-network one on /media, HSTS only over HTTPS.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { startServer } from '../src/http.ts';
 
-test('every response carries the security headers; /media pages are sandboxed', async () => {
+test('every response carries the security headers; /media pages get no network', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'sm-headers-'));
   const web = join(dir, 'web'), media = join(dir, 'media');
   mkdirSync(web); mkdirSync(join(media, 'voice'), { recursive: true });
@@ -27,8 +27,9 @@ test('every response carries the security headers; /media pages are sandboxed', 
     }
     const page = await fetch(`${base}/media/voice/index.html`);
     assert.equal(page.status, 200);
-    assert.match(page.headers.get('content-security-policy') ?? '', /sandbox allow-scripts/);
-    assert.equal(page.headers.get('cross-origin-resource-policy'), null, 'sandboxed pages must still load their recordings');
+    const mediaCsp = page.headers.get('content-security-policy') ?? '';
+    assert.match(mediaCsp, /default-src 'none'/, 'audition pages get no fetch, XHR or socket');
+    assert.doesNotMatch(mediaCsp, /sandbox/, 'sandbox would block the sounds page\'s localStorage');
     const https = await fetch(`${base}/play`, { headers: { 'x-forwarded-proto': 'https' } });
     assert.match(https.headers.get('strict-transport-security') ?? '', /max-age=\d+/);
   } finally {

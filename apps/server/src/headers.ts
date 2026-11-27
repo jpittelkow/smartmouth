@@ -17,8 +17,9 @@ const PAGE_CSP = [
 ].join('; ');
 
 /**
- * The /media folder: recordings, plus the audition pages that tools/voice writes (inline style and script).
- * `sandbox` gives those pages an origin of their own, so even a bad file there can't use the admin cookie or call the API.
+ * The /media folder: recordings, plus the audition pages that tools/voice and tools/sounds write (inline style and
+ * script). `default-src 'none'` leaves them no fetch, XHR or socket, so a page there can't call the API.
+ * Not `sandbox`: it blocks localStorage, which the sounds page keeps its picks in (found live 2026-11-27).
  */
 const MEDIA_CSP = [
   "default-src 'none'",
@@ -29,7 +30,6 @@ const MEDIA_CSP = [
   "base-uri 'none'",
   "form-action 'none'",
   "frame-ancestors 'none'",
-  'sandbox allow-scripts',
 ].join('; ');
 
 export function securityHeaders(pathname: string, https: boolean): Record<string, string> {
@@ -41,10 +41,8 @@ export function securityHeaders(pathname: string, https: boolean): Record<string
     'referrer-policy': 'no-referrer',
     'permissions-policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()',
     'cross-origin-opener-policy': 'same-origin',
+    'cross-origin-resource-policy': 'same-origin',
   };
-  // Not on /media: a sandboxed audition page has an opaque origin, so same-origin CORP would block its own recordings
-  // (found live 2026-11-27). The recordings are public anyway.
-  if (!media) h['cross-origin-resource-policy'] = 'same-origin';
   // Only over HTTPS (through Cloudflare); a plain-HTTP visit on the home network must not be told to upgrade.
   if (https) h['strict-transport-security'] = 'max-age=31536000';
   return h;
