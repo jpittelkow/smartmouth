@@ -2,7 +2,7 @@
 // server agree; this file only stores, filters and counts.
 import {
   BANDS, BAND_IDS, CATEGORIES, SPICES, STATUSES, bandRank, checkReasons, inSeason, measuredDifficulty, spiceRank,
-  type Band, type Category, type Coverage, type Question, type QuestionFilter, type QuestionInput, type QuestionPage,
+  type Band, type Category, type Coverage, type ImageRef, type Question, type QuestionFilter, type QuestionInput, type QuestionPage,
   type QuestionStatus,
 } from '@smartmouth/protocol';
 import type { Db } from './db.ts';
@@ -28,6 +28,7 @@ function toQuestion(r: Row, now: number): Question {
     region: r.region as Question['region'], spice: SPICES[Number(r.spice)] ?? 'mild',
     status: r.status as QuestionStatus, source: r.source as Question['source'], sourceRef: String(r.source_ref),
     notes: String(r.notes), createdAt: String(r.created_at), updatedAt: String(r.updated_at),
+    image: r.image ? JSON.parse(String(r.image)) : null, revealImages: JSON.parse(String(r.reveal_images ?? '[]')),
     stats, playsAs: measuredDifficulty(stats.asked, stats.correct), needsCheck: [],
   };
   q.needsCheck = checkReasons(q, today(now));
@@ -40,10 +41,11 @@ function params(q: QuestionInput) {
     age_min: bandRank(q.ageMin), age_max: bandRank(q.ageMax), difficulty: q.difficulty, category: q.category,
     tags: JSON.stringify(q.tags), freshness: q.freshness, as_of: q.asOf, expires_at: q.expiresAt, season: q.season,
     region: q.region, spice: spiceRank(q.spice), status: q.status, source: q.source, source_ref: q.sourceRef, notes: q.notes,
+    image: q.image ? JSON.stringify(q.image) : null, reveal_images: JSON.stringify(q.revealImages ?? []),
   };
 }
 
-const COLS = 'prompt, kind, answers, correct, explain, age_min, age_max, difficulty, category, tags, freshness, as_of, expires_at, season, region, spice, status, source, source_ref, notes';
+const COLS = 'prompt, kind, answers, correct, explain, age_min, age_max, difficulty, category, tags, freshness, as_of, expires_at, season, region, spice, status, source, source_ref, notes, image, reveal_images';
 const VALS = COLS.split(', ').map((c) => `:${c}`).join(', ');
 const SETS = COLS.split(', ').map((c) => `${c} = :${c}`).join(', ');
 
@@ -162,7 +164,8 @@ export { CATEGORIES };
 
 /** A question as a game uses it (trivia's TQuestion shape). */
 export interface GameQuestion {
-  id: number; prompt: string; kind: Question['kind']; answers: Array<{ text: string; image: string | null }>;
+  id: number; prompt: string; kind: Question['kind']; answers: Array<{ text: string; image: string | null; credit?: string }>;
+  image: ImageRef | null; revealImages: ImageRef[];
   correct: number; explain: string; category: string; spice: Question['spice'];
 }
 
@@ -207,7 +210,8 @@ export function pickForGame(
     const chosen = [...fresh, ...fits.filter((q) => taken.has(q.id))].slice(0, opts.perBand);
     for (const q of chosen) taken.add(q.id);
     out[band] = chosen.map((q) => ({
-      id: q.id, prompt: q.prompt, kind: q.kind, answers: q.answers.map((a) => ({ text: a.text, image: a.image ?? null })),
+      id: q.id, prompt: q.prompt, kind: q.kind, answers: q.answers.map((a) => ({ text: a.text, image: a.image ?? null, ...(a.credit ? { credit: a.credit } : {}) })),
+      image: q.image ?? null, revealImages: q.revealImages ?? [],
       correct: q.correct, explain: q.explain, category: q.category, spice: q.spice,
     }));
   }

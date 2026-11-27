@@ -2,7 +2,8 @@
 // carries the right answer before the reveal (ADR 0004).
 import type { Band, Spice } from '@smartmouth/protocol';
 
-export interface TAnswer { text: string; image: string | null }
+export interface TImage { url: string; alt: string; credit: string }
+export interface TAnswer { text: string; image: string | null; credit?: string }
 
 /** A question as the game needs it; the platform picks these from the library. */
 export interface TQuestion {
@@ -14,6 +15,10 @@ export interface TQuestion {
   explain: string;
   category: string;
   spice: Spice;
+  /** Shown with the question (never the answer). */
+  image?: TImage | null;
+  /** Shown at the reveal, with the fun fact. */
+  revealImages?: TImage[];
 }
 
 /** Questions for each band, in the order to use them (with spares, so spice changes can skip some). */
@@ -68,6 +73,7 @@ export interface TPublicQuestion {
   kind: TQuestion['kind'];
   answers: TAnswer[];
   category: string;
+  image: TImage | null;
 }
 
 export interface TPlayerStatus {
@@ -92,6 +98,8 @@ export interface TriviaHostView {
   explain: string | null;
   players: TPlayerStatus[];
   turn: null | { playerId: string; question: TPublicQuestion; correct: number | null; picked: number | null; helpers: number };
+  /** The reveal's pictures (with the fun fact), only once the answer is out. */
+  revealImages: TImage[];
   /** The category of the question the TV will show next, so the round card can show it the whole time. */
   nextCategory: string | null;
   /** When the leaderboard ends (it waits for Salty, so this can move); the round card sweeps in just before. */

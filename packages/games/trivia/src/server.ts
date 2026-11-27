@@ -274,7 +274,7 @@ function finish(s: TriviaState): TriviaState {
 
 // ---- views ----
 
-const publicQ = (q: TQuestion): TPublicQuestion => ({ prompt: q.prompt, kind: q.kind, answers: q.answers, category: q.category });
+const publicQ = (q: TQuestion): TPublicQuestion => ({ prompt: q.prompt, kind: q.kind, answers: q.answers, category: q.category, image: q.image ?? null });
 
 function standings(s: TriviaState) {
   const ids = Object.keys(s.players).sort((a, b) => (s.players[b]?.score ?? 0) - (s.players[a]?.score ?? 0));
@@ -308,6 +308,7 @@ export function hostView(s: TriviaState): TriviaHostView {
     splitBands: showing && Object.keys(s.current).length > 1,
     correct: reveal && tvQ ? tvQ.correct : null,
     explain: reveal && tvQ ? tvQ.explain || null : s.stage === 'turnReveal' && t ? t.question.explain || null : null,
+    revealImages: reveal && tvQ ? tvQ.revealImages ?? [] : s.stage === 'turnReveal' && t ? t.question.revealImages ?? [] : [],
     players,
     turn: t && (s.stage === 'turn' || s.stage === 'turnReveal') ? {
       playerId: t.playerId, question: publicQ(t.question),

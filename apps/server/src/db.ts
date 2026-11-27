@@ -39,6 +39,23 @@ const MIGRATIONS: string[] = [
    );
    CREATE INDEX questions_pick ON questions (status, age_min, age_max, category);
    CREATE INDEX questions_updated ON questions (updated_at);`,
+  // 2: pictures (owner, 2026-11-27): a library of image files with their credits, and each question's picture and
+  //    reveal pictures (stored with the question as JSON {url, alt, credit}, so a game never needs a join).
+  `CREATE TABLE images (
+     id         INTEGER PRIMARY KEY,
+     file       TEXT NOT NULL UNIQUE,         -- under DATA_DIR/media/images/
+     source     TEXT NOT NULL,                -- commons | upload | ai
+     title      TEXT NOT NULL DEFAULT '',
+     author     TEXT NOT NULL DEFAULT '',
+     license    TEXT NOT NULL DEFAULT '',
+     page_url   TEXT NOT NULL DEFAULT '',
+     alt        TEXT NOT NULL DEFAULT '',
+     width      INTEGER,
+     height     INTEGER,
+     created_at TEXT NOT NULL
+   );
+   ALTER TABLE questions ADD COLUMN image TEXT;
+   ALTER TABLE questions ADD COLUMN reveal_images TEXT NOT NULL DEFAULT '[]';`,
 ];
 
 export type Db = DatabaseSync;

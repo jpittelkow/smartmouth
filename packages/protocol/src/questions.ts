@@ -64,7 +64,14 @@ export const DIFFICULTY_HELP: Record<number, string> = {
   5: 'Brutal: only the sharpest in the range',
 };
 
-export interface Answer { text: string; image?: string | null }
+/**
+ * A picture the game shows (owner, 2026-11-27): a file on our server (`/media/images/...`) and its credit, shown small on
+ * the TV (CC BY photos require it). Free sources only: Wikimedia Commons (public domain, CC0, CC BY, CC BY-SA), our own
+ * uploads, or AI illustrations. Never a copied or look-alike picture of a franchise character.
+ */
+export interface ImageRef { url: string; alt: string; credit: string }
+
+export interface Answer { text: string; image?: string | null; credit?: string }
 
 export interface QuestionInput {
   prompt: string;
@@ -92,6 +99,10 @@ export interface QuestionInput {
   sourceRef: string;
   /** Grown-ups' notes; never shown in a game. */
   notes: string;
+  /** Shown with the question; never gives the answer away. */
+  image?: ImageRef | null;
+  /** Up to three pictures shown at the reveal, with the fun fact (they may show the answer). */
+  revealImages?: ImageRef[];
 }
 
 export interface QuestionStats {
@@ -154,6 +165,15 @@ export type Validation =
   | { ok: false; errors: Partial<Record<keyof QuestionInput | 'form', string>>; warnings: string[] };
 
 /** Checks and normalises a question from the admin page, an import file or the AI pipeline. */
+/** A picture reference from outside: only our own media files, with a short alt text and credit. */
+function imageRef(v: unknown): ImageRef | null {
+  if (!v || typeof v !== 'object') return null;
+  const o = v as Record<string, unknown>;
+  const url = typeof o.url === 'string' ? o.url.trim() : '';
+  if (!/^\/media\/images\/[\w.-]+$/.test(url)) return null;
+  return { url, alt: str(o.alt, 200), credit: str(o.credit, 200) };
+}
+
 export function validateQuestion(raw: unknown): Validation {
   const x = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
   const errors: Partial<Record<keyof QuestionInput | 'form', string>> = {};
@@ -168,7 +188,8 @@ export function validateQuestion(raw: unknown): Validation {
   const answers: Answer[] = answersIn.map((a) => {
     const o = (a && typeof a === 'object' ? a : { text: a }) as Record<string, unknown>;
     const image = typeof o.image === 'string' && o.image.trim() ? o.image.trim().slice(0, 200) : null;
-    return { text: str(o.text, ANSWER_MAX + 1), image };
+    const credit = typeof o.credit === 'string' && o.credit.trim() ? str(o.credit, 200) : undefined;
+    return { text: str(o.text, ANSWER_MAX + 1), image, ...(credit ? { credit } : {}) };
   });
   const [lo, hi] = kind === 'truefalse' ? [2, 2] : kind === 'picture' ? [2, 3] : [2, 4];
   if (answers.length < lo || answers.length > hi) errors.answers = lo === hi ? `Needs exactly ${lo} answers.` : `Needs ${lo} to ${hi} answers.`;
@@ -221,6 +242,7 @@ export function validateQuestion(raw: unknown): Validation {
     prompt, kind, answers, correct, explain: str(x.explain, 200), ageMin, ageMax, difficulty, category, tags,
     freshness, asOf, expiresAt: freshness === 'current' ? expiresAt : null, season, region, spice, status, source,
     sourceRef: str(x.sourceRef, 500), notes: str(x.notes, 1000),
+    image: imageRef(x.image), revealImages: (Array.isArray(x.revealImages) ? x.revealImages : []).map(imageRef).filter((i): i is ImageRef => !!i).slice(0, 3),
   };
   return Object.keys(errors).length ? { ok: false, errors, warnings } : { ok: true, value, warnings };
 }
