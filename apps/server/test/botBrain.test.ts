@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { Band } from '@smartmouth/protocol';
 import { rules, type MQuestion, type SnakesState } from '@smartmouth/game-snakes';
-import { BotBrain, MAX_CALLS_PER_ROOM, buildPrompt, checkLine, type BrainContext } from '../src/botBrain.ts';
+import { BotBrain, MAX_CALLS_PER_ROOM, buildPrompt, checkLine, fit, type BrainContext } from '../src/botBrain.ts';
 import { botMoves } from '../src/adapters/snakes.ts';
 import type { Chat, ChatOptions } from '../src/ai.ts';
 
@@ -71,6 +71,14 @@ test('lines are checked: spice, length, and a Snake never outs a partner', () =>
     assert.equal(checkLine(`${ctx().names[partner]} is on my team, trust them.`, sv, ctx()), null);
     assert.ok(checkLine(`${ctx().names[partner]} went quiet in the mission.`, sv, ctx()), 'naming a partner without outing them is fine');
   }
+});
+
+test('a long line is cut at a sentence or a clause, so it never reads as cut off', () => {
+  assert.equal(fit('Dunstan, you keep pushing everyone but never say who you think sank it. Bertram, finish your Edith point or drop it, because we are out of time.'),
+    'Dunstan, you keep pushing everyone but never say who you think sank it.');
+  assert.equal(fit('Dunstan and Cecily keep trading accusations without naming a suspect, so I will say it plainly: Tester never named a bot, and that vagueness worries me most of all.'),
+    'Dunstan and Cecily keep trading accusations without naming a suspect, so I will say it plainly: Tester never named a bot.');
+  assert.equal(fit('Short and sweet.'), 'Short and sweet.');
 });
 
 test('table talk: only the living speak, only at the table, and the feed keeps this round’s lines', () => {

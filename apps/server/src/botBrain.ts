@@ -93,7 +93,7 @@ export function buildPrompt(v: SnakesPlayerView, seatId: string, kind: ThinkKind
       ? `You are secretly a SNAKE. ${v.fellows.length ? `Your fellow Snake${v.fellows.length > 1 ? 's are' : ' is'} ${v.fellows.map((f) => nameOf(ctx, f)).join(', ')}.` : 'You are the only Snake left.'} Never reveal that you or they are Snakes. Act like a suspicious, helpful Guest. Steer suspicion toward Guests.`
       : 'You are a GUEST. You do not know who the Snakes are. Work it out from the record: who voted for whom, who sank missions, who was revealed.',
     `Your style at the table: ${temperOf(seatId)}.`,
-    'Talk like a player at a table: short, punchy, specific, about the game only (votes, missions, who seems shifty). One sentence of 20 words or fewer.',
+    'Talk like a player at a table: short, punchy, specific, about the game only (votes, missions, who seems shifty). One sentence of about 15 words (never more than 20).',
     'Don’t just agree with the last speaker or repeat a point already made. Bring your own read, and name names.',
     'Never insult anyone personally, never mention real people, politics or religion.',
     cleanSpice ? 'Keep it family friendly: no swearing at all; children may be playing.' : 'Mild swearing is allowed but not needed.',
@@ -137,10 +137,22 @@ export function checkLine(raw: unknown, v: SnakesPlayerView, ctx: BrainContext):
   return line;
 }
 
-/** Too long for the table: cut at a word, never mid-word. */
-function fit(s: string, max = 140): string {
-  const t = s.trim();
+/**
+ * Too long for the table: keep whole sentences, else whole clauses, so a line never reads as cut off (other bots
+ * read it too, and they'd comment on it). A word cut with "…" is the last resort.
+ */
+export function fit(s: string, max = 140): string {
+  const t = s.trim().replace(/\s+/g, ' ');
   if ([...t].length <= max) return t;
+  const head = [...t].slice(0, max).join('');
+  const at = (re: RegExp) => { let last = -1; for (const m of head.matchAll(re)) last = m.index! + m[0].length; return last; };
+  const sentence = at(/[.!?](?=\s|$)/g);
+  if (sentence >= 40) return head.slice(0, sentence).trim();
+  const clause = at(/[;,:—–](?=\s)|\s(?:and|but|so|because)(?=\s)/g);
+  if (clause >= 40) {
+    const body = head.slice(0, clause).replace(/\s(?:and|but|so|because)$/, '').replace(/[;,:—–\s]+$/, '');
+    return `${body}${/^(who|what|why|which|where|how|did|does|is|are|can|will)\b/i.test(body) || /\?/.test(t.slice(clause, clause + 40)) ? '?' : '.'}`;
+  }
   const cut = [...t].slice(0, max - 1).join('');
   return `${cut.slice(0, Math.max(cut.lastIndexOf(' '), max / 2)).replace(/[\s,;:–—-]+$/, '')}…`;
 }
