@@ -37,7 +37,9 @@ of Salty's voice. All ADRs except 0021 are **Proposed** (the owner will review t
    Snake Manor, roles Guests/Snakes/Ghosts, 5-10 players, trivia missions with Dagger-paying sabotage, identical night
    screens, Salty as "Lord of the Manor". **Recorded in the repo as ADR 0022 (rules), 0023 (hidden information) and
    0024 (drama sequences), plus design guide §8 (look and persona)**, all Proposed, no code yet. ADR 0022's five open items were answered by the owner on 2026-11-27.
-   **Build plan: ADR 0019 Milestone 3, steps 10-17**; step 10 (platform ready for a second game) is next.
+   **Build plan: ADR 0019 Milestone 3, steps 10-17. Steps 10-16 built 2026-11-27** (game id `snakes`, code in
+   `packages/games/snakes`, `apps/server/src/adapters/snakes.ts`, `apps/web/src/games/snakes/`); not deployed. Its sounds
+   are Web Audio placeholders and its 98 lines aren't voiced yet. Step 17 (family playtest) is next.
    Medieval-look mockups: `docs/design/mockups/snake-manor.html` (artifact https://claude.ai/artifact/UR6VZ46KUoY3fcriACf42k), draft 1, with a
    playable banishment reveal (synced sound and visuals); the doc's "Drama" section holds the sound and pacing rules.
 1. The owner picks Salty's voice; rerun `bank` with that `VOICE` if it changes.
