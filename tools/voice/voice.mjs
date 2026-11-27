@@ -193,7 +193,8 @@ async function bank() {
     const base = KID_MOMENTS.has(l.moment) ? KIDS_STYLE : STYLE;
     const tags = [...l.text.matchAll(/\[([^\]]+)\]/g)].map((m) => m[1]);
     const style = v.directed && tags.length ? `${base} Delivery cues for this line: ${tags.join(', ')}.` : base;
-    const tag = KID_MOMENTS.has(l.moment) || l.spice === 'mild' ? NICE : SNARKY;
+    // Lines carry their own delivery tags where the joke turns (2026-11-27); only Little moments get the warm lead-in.
+    const tag = KID_MOMENTS.has(l.moment) ? NICE : null;
     jobs.push({ text: l.text, style, tag: /^\[/.test(l.text) ? null : tag, put: (f) => { manifest.lines[l.id] = f; } });
   }
   // Questions: Littles' are read nicely only. Everyone else's are read snarkily, plus nicely for Mild rooms when the

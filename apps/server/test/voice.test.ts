@@ -11,7 +11,7 @@ import { VoiceBank, caption, type Moment } from '../src/voice.ts';
 import { startServer } from '../src/http.ts';
 
 const LINES = fileURLToPath(new URL('../../../content/voice/lines.json', import.meta.url));
-const MOMENTS: Moment[] = ['lobby', 'join', 'intro', 'question', 'allRight', 'allWrong', 'mixed', 'turn', 'littleRight', 'littleWrong', 'final'];
+const MOMENTS: Moment[] = ['hello', 'lobby', 'join', 'intro', 'question', 'allRight', 'allWrong', 'mixed', 'turn', 'littleRight', 'littleWrong', 'final'];
 
 test('a line is never picked above the room’s spice level, for every moment and level', () => {
   const bank = new VoiceBank(LINES, join(tmpdir(), 'no-manifest.json'));

@@ -269,6 +269,8 @@ function writerSystem(today: string, spice: Spice): string {
     + `- "explain" is one short, fun sentence the host says after the reveal (a fact, not a joke at anyone's expense), under 150 characters.\n`
     + `- Plain text only in every field: no links, citations or markdown (the host reads them aloud).
 `
+    + `- When the topic is a show, film, book, game, toy or other franchise, name it in EVERY prompt so it makes sense on its own in a mixed game, e.g. "In Paw Patrol, which pup drives the fire truck?" (owner, 2026-11-27).
+`
     + `- "category" is the closest of the given list. "tags" are 1-4 lowercase words (include the topic's name).\n`
     + `- "dated" is true when the answer could change over time (records, "latest", "current", counts).\n`
     + `- Tone: ${spice === 'mild' ? 'clean, family friendly' : spice === 'spicy' ? 'cheeky but clean' : 'adult humour allowed for adult bands only'}. `

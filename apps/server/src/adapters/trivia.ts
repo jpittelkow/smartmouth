@@ -86,7 +86,8 @@ export const trivia: GameAdapter<TriviaState> = {
 
 function momentOf(s: TriviaState): Moment {
   switch (s.stage) {
-    case 'intro': return 'intro';
+    // The first round's intro is Salty introducing himself (owner, 2026-11-27).
+    case 'intro': return s.round === 1 ? 'hello' : 'intro';
     case 'question': return 'question';
     case 'reveal': {
       const graded = rules.hostView(s).players.filter((p) => p.right !== null);
