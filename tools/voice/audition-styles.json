@@ -1,11 +1,21 @@
 {
-  "//": "The owner's audition format (2026-11-26): one line, five styles, every voice. `instruction` steers models that take written directions (Gemini, Fish Audio); `tag` steers ElevenLabs, which acts from tags in the text.",
+  "//": "The owner's audition format (2026-11-26): one line, five styles, every voice. `instruction` steers models that take written directions (Gemini, Fish Audio). ElevenLabs acts from tags in the text: `script` is the line with tags placed through it (round 2, 2026-11-27, after the owner found round 1 slow and flat); `tag` is the single leading tag round 1 used.",
   "line": "Oh look, you made it. Grab a phone, pick a name, and try not to embarrass yourselves.",
   "styles": [
-    { "id": "snarky", "label": "Snarky", "tag": "[sarcastic]", "instruction": "Deliver it snarky: dry, sarcastic and eye-rolling, a smirk you can hear, leaning on the words for comic effect." },
-    { "id": "mean", "label": "Mean", "tag": "[angry]", "instruction": "Deliver it mean: cutting, contemptuous and impatient, like the guests personally ruined his day. Harsh, but still funny." },
-    { "id": "indifferent", "label": "Indifferent", "tag": "[bored]", "instruction": "Deliver it indifferent: flat, bored, low energy, a can't-be-bothered monotone with a little sigh in it." },
-    { "id": "nice", "label": "Nice", "tag": "[warmly]", "instruction": "Deliver it nice: warm, kind and gentle, genuinely glad to see everyone, like a favorite uncle." },
-    { "id": "cheerful", "label": "Cheerful", "tag": "[excited]", "instruction": "Deliver it cheerful: bright, upbeat and bouncy, full game-show energy, grinning the whole way through." }
+    { "id": "snarky", "label": "Snarky", "tag": "[sarcastic]",
+      "script": "[sarcastic] Oh look, you MADE it. [scoffs] Grab a phone, pick a name, [mischievously] and try NOT to embarrass yourselves.",
+      "instruction": "Deliver it snarky: dry, sarcastic and eye-rolling, a smirk you can hear, leaning on the words for comic effect." },
+    { "id": "mean", "label": "Mean", "tag": "[angry]",
+      "script": "[annoyed] Oh look. You made it. [angry] Grab a phone! Pick a name! [shouting] And try not to embarrass yourselves!",
+      "instruction": "Deliver it mean: cutting, contemptuous and impatient, like the guests personally ruined his day. Harsh, but still funny." },
+    { "id": "indifferent", "label": "Indifferent", "tag": "[bored]",
+      "script": "[bored] Oh look, you made it. [sighs] Grab a phone, pick a name, [dismissive] try not to embarrass yourselves. Whatever.",
+      "instruction": "Deliver it indifferent: flat, bored, low energy, a can't-be-bothered monotone with a little sigh in it." },
+    { "id": "nice", "label": "Nice", "tag": "[warmly]",
+      "script": "[warmly] Oh, look, you made it! [chuckles] Grab a phone, pick a name, [playfully] and try not to embarrass yourselves.",
+      "instruction": "Deliver it nice: warm, kind and gentle, genuinely glad to see everyone, like a favorite uncle." },
+    { "id": "cheerful", "label": "Cheerful", "tag": "[excited]",
+      "script": "[excited] Oh LOOK, you made it! [quickly] Grab a phone, pick a name, [laughs] and try not to embarrass yourselves!",
+      "instruction": "Deliver it cheerful: bright, upbeat and bouncy, full game-show energy, grinning the whole way through." }
   ]
 }

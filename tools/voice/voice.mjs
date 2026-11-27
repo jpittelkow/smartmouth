@@ -70,10 +70,10 @@ async function usage() {
 }
 
 /** `style` steers directed models (Gemini, Fish Audio); `tag` (e.g. "[sarcastic]") goes in front for ElevenLabs. */
-async function speak(v, text, style, tag) {
+async function speak(v, text, style, tag, script) {
   const body = v.directed
     ? { model: v.model, input: stripTags(text), instructions: style, response_format: v.ext }
-    : { model: v.model, voice: v.voice, input: tag ? `${tag} ${text}` : text, response_format: 'mp3' };
+    : { model: v.model, voice: v.voice, input: script || (tag ? `${tag} ${text}` : text), response_format: 'mp3' };
   if (v.directed && v.voice !== 'default') body.voice = v.voice;
   for (let attempt = 0; attempt < 4; attempt++) {
     const r = await fetch('https://openrouter.ai/api/v1/audio/speech', {
@@ -88,13 +88,30 @@ async function speak(v, text, style, tag) {
   throw new Error('gave up after retries');
 }
 
+/** ElevenLabs' own descriptions of its stock voices (the ones OpenRouter offers), for the audition page. */
+const EL_VOICES = {
+  callum: ['male', 'Husky trickster', 'characters'], bill: ['male', 'Wise, mature, balanced', 'narration'],
+  brian: ['male', 'Deep, resonant, comforting', 'narration'], george: ['male', 'Warm, captivating storyteller', 'narration'],
+  roger: ['male', 'Laid-back, casual, resonant', 'conversational'], charlie: ['male', 'Deep, confident, energetic', 'conversational'],
+  chris: ['male', 'Charming, down-to-earth', 'conversational'], harry: ['male', 'Fierce warrior', 'characters'],
+  daniel: ['male', 'Steady broadcaster', 'news'], adam: ['male', 'Dominant, firm', 'social media'],
+  eric: ['male', 'Smooth, trustworthy', 'conversational'], liam: ['male', 'Energetic social-media creator', 'social media'],
+  will: ['male', 'Relaxed optimist', 'conversational'],
+  jessica: ['female', 'Playful, bright, warm', 'conversational'], laura: ['female', 'Enthusiast, quirky attitude', 'social media'],
+  sarah: ['female', 'Mature, reassuring, confident', 'entertainment'], lily: ['female', 'Velvety actress', 'narration'],
+  matilda: ['female', 'Knowledgeable, professional', 'informative'], alice: ['female', 'Clear, engaging educator', 'informative'],
+  bella: ['female', 'Professional, bright, warm', 'informative'],
+  river: ['neutral', 'Relaxed, neutral, informative', 'conversational'],
+};
+
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
 async function audition() {
   const voices = (process.env.VOICES || '').split(',').map((x) => x.trim()).filter(Boolean).map(parseVoice);
   if (!voices.length) { console.error('Set VOICES=model:voice,model:voice'); process.exit(1); }
   const { line, styles } = JSON.parse(readFileSync(join(here, 'audition-styles.json'), 'utf8'));
-  const out = join(MEDIA, 'audition');
+  const dir = process.env.AUDITION_DIR || 'audition';
+  const out = join(MEDIA, dir);
   const start = await usage();
   const made = {};
   const errors = [];
@@ -104,7 +121,7 @@ async function audition() {
       const file = `${v.slug}/${st.id}.${v.ext}`;
       if (DRY) { console.log(v.spec, st.id); continue; }
       try {
-        if (!existsSync(join(out, file))) writeFileSync(join(out, file), await speak(v, line, `${AUDITION_BASE} ${st.instruction}`, st.tag));
+        if (!existsSync(join(out, file))) writeFileSync(join(out, file), await speak(v, line, `${AUDITION_BASE} ${st.instruction}`, st.tag, st.script));
         made[`${v.spec}|${st.id}`] = file;
         console.log(`made ${file}`);
       } catch (e) { errors.push(`${v.spec} ${st.id}: ${e.message}`); console.error(`failed ${v.spec} ${st.id}: ${e.message}`); }
@@ -120,15 +137,22 @@ h1{margin:0 0 6px;font-size:28px}p{color:#b9b1d6;max-width:80ch;margin:4px 0 14p
 .wrap{overflow-x:auto}table{border-collapse:collapse;min-width:900px}
 th,td{border:1px solid #2b2450;padding:8px;text-align:left;vertical-align:top}
 th{background:#1f1a36;font-size:14px}td.v{font-weight:700;white-space:nowrap}td.v small{display:block;color:#b9b1d6;font-weight:400}
-audio{width:170px;height:34px}.err{color:#ff4f7b;font-size:12px}</style>
+audio{width:170px;height:34px}th.g{background:#2b2450;font-size:13px;text-transform:uppercase;letter-spacing:.08em}.err{color:#ff4f7b;font-size:12px}</style>
 <h1>Salty auditions</h1>
 <p>One line in five styles, every voice: &ldquo;${esc(line)}&rdquo;</p>
-<p>Gemini and Fish Audio act from a written description of Salty plus the style. ElevenLabs acts from a tag
-(${styles.map((x) => esc(x.tag)).join(' ')}). ElevenLabs' stock voices retire on 2026-12-31; files already made keep working.
+<p>Gemini and Fish Audio act from a written description of Salty plus the style. ElevenLabs acts from delivery tags
+placed through the line (hover a style heading to see its script). ElevenLabs' stock voices retire on 2026-12-31; files already made keep working.
 Made ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC. Cost ${spent}.</p>
-<div class="wrap"><table><tr><th>Voice</th>${styles.map((x) => `<th>${esc(x.label)}</th>`).join('')}</tr>`;
-  for (const v of voices) {
-    html += `<tr><td class="v">${esc(v.voice === 'default' ? 'default voice' : v.voice)}<small>${esc(v.model)}</small></td>`;
+<div class="wrap"><table><tr><th>Voice</th>${styles.map((x) => `<th title="${esc(x.script || x.tag)}">${esc(x.label)}</th>`).join('')}</tr>`;
+  const order = { male: 0, female: 1, neutral: 2 };
+  const info = (v) => (v.model.startsWith('elevenlabs/') && EL_VOICES[v.voice]) || null;
+  const sorted = [...voices].sort((a, b) => (order[info(a)?.[0]] ?? 3) - (order[info(b)?.[0]] ?? 3));
+  let group = null;
+  for (const v of sorted) {
+    const i = info(v);
+    if (i && i[0] !== group) { group = i[0]; html += `<tr><th colspan="${styles.length + 1}" class="g">${esc(group[0].toUpperCase() + group.slice(1))} voices</th></tr>`; }
+    const sub = i ? `${i[1]} &middot; ${i[2]}` : esc(v.model);
+    html += `<tr><td class="v">${esc(v.voice === 'default' ? 'default voice' : v.voice)}<small>${sub}</small></td>`;
     for (const st of styles) {
       const f = made[`${v.spec}|${st.id}`];
       html += f ? `<td><audio controls preload="none" src="${esc(f)}"></audio></td>` : '<td class="err">failed</td>';
@@ -138,7 +162,7 @@ Made ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC. Cost ${spen
   html += `</table></div>${errors.length ? `<p class="err">${errors.map(esc).join('<br>')}</p>` : ''}
 <script>document.addEventListener('play',e=>{for(const a of document.querySelectorAll('audio'))if(a!==e.target)a.pause()},true)</script>`;
   writeFileSync(join(out, 'index.html'), html);
-  console.log(`\naudition page: /media/voice/audition/index.html · ${Object.keys(made).length} clips · ${errors.length} failed · spent ${spent}`);
+  console.log(`\naudition page: /media/voice/${dir}/index.html · ${Object.keys(made).length} clips · ${errors.length} failed · spent ${spent}`);
 }
 
 async function bank() {
