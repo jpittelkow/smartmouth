@@ -7,25 +7,29 @@ Scripts not baked into the image are piped in:
 ssh root@192.168.1.4 "docker exec -i smartmouth node --input-type=module -" < tools/voice/<script>.mjs
 ```
 
-**Now (2026-11-27):** the owner's voice is **Gemini 3.8 Flash, "Laomedeia"** (woman), directed upbeat (`STYLE` in
-`voice.mjs`), chosen for "the best timing by far". A man's voice (Zubenelgenubi) was picked but not recorded yet; the
-"His voice" option still plays the older ElevenLabs Harry recordings.
+## The pattern: one brief, every tool
+**[content/voice/brief.json](../../content/voice/brief.json) is the single source for Salty** (owner, 2026-11-27: "make it
+as much of a pattern as possible"). It holds the voice (`google/gemini-3.8-flash-tts:Laomedeia`, the only voice) and its
+exact directions, the persona, the owner's writing rules, what each spice level means, the keeper lines, and every moment
+Salty speaks: when it plays, what's on the TV, what comes right after, the line's job, a word limit and a target count.
+Change Salty there, never inside a script: every tool reads it.
 
-## The voiceover loop
-1. **Draft lines** with [draft-lines.mjs](draft-lines.mjs) (Grok 4.7). Its brief tells the writer, for every moment, what's
-   on the TV, what Salty just said and what comes right after (reveal lines hand off to the fun fact; hello introduces
-   Salty and the rules). It prints JSON candidates. Nothing is used as-is: a person curates.
-2. **Curate** into [content/voice/lines.json](../../content/voice/lines.json). That file holds **every game's lines**
-   (trivia's plain moments, Snake Manor's `sm-*`): replace only your own game's moments and keep the rest. The owner's
-   rules from two reviews: greet first and end on a hype call; every line makes literal sense; an everyday situation with
-   one specific, unexpected twist; a clear attitude; "another one", not "the new one".
-3. **Review** with [build-review.py](build-review.py): it builds the Keep/Cut/Fix page (an Artifact with a small database;
-   read the marks back with ArtifactData). Rewritten lines get a **new id**, so old marks don't attach to new words.
-4. **Record** with `voice.mjs bank` (below). Then deploy if lines.json changed.
+| Step | Tool | Reads from the brief |
+|---|---|---|
+| See what's short | `node tools/voice/coverage.mjs` (`--short`) | moments, targets |
+| Draft | `docker exec smartmouth node tools/voice/draft-lines.mjs` (`MOMENTS=`, `SPICES=`, `MAX_USD=`) | everything: Grok writes ~1.6x the gap, another model judges against the rules and keeps the best |
+| Review | [build-review.py](build-review.py): the Keep/Cut/Fix page | moment labels and context |
+| Add | curated lines into [lines.json](../../content/voice/lines.json), new ids | |
+| Record | `docker exec smartmouth node tools/voice/voice.mjs bank` | the voice and its directions |
+
+`lines.json` holds **every game's lines** (trivia's plain moments, Snake Manor's `sm-*`): replace only your own game's
+moments. A new game adds its moments to the brief with the same fields. Rewritten lines get a **new id** (the review page
+and the recordings are keyed by id). Recording names hash the exact direction text, so editing a direction re-records
+everything in that voice: only do it on purpose.
 
 ## Bank (everything the game says)
 ```bash
-docker exec -e SLOT=female -e VOICE=google/gemini-3.8-flash-tts:Laomedeia -e MAX_USD=5 smartmouth node tools/voice/voice.mjs bank
+docker exec -e MAX_USD=5 smartmouth node tools/voice/voice.mjs bank     # voice and slot come from the brief
 ```
 Makes every line in `content/voice/lines.json`, plus, for every live question, its prompt, its answers (picture questions
 only) and its follow-up line. Little questions use a warmer direction. Files that already exist are kept, so a re-run only

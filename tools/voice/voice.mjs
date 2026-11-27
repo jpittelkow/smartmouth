@@ -35,22 +35,18 @@ const DRY = process.env.DRY === '1';
 const mode = process.argv[2];
 
 /**
- * Salty, for models that take written directions (Gemini, Fish Audio). An original character; no real person is named
- * or imitated. The owner's pick (2026-11-27): Gemini 3.8 Flash with this upbeat direction, which had "the best timing by
- * far". SLOT picks the woman's or man's wording.
+ * Salty's voice and directions come from content/voice/brief.json, the single source for how Salty sounds (owner,
+ * 2026-11-27: "make it as much of a pattern as possible"). VOICE and SLOT default to the brief's.
  */
-const WHO = process.env.SLOT === 'male' ? 'man' : 'woman';
-export const STYLE = `A bright, upbeat, high-energy ${WHO} hosting a living-room game show, grinning the whole time, with a `
-  + 'stand-up comic timing. The roasting is playful and cheerful, never bitter. Quick, punchy pace, never slow. Big dynamic '
-  + 'range: a sly drop for the setup, then a bright snap on the punchline. Land each punchline with a tiny pause before the '
-  + 'last words. Not a cartoon.';
-/** The character, for auditions; each style adds how to deliver the line. */
+const BRIEF = JSON.parse(readFileSync(join(repo, 'content', 'voice', 'brief.json'), 'utf8'));
+if (!process.env.VOICE) process.env.VOICE = BRIEF.voice.spec;
+if (!process.env.SLOT) process.env.SLOT = BRIEF.voice.slot;
+export const STYLE = BRIEF.voice.direction;
 const AUDITION_BASE = 'You are Salty, the host of a living-room trivia game show: a washed-up former sea captain with a '
   + 'gravelly, slightly hoarse middle-aged male voice and quick comic timing. Not a cartoon pirate accent.';
 const NICE = '[warmly]';
 const SNARKY = '[sarcastic]';
-const KIDS_STYLE = `A warm, delighted ${WHO} hosting a game show, talking to a three-year-old: clear, a little slower, `
-  + 'big friendly energy, no sarcasm.';
+const KIDS_STYLE = BRIEF.voice.kidsDirection;
 
 if (!['audition', 'bank'].includes(mode)) { console.error('usage: voice.mjs audition|bank'); process.exit(1); }
 if (!KEY && !DRY) { console.error('OPENROUTER_API_KEY is not set.'); process.exit(1); }
@@ -192,7 +188,7 @@ async function bank() {
   const jobs = [];
   // Little moments get the warm kids' direction. For directed models, tags like [whispers] become part of the
   // direction (they're stripped from the text so they aren't read out).
-  const KID_MOMENTS = new Set(['turn', 'littleRight', 'littleWrong']);
+  const KID_MOMENTS = new Set(BRIEF.voice.kidMoments);
   for (const l of lines) {
     const base = KID_MOMENTS.has(l.moment) ? KIDS_STYLE : STYLE;
     const tags = [...l.text.matchAll(/\[([^\]]+)\]/g)].map((m) => m[1]);

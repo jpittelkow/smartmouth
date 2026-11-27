@@ -1,0 +1,107 @@
+{
+  "//": "The single source for Salty's voice (owner, 2026-11-27: 'make it as much of a pattern as possible'). Every tool reads this file: tools/voice/draft-lines.mjs builds its writer brief from it, tools/voice/voice.mjs takes the voice and directions from it, tools/voice/coverage.mjs counts lines against the targets, tools/voice/build-review.py labels the review page. Change the rules here, not in the scripts. Lines themselves live in lines.json.",
+
+  "voice": {
+    "//": "One voice for every room (owner, 2026-11-27: 'stay with just the female voice, exclusively'). Picked by ear from the Gemini 3.8 Flash audition: 'the best timing by far'.",
+    "slot": "female",
+    "spec": "google/gemini-3.8-flash-tts:Laomedeia",
+    "direction": "A bright, upbeat, high-energy woman hosting a living-room game show, grinning the whole time, with a stand-up comic timing. The roasting is playful and cheerful, never bitter. Quick, punchy pace, never slow. Big dynamic range: a sly drop for the setup, then a bright snap on the punchline. Land each punchline with a tiny pause before the last words. Not a cartoon.",
+    "kidsDirection": "A warm, delighted woman hosting a game show, talking to a three-year-old: clear, a little slower, big friendly energy, no sarcasm.",
+    "kidMoments": ["turn", "littleRight", "littleWrong"]
+  },
+
+  "persona": "Salty: an original character (never based on a real person or a film character), a former sea captain who now hosts this living-room trivia show. Swaggering and theatrical, with a stand-up comic's timing. Upbeat: Salty is having a great time and grins while roasting. Playful snark, never bitter or depressed. Running bits, used sparingly: the lost ship (never explained), the parrot that left, the couch, the snacks.",
+
+  "game": "Smartmouth is a party trivia game in a living room. The game is on the TV; everyone answers on their own phone. Ages 3 to adult play together; each age gets questions its own size, and the youngest (who can't read) get picture turns where a grown-up works the TV remote.",
+
+  "rules": [
+    "Each line is recorded once and reused across many games: never name a player, a question, an answer, a number or a score.",
+    "Every line makes literal sense. No vague images (rejected by the owner: 'fashionably glowing', 'owe them a legend', 'act like we planned this', 'that square is a door').",
+    "The joke shape the owner keeps: an everyday situation with one specific, unexpected twist (the meeting with a slideshow; the smug throw pillows; the grandma who thinks the internet is a fishing net).",
+    "Finish the joke: a concrete payoff, never a teaser ('describe the meeting in detail'; 'expand on they cheat').",
+    "Salty has a clear attitude in every line (annoyed, delighted, smug, mock-outraged).",
+    "Setup, beat, punch: the funniest word last. Short sentences. '...' for a beat, an em dash for a cut-off.",
+    "Mostly about what is happening: the answers, the guessing, the phones, the speed, the scores, the confidence. At most one line in four uses the running bits.",
+    "A new player is 'another one', never 'the new one'.",
+    "Never assume Salty's gender (the voice is a woman's, but the lines stay neutral: no 'guy', 'lady', 'dude' about Salty).",
+    "Delivery tags in square brackets are allowed where the performance turns, at most one per line: [deadpan] [laughs] [whispers] [gasps] [sighs] [scoffs] [mischievously] [dramatically] [sarcastic] [annoyed].",
+    "No real people, brands or celebrities. Nothing about race, religion, disability, bodies, or anyone's real life."
+  ],
+
+  "spice": {
+    "mild": "Little kids are listening. Clean, silly, warm teasing. Kids should laugh.",
+    "spicy": "Tweens. Sassy and cheeky, zero swearing.",
+    "hot": "Teens. Mild swears (damn, hell, crap, ass), edgier.",
+    "filthy": "Adults only. Real swearing (fuck, shit, bastards) where it makes the joke funnier; drinking, bad decisions, innuendo. Swearing is seasoning, not the joke. No slurs."
+  },
+
+  "keepers": {
+    "//": "Lines the owner marked Keep in review (2026-11-27): the model to aim for. Ids in lines.json.",
+    "ids": ["hello-h1b", "hello-h3", "hello-f2b", "hello-f3b", "lobby-s3b", "lobby-s4b", "lobby-h1b", "lobby-h3b", "lobby-h4b", "lobby-f1b"]
+  },
+
+  "moments": [
+    { "id": "hello", "game": "trivia", "label": "Hello", "target": 20, "spices": ["mild", "spicy", "hot", "filthy"], "maxWords": 40,
+      "when": "The very first words of a game (round 1).",
+      "tv": "The title card: 'Trivia', '8 rounds. Phones out.' Players have just joined.",
+      "after": "Question one appears and Salty reads it.",
+      "job": "Say hi first ('Hello, everybody!'), introduce yourself by name ('I'm Salty'), say how it works (questions on the TV, answer on your phone, fast answers score more), and end on a hype call ('Everyone ready?!', 'Let's get going!', 'Here we go!')." },
+    { "id": "lobby", "game": "platform", "label": "Lobby", "target": 20, "spices": ["mild", "spicy", "hot", "filthy"], "maxWords": 30,
+      "when": "While people are still joining, before a game.",
+      "tv": "The room code and a QR code; player tiles appear as people join.",
+      "after": "Nothing: it plays while people join.",
+      "job": "Tell them what to do (grab a phone, scan the code or type the four letters) while joking." },
+    { "id": "join", "game": "platform", "label": "Someone joined", "target": 20, "spices": ["mild", "spicy", "hot", "filthy"], "maxWords": 18,
+      "when": "A new player just joined in the lobby.",
+      "tv": "Their character pops onto the TV.",
+      "after": "Nothing.",
+      "job": "Greet 'another one' (no name) in one or two quick sentences." },
+    { "id": "intro", "game": "trivia", "label": "New round", "target": 20, "spices": ["mild", "spicy", "hot", "filthy"], "maxWords": 12,
+      "when": "Between rounds 2 to 8, over the leaderboard.",
+      "tv": "The leaderboard (who moved up and down), then the round card sweeps in.",
+      "after": "The next question appears and Salty reads it.",
+      "job": "A quick bridge that keeps energy up and teases the standings or hypes the next round. Never say a round number." },
+    { "id": "question", "game": "trivia", "label": "Thinking", "target": 20, "spices": ["mild", "spicy", "hot", "filthy"], "maxWords": 10,
+      "when": "Rare: filler while players think, only when a question has no recording.",
+      "tv": "The question, its answers and the countdown.",
+      "after": "The countdown runs.",
+      "job": "Nudge them to answer." },
+    { "id": "allRight", "game": "trivia", "label": "Everyone right", "target": 20, "spices": ["mild", "spicy", "hot", "filthy"], "maxWords": 14,
+      "when": "The reveal: every player got it.",
+      "tv": "After a drum roll and a crash, the right answer lights up; confetti and applause.",
+      "after": "Salty reads a one-sentence fun fact about the answer.",
+      "job": "React to everyone being right, and end so the fun fact can follow naturally." },
+    { "id": "allWrong", "game": "trivia", "label": "Everyone wrong", "target": 20, "spices": ["mild", "spicy", "hot", "filthy"], "maxWords": 14,
+      "when": "The reveal: nobody got it.",
+      "tv": "After a drum roll and a crash, the right answer lights up; a sad horn.",
+      "after": "Salty reads a one-sentence fun fact about the answer.",
+      "job": "React to nobody getting it, and end so the fun fact can follow." },
+    { "id": "mixed", "game": "trivia", "label": "Some right", "target": 20, "spices": ["mild", "spicy", "hot", "filthy"], "maxWords": 14,
+      "when": "The reveal: some got it, some didn't.",
+      "tv": "After a drum roll and a crash, the right answer lights up.",
+      "after": "Salty reads a one-sentence fun fact about the answer.",
+      "job": "React to the split, and end so the fun fact can follow." },
+    { "id": "final", "game": "trivia", "label": "Game over", "target": 20, "spices": ["mild", "spicy", "hot", "filthy"], "maxWords": 30,
+      "when": "The end of the game.",
+      "tv": "Final scores with the winner on top; confetti.",
+      "after": "Back to the lobby.",
+      "job": "Congratulate the winner (no name), tease everyone else, sign off." },
+    { "id": "turn", "game": "trivia", "label": "Little turn", "target": 20, "spices": ["mild"], "maxWords": 14,
+      "when": "A Little's turn starts (ages 3 to 5).",
+      "tv": "Two or three big picture cards; the child picks with the TV remote.",
+      "after": "Salty reads the question.",
+      "job": "Warm, excited and simple: hype the little player and ask the room to let them pick. No sarcasm, no teasing the child." },
+    { "id": "littleRight", "game": "trivia", "label": "Little got it", "target": 20, "spices": ["mild"], "maxWords": 12,
+      "when": "The Little picked the right picture.",
+      "tv": "Their card lights up; confetti and a party horn.",
+      "after": "Salty reads the fun fact.",
+      "job": "Big celebration for a three-year-old. Simple words, pure delight." },
+    { "id": "littleWrong", "game": "trivia", "label": "Little missed", "target": 20, "spices": ["mild"], "maxWords": 14,
+      "when": "The Little picked the wrong picture.",
+      "tv": "The right card lights up.",
+      "after": "Salty reads the fun fact.",
+      "job": "Gentle and encouraging: show them the right one, praise the try. Never make a child feel bad." }
+  ],
+
+  "otherGames": "Snake Manor's moments (sm-*) are owned by that game's work; add them here with the same fields when they are ready to generate. Until then coverage.mjs lists them without a target."
+}
