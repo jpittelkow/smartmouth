@@ -222,3 +222,71 @@ dense and boring on purpose, and it sits behind the admin password (ADR 0015).
 - Every voiced line has its text in a caption strip on the TV, which can be turned off.
 - Phone buttons are at least 64 px tall, with 12 px gaps.
 - Respects reduced motion. No flashing faster than 3 Hz.
+
+## 8. Snake Manor
+
+Game #2 ([ADR 0022](../adr/0022-game-two-snake-manor.md)) has its own world: a candlelit manor at night, medieval
+and much less cartoonish than trivia. Everything in §1–§7 still holds (sizes, contrast, safe areas, accessibility,
+Salty's rules). This section only replaces the look and the host's persona. Mockups:
+[mockups/snake-manor.html](mockups/snake-manor.html) (private artifact: https://claude.ai/artifact/UR6VZ46KUoY3fcriACf42k).
+Rules for hidden screens: [ADR 0023](../adr/0023-hidden-information.md). Drama and sound:
+[ADR 0024](../adr/0024-drama-sequences.md).
+
+_Status: Proposed, 2026-11-27._
+
+### 8.1 Salty as Lord of the Manor
+Salty keeps the same voice, snark and spine (none). He has come into a crumbling country manor, won in the only card
+game he has ever won, and the deed is written on a napkin. He wears a velvet smoking jacket two sizes too big, swishes
+a cape he can't stop swishing, and carries a candelabra everywhere. He's the host with the most: booming welcomes,
+long dramatic pauses, toasts to himself. Underneath he's the same candy-ass. He picked the Snakes himself and regrets
+it, he sucks up to everyone in case they're one, he sleeps in a wardrobe, and he faints at murders.
+
+- **He never leaks a role** ([ADR 0023](../adr/0023-hidden-information.md)). In character he "picked the Snakes" but has
+  "forgotten who, on purpose, for his own safety".
+- **Reveal lines are in two parts and never say a typed name** ([ADR 0024](../adr/0024-drama-sequences.md)).
+- **Words by spice:** at Spicy a murder is "vanished in the night" and a banishment is "shown the door"; at Hot and
+  above, "murdered" and "banished".
+- **New line moments:** welcome, roles dealt, mission start, target hit, target missed, overboard, shield given,
+  Round Table opens, debate almost up, each vote revealed, Guest banished, Snake banished, night falls, breakfast
+  murder, breakfast shield save, breakfast hint, recruitment night, final vote, Guests win, Snakes win.
+
+### 8.2 Colour
+A single dark look, like the rest of the TV and phone UI.
+
+| Token | Value | Use |
+|---|---|---|
+| `--stone` | `#14110e` | stage ground |
+| `--stone-2` / `--stone-3` | `#1f1a15` / `#2c251e` | panels, cards on stone |
+| `--vellum` | `#e8dbbd` | parchment: questions, role cards, the murdered player's card |
+| `--ink` | `#2a1f14` | text on vellum |
+| `--gold` | `#c9a24a` | gold leaf: the current thing, the timer, the pot |
+| `--gules` | `#a3302a` | oxblood: Salty, danger, the red initial letter |
+| `--vert` | `#5b8a63` | verdigris: the Snakes, and only once one is revealed |
+| `--candle` | `#f4c66a` | candle flames, the night clock |
+
+### 8.3 Type
+| Role | Font | Notes |
+|---|---|---|
+| Big reveals: roles, banishments, night, morning, the title | **Uncial Antiqua** | used sparingly. Blackletter was tried and dropped on 2026-11-27, because the owner read its S as a G |
+| Names, labels, scores, the clock | **Cinzel** 500–700 | inscription capitals, letter-spaced |
+| Questions, answers, Salty's captions | **EB Garamond** 400–600 | replaces Atkinson Hyperlegible in this game only (Tweens and up). Test it at 3 m on the office TV |
+
+Sizes follow §5.3: nothing on the TV under 32 px except the quietest labels.
+
+### 8.4 Shapes and components
+- **No cartoon outlines or hard offset shadows.** Cards are vellum with a thin double gold rule, and panels are flat stone.
+- **Players bear arms.** The 10 seat colours become 10 heraldic tinctures (or, argent, gules, azure, vert, purpure,
+  sable, tenné, sanguine, murrey). Each has a fixed charge (fess, pall, chevron, bend, chief, cross, pale, saltire,
+  bordure, quarterly), so colour is never the only signal.
+- **Answer marks:** crown, key, rose and sword, each with a Roman numeral (I–IV). Trivia keeps its star, heart, moon and bolt.
+- **Salty's seal** replaces the grin in this game: a red wax seal with his initial that pulses while he talks.
+- **The timer** is a candle that burns down and flares oxblood in the last 5 seconds. The phone gets a thin bar at the top.
+- **Votes** land as wax seals stamped with the accused's name. The pot is counted in crowns.
+- **At night** phones drop the seat tint and go dim, and every role shares one layout ([ADR 0023](../adr/0023-hidden-information.md)).
+
+### 8.5 Sound and motion
+Every reveal is a timed sequence where each sound has its picture: heartbeat and light, quill and ink, silence and
+frozen flames, bell and ring, hiss and serpent, puff and snuffed candle ([ADR 0024](../adr/0024-drama-sequences.md)). The
+palette is a low organ and cello drone, heartbeat, quill, wax-seal thud, a great bell, a serpent's hiss, guttering
+candles, a lute, wind, a creaking door, birdsong, a harpsichord, a cracked fanfare, and a choir for the finale. The
+word players must read always lands still.

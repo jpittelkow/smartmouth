@@ -40,6 +40,9 @@ p { margin: 0; }
 .mast h1 { font-family: var(--f-black); font-size: clamp(48px, 8vw, 88px); line-height: 1; color: var(--vellum); }
 .mast h1 .rubric { color: var(--gules); }
 .eyebrow { font-family: var(--f-caps); font-size: 13px; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+.refs { font-size: 16px; color: var(--muted); }
+.refs a { color: var(--gold); text-underline-offset: 3px; }
+.refs a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .lede { font-size: 20px; color: var(--pale); max-width: 64ch; }
 .section { display: grid; gap: 20px; }
 .section > header { display: grid; gap: 6px; max-width: 70ch; border-top: 1px solid var(--gold-dim); padding-top: 18px; }
@@ -360,6 +363,7 @@ figure.shot { margin: 0; }
     <span class="eyebrow">Smart Mouth · Game #2 · mockups, draft 1 · 2026-11-27</span>
     <h1>Snake <span class="rubric">Manor</span></h1>
     <p class="lede">A darker, older look for the hidden-traitor game: candlelight on stone, questions on vellum, gold leaf for whatever matters right now. Players carry coats of arms instead of blobs, and Salty speaks under his own wax seal. Same rules as the design guide for size, contrast and safe areas; a different world.</p>
+    <p class="refs">Rules: <a href="https://github.com/jpittelkow/smartmouth/blob/main/docs/adr/0022-game-two-snake-manor.md">ADR 0022</a> · hidden screens: <a href="https://github.com/jpittelkow/smartmouth/blob/main/docs/adr/0023-hidden-information.md">ADR 0023</a> · drama: <a href="https://github.com/jpittelkow/smartmouth/blob/main/docs/adr/0024-drama-sequences.md">ADR 0024</a> · look: <a href="https://github.com/jpittelkow/smartmouth/blob/main/docs/design/design-guide.md#8-snake-manor">design guide §8</a> · overview: <a href="https://claude.ai/artifact/2vHrDkftuZKsf1YBcc5QHg">design doc</a></p>
   </header>
 
   <section class="section">

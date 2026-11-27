@@ -31,3 +31,6 @@ the same commit.
 | [0019](0019-build-order.md) | Build order | Proposed |
 | [0020](0020-working-name-smartmouth.md) | Working name: Smartmouth, hosted by Salty | Proposed |
 | [0021](0021-code-hosting-public-github.md) | Code hosting: public GitHub, MIT license | Accepted |
+| [0022](0022-game-two-snake-manor.md) | Game #2 is Snake Manor, a hidden-traitor game on trivia missions | Proposed |
+| [0023](0023-hidden-information.md) | Hidden information: secrets on one phone, every phone looks the same | Proposed |
+| [0024](0024-drama-sequences.md) | Drama sequences: timed reveals, paired sound and picture, Full or Quick | Proposed |

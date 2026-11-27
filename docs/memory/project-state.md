@@ -35,7 +35,8 @@ of Salty's voice. All ADRs except 0021 are **Proposed** (the owner will review t
    (secret traitors among the players, round-table votes to banish, night "murders"). **Design drafted 2026-11-27** as a
    Claude Doc, "Smart Mouth: Traitors Mode Design" (https://claude.ai/artifact/2vHrDkftuZKsf1YBcc5QHg): working name
    Snake Manor, roles Guests/Snakes/Ghosts, 5-10 players, trivia missions with Dagger-paying sabotage, identical night
-   screens, Salty as "Lord of the Manor". Not reviewed by the owner; no ADR or code yet. Its open questions are at the doc's end.
+   screens, Salty as "Lord of the Manor". **Recorded in the repo as ADR 0022 (rules), 0023 (hidden information) and
+   0024 (drama sequences), plus design guide §8 (look and persona)**, all Proposed, no code yet. Open items are in ADR 0022.
    Medieval-look mockups: `docs/design/mockups/snake-manor.html` (artifact https://claude.ai/artifact/UR6VZ46KUoY3fcriACf42k), draft 1, with a
    playable banishment reveal (synced sound and visuals); the doc's "Drama" section holds the sound and pacing rules.
 1. The owner picks Salty's voice; rerun `bank` with that `VOICE` if it changes.
