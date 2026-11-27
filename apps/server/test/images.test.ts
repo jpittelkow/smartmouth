@@ -36,3 +36,31 @@ test('a stored picture is a file with its credit, and a question keeps its pictu
   assert.equal(back.answers[0]?.credit, 'Our own photo');
   db.close();
 });
+
+test('admin pictures API: needs a session, checks uploads by their bytes, serves what it stored', async () => {
+  const media = mkdtempSync(join(tmpdir(), 'sm-imgapi-'));
+  const { startServer } = await import('../src/http.ts');
+  const srv = await startServer({ port: 0, publicUrl: null, allowedOrigins: [], webDir: '.', adminPassword: 'pw', mediaDir: media });
+  const url = `http://127.0.0.1:${(srv.server.address() as { port: number }).port}`;
+  try {
+    const post = (path: string, b: unknown, cookie = '') => fetch(`${url}${path}`, { method: 'POST', headers: { cookie, 'content-type': 'application/json' }, body: JSON.stringify(b) });
+    assert.equal((await post('/api/admin/images/upload', {})).status, 401);
+    const login = await post('/api/admin/login', { password: 'pw' });
+    const cookie = (login.headers.get('set-cookie') ?? '').split(';')[0] ?? '';
+    // A 1×1 PNG.
+    const png = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    const fake = Buffer.from('<svg onload=alert(1)>').toString('base64');
+    assert.equal((await post('/api/admin/images/upload', { data: `data:image/png;base64,${fake}` }, cookie)).status, 400, 'not really a picture');
+    const ok = await post('/api/admin/images/upload', { data: `data:image/png;base64,${png}`, alt: 'a dot', credit: '' }, cookie);
+    assert.equal(ok.status, 200);
+    const { image } = (await ok.json()) as { image: { url: string; credit: string } };
+    assert.match(image.url, /^\/media\/images\/\d+-a-dot\.png$/);
+    assert.equal(image.credit, 'Our own photo');
+    assert.equal((await fetch(`${url}${image.url}`)).status, 200);
+    const preview = await fetch(`${url}/api/admin/images/preview/nosuchkey`, { headers: { cookie } });
+    assert.equal(preview.status, 404, 'previews only for our own search results');
+    assert.equal((await post('/api/admin/images/suggest', { question: {} }, cookie)).status, 503, 'no AI key, no picture finder');
+  } finally {
+    await srv.close();
+  }
+});

@@ -139,3 +139,18 @@ a.adm-btn { text-decoration: none; display: inline-flex; align-items: center; }
 .gen-log,.gen-results{margin:8px 0;padding-left:18px;display:grid;gap:6px;min-width:0}
 .gen-results li{overflow-wrap:anywhere}
 .gen-voice{padding:0 4px}
+
+/* Pictures on a question (owner, 2026-11-27). */
+.adm-pic { display: grid; gap: 6px; padding: 10px; border: 1px solid var(--a-line); border-radius: 10px; }
+.adm-pic-row { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 12px; align-items: start; }
+.adm-pic-thumb { aspect-ratio: 16 / 10; border-radius: 8px; background: var(--a-chip); display: grid; place-items: center; overflow: hidden; }
+.adm-pic-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.adm-pic-info { display: grid; gap: 6px; min-width: 0; }
+.adm-pic-info .lbl { margin: 0; }
+.adm-pic-find { display: grid; gap: 8px; }
+.adm-pic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+.adm-pic-cand { padding: 0; border: 2px solid transparent; border-radius: 8px; background: var(--a-chip); cursor: pointer; overflow: hidden; display: grid; }
+.adm-pic-cand:hover, .adm-pic-cand:focus-visible { border-color: var(--a-accent); outline: none; }
+.adm-pic-cand img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+.adm-pic-cand span { font-size: 11.5px; color: var(--a-muted); padding: 2px 6px; text-align: left; }
+@media (max-width: 480px) { .adm-pic-row { grid-template-columns: minmax(0, 1fr); } }

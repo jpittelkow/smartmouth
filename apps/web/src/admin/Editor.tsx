@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 import {
   BANDS, CATEGORIES, DIFFICULTY_HELP, FRESHNESS, FRESHNESS_LABEL, KINDS, KIND_LABEL, REGIONS, REGION_LABEL, SEASONS,
   SPICES, SPICE_LABEL, STATUSES, spiceAllows, spiceCap, validateQuestion,
-  type Question, type QuestionInput, type QuestionKind,
+  type ImageRef, type Question, type QuestionInput, type QuestionKind,
 } from '@smartmouth/protocol';
 import { api, ApiError } from './api.ts';
+import { PictureSlot, answerPicture } from './Pictures.tsx';
 
 type Errors = Partial<Record<string, string>>;
 
@@ -30,11 +31,12 @@ export function Editor({ question, onSaved, onDeleted, onClose }: {
   const [warnings, setWarnings] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [finding, setFinding] = useState('');
 
   useEffect(() => {
     setQ(question ?? BLANK);
     setTagsText((question?.tags ?? []).join(', '));
-    setErrors({}); setWarnings([]); setConfirmDelete(false);
+    setErrors({}); setWarnings([]); setConfirmDelete(false); setFinding('');
   }, [question?.id]);
 
   const set = <K extends keyof QuestionInput>(k: K, v: QuestionInput[K]) => setQ((old) => ({ ...old, [k]: v }));
@@ -47,11 +49,37 @@ export function Editor({ question, onSaved, onDeleted, onClose }: {
     return { ...old, kind, answers, correct: Math.min(old.correct, answers.length - 1) };
   });
 
-  const save = async () => {
-    // Blank trailing answers are left out, so a 3-answer question can be typed into the 4 boxes.
+  // Blank trailing answers are left out, so a 3-answer question can be typed into the 4 boxes.
+  const draftOf = () => {
     const answers = q.answers.filter((a, i) => a.text.trim() || i === q.correct);
-    const draft = { ...q, answers, tags: tagsText.split(','), correct: answers.indexOf(q.answers[q.correct] as typeof answers[number]) };
-    const v = validateQuestion(draft);
+    return { ...q, answers, tags: tagsText.split(','), correct: answers.indexOf(q.answers[q.correct] as typeof answers[number]) };
+  };
+
+  /** Plans, searches and picks pictures for the empty slots; the grown-up's own picks are kept. */
+  const findPictures = async () => {
+    const v = validateQuestion(draftOf());
+    if (!v.ok) { setErrors(v.errors); setFinding('Fill in the question and its answers first.'); return; }
+    setFinding('Looking… (about a minute)');
+    try {
+      const r = await api<{ image: ImageRef | null; revealImages: ImageRef[]; answers: QuestionInput['answers']; log: string[] }>(
+        '/api/admin/images/suggest', { method: 'POST', body: { question: v.value } });
+      setQ((o) => ({
+        ...o,
+        image: o.image ?? r.image,
+        revealImages: o.revealImages?.length ? o.revealImages : r.revealImages,
+        answers: o.answers.map((a) => {
+          const hit = r.answers.find((x) => x.text === a.text && x.image);
+          return a.image || !hit ? a : { ...a, image: hit.image, credit: hit.credit };
+        }),
+      }));
+      setFinding(r.log.join(' · ') || 'Nothing suitable found.');
+    } catch (e) {
+      setFinding(e instanceof Error ? e.message : 'Finding pictures failed.');
+    }
+  };
+
+  const save = async () => {
+    const v = validateQuestion(draftOf());
     setWarnings(v.warnings);
     if (!v.ok) { setErrors(v.errors); return; }
     setErrors({});
@@ -127,6 +155,30 @@ export function Editor({ question, onSaved, onDeleted, onClose }: {
       <fieldset>
         <label className="lbl" htmlFor="q-explain">Salty's follow-up <span className="help">(one line after the reveal)</span></label>
         <input id="q-explain" className="adm-field" value={q.explain} maxLength={200} onChange={(e) => set('explain', e.target.value)} />
+      </fieldset>
+
+      <fieldset>
+        <legend>Pictures <span className="help">(optional; shown on the TV with a small credit)</span></legend>
+        <div className="adm-actions">
+          <button type="button" className="adm-btn" onClick={findPictures} disabled={busy || finding.startsWith('Looking')}>Find pictures for me</button>
+          {finding && <span className="help">{finding}</span>}
+        </div>
+        <PictureSlot label="With the question" hint="Shown while players answer, so it must not give the answer away."
+          value={q.image ?? null} defaultQuery="" onChange={(v) => set('image', v)} />
+        {[0, 1, 2].slice(0, Math.min(3, (q.revealImages?.length ?? 0) + 1)).map((i) => (
+          <PictureSlot key={`r${i}-${q.revealImages?.[i]?.url ?? ''}`} label={`At the reveal ${i + 1}`} hint={i === 0 ? 'Shown with the fun fact; it can show the answer.' : undefined}
+            value={q.revealImages?.[i] ?? null} defaultQuery={q.answers[q.correct]?.text ?? ''}
+            onChange={(v) => {
+              const list = [...(q.revealImages ?? [])];
+              if (v) list[i] = v; else list.splice(i, 1);
+              set('revealImages', list.filter(Boolean));
+            }} />
+        ))}
+        {q.kind === 'picture' && q.answers.slice(0, maxAnswers).map((a, i) => (
+          <PictureSlot key={`a${i}`} label={`Answer ${i + 1}${a.text ? `: ${a.text}` : ''}`} hint={i === 0 ? 'Little ones pick between these picture cards.' : undefined}
+            value={answerPicture(a)} defaultQuery={a.text}
+            onChange={(v) => set('answers', q.answers.map((x, j) => (j === i ? { text: x.text, image: v?.url ?? null, ...(v?.credit ? { credit: v.credit } : {}) } : x)))} />
+        ))}
       </fieldset>
 
       <fieldset>

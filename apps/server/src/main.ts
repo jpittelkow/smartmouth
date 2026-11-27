@@ -28,6 +28,7 @@ const { server } = await startServer({
   webDir: env.WEB_DIR ?? repo('apps/web/dist'),
   dbPath: join(dataDir, 'smartmouth.db'),
   mediaDir: join(dataDir, 'media'),
+  chat: key ? openRouterChat(key) : null,
   voiceRunner,
   minds: key && env.BOT_AI !== 'off' ? new BotMinds(new BotBrain(openRouterChat(key), env.BOT_MODEL?.trim() || DEFAULT_BOT_MODEL)) : null,
   makeGenerator: (db) => new Generator(db, {

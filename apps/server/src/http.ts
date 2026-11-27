@@ -12,6 +12,8 @@ import { clientAddress, fromHomeNetwork, trustedProxies } from './limits.ts';
 import { openDb, type Db } from './db.ts';
 import { handleQuestionsApi } from './adminApi.ts';
 import { handleGeneratorApi } from './generatorApi.ts';
+import { handleImagesApi } from './imagesApi.ts';
+import type { Chat } from './ai.ts';
 import { securityHeaders } from './headers.ts';
 import type { Generator } from './generator.ts';
 import type { VoiceRunner } from './voiceRunner.ts';
@@ -42,6 +44,8 @@ export interface ServerConfig {
   voiceRunner?: VoiceRunner | null;
   /** Where recordings and pictures live (DATA_DIR/media), served at /media. */
   mediaDir?: string | null;
+  /** OpenRouter, for the admin's "Find pictures for me" (imagePlanner.ts); null hides it. */
+  chat?: Chat | null;
   now?: () => number;
 }
 
@@ -159,6 +163,7 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
       if (!admin.check(token, now())) { json(res, 401, { error: 'Sign in first.' }); return; }
       if (await handleQuestionsApi(req, res, url, db, now(), { json, readJson })) return;
       if (await handleGeneratorApi(req, res, url, generator, cfg.voiceRunner ?? null, { json, readJson })) return;
+      if (await handleImagesApi(req, res, url, db, cfg.mediaDir ?? null, cfg.chat ?? null, now(), { json, readJson })) return;
       json(res, 404, { error: 'Not found.' });
       return;
     }
