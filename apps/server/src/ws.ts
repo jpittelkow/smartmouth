@@ -7,7 +7,7 @@ import { GAMES, findGame } from './games.ts';
 import { RateLimit, clientAddress, originAllowed } from './limits.ts';
 import { normalizeCode } from './codes.ts';
 import type { Db } from './db.ts';
-import { deadline, drainLog, endGame, gameIntent, pruneLimits, skip, startGame, syncRoom, tickGame } from './gameRuntime.ts';
+import { holdForSpeech, deadline, drainLog, endGame, gameIntent, pruneLimits, skip, startGame, syncRoom, tickGame } from './gameRuntime.ts';
 import { cueJoin, readsFor, updateSalty } from './salty.ts';
 import type { VoiceBank } from './voice.ts';
 
@@ -55,6 +55,9 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
     return `${base.replace(/\/$/, '')}/play?code=${room.code}`;
   };
 
+  /** A beat after Salty stops talking before the game moves on. */
+const SPEECH_TAIL_MS = 1200;
+
   const timers = new Map<string, ReturnType<typeof setTimeout>>();
   let stopped = false;
 
@@ -68,7 +71,9 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
   function settle(room: Room) {
     const t = now();
     drainLog(room, opts.db, t);
-    updateSalty(room, opts.voice ?? null, t);
+    // The game's pause waits for Salty to finish (plus a beat), so he isn't cut off.
+    const speech = updateSalty(room, opts.voice ?? null, t);
+    if (speech > 0) holdForSpeech(room, t + speech + SPEECH_TAIL_MS);
     clearTimeout(timers.get(room.code));
     timers.delete(room.code);
     const due = deadline(room);

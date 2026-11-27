@@ -83,6 +83,13 @@ export function tickGame(room: Room, now: number): void {
   if (g) g.state = adapterFor(g.id).tick(g.state, now);
 }
 
+/** Salty is talking until `until`: the game's current pause waits for him. */
+export function holdForSpeech(room: Room, until: number): void {
+  const g = room.game;
+  const a = g ? adapterFor(g.id) : null;
+  if (g && a?.hold) g.state = a.hold(g.state, until);
+}
+
 export function deadline(room: Room): number | null {
   const g = room.game;
   return g ? adapterFor(g.id).deadline(g.state) : null;

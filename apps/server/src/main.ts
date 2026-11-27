@@ -34,7 +34,7 @@ const { server } = await startServer({
     budget: Number(env.AI_JOB_BUDGET_USD) || 1,
     onPublished: () => voiceRunner?.request(),
   }),
-  voice: new VoiceBank(repo('content/voice/lines.json'), join(dataDir, 'voice', 'manifest.json')),
+  voice: new VoiceBank(repo('content/voice/lines.json'), join(dataDir, 'voice', 'manifest.json'), join(dataDir, 'media')),
   onDb: (db) => {
     const { added, problems } = loadSeeds(db, repo('content/seed'), Date.now());
     if (added) console.log(`added ${added} seed questions`);

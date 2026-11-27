@@ -61,6 +61,14 @@ export function nextDeadline(s: TriviaState): number | null {
   return s.stageEnds;
 }
 
+/** Pauses that wait for Salty: he finishes talking before the game moves on (owner, 2026-11-27). */
+const HOLDABLE = new Set(['intro', 'reveal', 'turnReveal']);
+/** Keeps the current pause going until `until`, never shortening it; question timers are never touched. */
+export function holdStage(s: TriviaState, until: number): TriviaState {
+  if (!HOLDABLE.has(s.stage) || s.stageEnds === null || until <= s.stageEnds) return s;
+  return { ...s, stageEnds: until };
+}
+
 export function isOver(s: TriviaState): boolean {
   return s.stage === 'final';
 }

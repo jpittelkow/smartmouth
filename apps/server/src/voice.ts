@@ -3,6 +3,7 @@
 // into DATA_DIR/media/voice (served, with salted unguessable names) and listed in DATA_DIR/voice/manifest.json
 // (not served: it maps questions to their recordings). Without them Salty is captions only.
 import { readFileSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 import { SPICES, VOICES, isSpice, spiceAllows, spiceRank, type Spice, type VoiceId } from '@smartmouth/protocol';
 
 /**
@@ -43,7 +44,12 @@ export class VoiceBank {
   manifestFile: string;
   private manifests = new Map<string, { m: Manifest | null; mtime: number; checked: number }>();
 
-  constructor(linesFile: string, manifestFile: string) {
+  /** DATA_DIR/media: where the clips are, to measure them. */
+  mediaDir: string | null;
+  private lengths = new Map<string, number>();
+
+  constructor(linesFile: string, manifestFile: string, mediaDir: string | null = null) {
+    this.mediaDir = mediaDir;
     const doc = JSON.parse(readFileSync(linesFile, 'utf8')) as { lines: Line[] };
     this.lines = doc.lines.filter((l) => isSpice(l.spice) && typeof l.text === 'string');
     this.manifestFile = manifestFile;
@@ -96,6 +102,28 @@ export class VoiceBank {
       if (pool.length) return pool[Math.floor(rand() * pool.length)] ?? null;
     }
     return null;
+  }
+
+  /**
+   * How long clips run, in ms, estimated from file size: our mp3s are 128 kbit/s (16 bytes a ms), Gemini's wav is
+   * 24 kHz 16-bit mono (48 bytes a ms). A missing file counts as 0.
+   */
+  clipsMs(urls: readonly string[]): number {
+    if (!this.mediaDir) return 0;
+    let total = 0;
+    for (const url of urls) {
+      let ms = this.lengths.get(url);
+      if (ms === undefined) {
+        ms = 0;
+        try {
+          const size = statSync(join(this.mediaDir, url.replace(/^\/media\//, ''))).size;
+          ms = url.endsWith('.wav') ? Math.max(0, size - 44) / 48 : size / 16;
+        } catch { /* not recorded */ }
+        this.lengths.set(url, ms);
+      }
+      total += ms;
+    }
+    return Math.round(total);
   }
 
   lineAudio(id: string, now: number, voice?: VoiceId): string | null {

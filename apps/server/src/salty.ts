@@ -41,8 +41,9 @@ export function readsFor(room: Room, bank: VoiceBank | null, now: number): { que
   return a.reads(g.state, tools(room, bank, now));
 }
 
-export function updateSalty(room: Room, bank: VoiceBank | null, now: number): void {
-  if (!bank) return;
+/** Returns how long the new cue's audio runs (ms), or 0 when nothing new was said. */
+export function updateSalty(room: Room, bank: VoiceBank | null, now: number): number {
+  if (!bank) return 0;
   const st = room.salty;
   const g = room.game;
   const a = g ? adapterFor(g.id) : null;
@@ -52,7 +53,7 @@ export function updateSalty(room: Room, bank: VoiceBank | null, now: number): vo
   if (st.pending && !g) { lobbyMoment = st.pending; changed = true; }
   else if (stageKey !== st.stageKey) { changed = true; if (!g) lobbyMoment = 'lobby'; }
   st.pending = null;
-  if (!changed) return;
+  if (!changed) return 0;
   st.stageKey = stageKey;
 
   const t = tools(room, bank, now);
@@ -67,6 +68,7 @@ export function updateSalty(room: Room, bank: VoiceBank | null, now: number): vo
   }
   st.seq++;
   st.cue = { key: `${stageKey}#${st.seq}`, caption: text ? caption(text) : null, clips };
+  return bank.clipsMs(clips);
 }
 
 /** A player joined the lobby: Salty says hello (in a game, the next stage's line covers it). */
