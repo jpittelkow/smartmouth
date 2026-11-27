@@ -240,3 +240,8 @@ button, input { font: inherit; color: inherit; }
 .kid-pic { padding: 8px; background: var(--stage); display: grid; }
 .kid-pic .pic-card { aspect-ratio: auto; height: 100%; }
 .kid-pic .pic-word { font-size: 44px; }
+
+/* Salty talking */
+.caption.talking svg { animation: chatter 220ms steps(2) infinite; }
+@keyframes chatter { 50% { transform: scaleY(1.12) translateY(-2px); } }
+.sound-hint { color: var(--spot); font-size: 26px; margin-left: 10px; }

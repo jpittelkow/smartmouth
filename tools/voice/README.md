@@ -23,8 +23,8 @@ docker exec -e VOICE="elevenlabs/eleven-v4:callum" -e MAX_USD=5 smartmouth node 
 ```
 This makes every line in `content/voice/lines.json`, plus, for every live question, its prompt, its answers (picture questions only) and
 its follow-up line. Little questions use a warmer, slower direction. Files that already exist are kept, so after you add
-questions or lines a re-run only makes what's new. It writes `manifest.json` last, and the server picks it up within
-10 seconds; there's no restart. Switching voices means running `bank` again with the new `VOICE`. `DRY=1` counts the clips and
+questions or lines a re-run only makes what's new. It writes `DATA_DIR/voice/manifest.json` last (outside the served folder), and the server picks it up within
+10 seconds; there's no restart. Recording names are salted (`DATA_DIR/voice/salt`), so they can't be guessed from the text. Switching voices means running `bank` again with the new `VOICE`. `DRY=1` counts the clips and
 characters without making anything. `MAX_USD` stops the run once the key's usage has grown by that much.
 
 Voices must be stock or designed voices. Never a clone or an imitation of a real person (ADR 0013, 0014).

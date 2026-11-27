@@ -134,12 +134,16 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
       const file = normalize(join(root, rel));
       const inside = relative(root, file);
       if (!inside || inside.startsWith('..') || isAbsolute(inside) || rel.includes(String.fromCharCode(0))) { res.writeHead(400).end(); return; }
+      // Data files are never served from here, even if one lands in the folder.
+      if (extname(file).toLowerCase() === '.json') { res.writeHead(404, { 'content-type': 'text/plain' }).end('Not found'); return; }
       try {
         const st = await stat(file);
         if (!st.isFile()) throw new Error('not a file');
         res.writeHead(200, {
           'content-type': TYPES[extname(file)] ?? 'application/octet-stream', 'content-length': st.size,
-          'cache-control': 'public, max-age=31536000, immutable', 'x-content-type-options': 'nosniff',
+          // Recordings never change (their names come from their content); pages like the audition do.
+          'cache-control': ['.mp3', '.wav'].includes(extname(file)) ? 'public, max-age=31536000, immutable' : 'no-cache',
+          'x-content-type-options': 'nosniff',
         });
         res.end(await readFile(file));
       } catch {

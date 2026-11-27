@@ -1,8 +1,8 @@
 // Salty's voice (ADR 0013, 0014). The server picks what he says, so the spice limit is a server rule: a line is
-// used only at or below the room's effective spice. Audio files are made ahead of time by tools/voice/bank.mjs
-// into DATA_DIR/media/voice, listed in its manifest.json; without them Salty is captions only.
+// used only at or below the room's effective spice. Audio files are made ahead of time by tools/voice/voice.mjs
+// into DATA_DIR/media/voice (served, with salted unguessable names) and listed in DATA_DIR/voice/manifest.json
+// (not served: it maps questions to their recordings). Without them Salty is captions only.
 import { readFileSync, statSync } from 'node:fs';
-import { join } from 'node:path';
 import { SPICES, isSpice, spiceAllows, spiceRank, type Spice } from '@smartmouth/protocol';
 
 export type Moment = 'lobby' | 'join' | 'intro' | 'question' | 'allRight' | 'allWrong' | 'mixed' | 'turn'
@@ -33,22 +33,22 @@ export function caption(text: string): string {
 
 export class VoiceBank {
   lines: Line[];
-  mediaDir: string;
+  manifestFile: string;
   private manifest: Manifest | null = null;
   private manifestMtime = 0;
   private lastCheck = 0;
 
-  constructor(linesFile: string, mediaDir: string) {
+  constructor(linesFile: string, manifestFile: string) {
     const doc = JSON.parse(readFileSync(linesFile, 'utf8')) as { lines: Line[] };
     this.lines = doc.lines.filter((l) => isSpice(l.spice) && typeof l.text === 'string');
-    this.mediaDir = mediaDir;
+    this.manifestFile = manifestFile;
   }
 
   /** The manifest is re-read when the generator rewrites it (checked at most every 10 s). */
   private current(now: number): Manifest | null {
     if (now - this.lastCheck < 10_000) return this.manifest;
     this.lastCheck = now;
-    const file = join(this.mediaDir, 'voice', 'manifest.json');
+    const file = this.manifestFile;
     try {
       const m = statSync(file).mtimeMs;
       if (m !== this.manifestMtime) {

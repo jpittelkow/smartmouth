@@ -2,11 +2,12 @@
 // OK moves past a reveal, left/right/OK play a Little's turn, and Back opens the menu (handled in Host.tsx).
 import { useEffect, useRef, useState } from 'react';
 import type { ClientMsg, HostGameView, PublicSeat } from '@smartmouth/protocol';
-import { BANDS, HOST_NAME, SPICE_LABEL } from '@smartmouth/protocol';
+import { BANDS, SPICE_LABEL } from '@smartmouth/protocol';
 import type { TriviaHostView, TPublicQuestion } from '@smartmouth/game-trivia';
-import { Blob, Grin, PictureCard, SlotShape, Tick } from '../../ui/art.tsx';
+import { Blob, PictureCard, SlotShape, Tick } from '../../ui/art.tsx';
 import { serverNow } from '../../socket.ts';
-import { captionText, gameLine } from '../../lines.ts';
+import { SaltyStrip } from '../../host/SaltyStrip.tsx';
+import { sayClip } from '../../host/voice.ts';
 
 export function TriviaHost({ view, send }: { view: HostGameView; send: (m: ClientMsg) => void }) {
   const g = view.game as TriviaHostView;
@@ -22,8 +23,6 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
     return () => window.removeEventListener('keydown', onKey);
   }, [g.stage, send]);
 
-  // At a reveal Salty riffs on the question's own follow-up line when it has one (ADR 0010 "explain").
-  const line = captionText((g.stage === 'reveal' || g.stage === 'turnReveal') && g.explain ? g.explain : gameLine(g, view.spice.effective, view.players));
 
   return (
     <>
@@ -36,14 +35,11 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
       <div className="tv-game">
         {g.stage === 'intro' && <Intro round={g.round} rounds={g.rounds} />}
         {(g.stage === 'question' || g.stage === 'reveal') && g.question && <QuestionBoard g={g} q={g.question} />}
-        {(g.stage === 'turn' || g.stage === 'turnReveal') && g.turn && <Turn g={g} who={seat(g.turn.playerId)} send={send} />}
+        {(g.stage === 'turn' || g.stage === 'turnReveal') && g.turn && <Turn g={g} who={seat(g.turn.playerId)} send={send} answerClips={view.reads.turn?.answers ?? []} />}
         {g.stage === 'final' && g.final && <Final g={g} seat={seat} />}
       </div>
 
-      <div className="caption" role="status">
-        <Grin talking />
-        <span><span className="who">{HOST_NAME}:</span> {line}</span>
-      </div>
+      <SaltyStrip cue={view.salty} />
 
       <div className={`tiles compact${view.players.length > 6 ? ' two-rows' : ''}`}>
         {view.players.map((p) => {
@@ -115,11 +111,20 @@ function QuestionBoard({ g, q }: { g: TriviaHostView; q: TPublicQuestion }) {
   );
 }
 
-function Turn({ g, who, send }: { g: TriviaHostView; who: PublicSeat | undefined; send: (m: ClientMsg) => void }) {
+function Turn({ g, who, send, answerClips }: {
+  g: TriviaHostView; who: PublicSeat | undefined; send: (m: ClientMsg) => void; answerClips: Array<string | null>;
+}) {
   const t = g.turn!;
   const [focus, setFocus] = useState(0);
   const n = t.question.answers.length;
   useEffect(() => setFocus(0), [t.question.prompt]);
+  // Salty reads each picture's name as the remote lands on it (ADR 0009).
+  const moved = useRef(false);
+  useEffect(() => {
+    if (g.stage !== 'turn') return;
+    if (moved.current) sayClip(answerClips[focus]);
+    moved.current = true;
+  }, [focus, g.stage]);
   useEffect(() => {
     if (g.stage !== 'turn') return;
     const onKey = (e: KeyboardEvent) => {

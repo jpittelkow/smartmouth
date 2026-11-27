@@ -14,7 +14,7 @@ const LINES = fileURLToPath(new URL('../../../content/voice/lines.json', import.
 const MOMENTS: Moment[] = ['lobby', 'join', 'intro', 'question', 'allRight', 'allWrong', 'mixed', 'turn', 'littleRight', 'littleWrong', 'final'];
 
 test('a line is never picked above the room’s spice level, for every moment and level', () => {
-  const bank = new VoiceBank(LINES, tmpdir());
+  const bank = new VoiceBank(LINES, join(tmpdir(), 'no-manifest.json'));
   for (const moment of MOMENTS) {
     for (const spice of SPICES) {
       for (let i = 0; i < 40; i++) {
@@ -27,7 +27,7 @@ test('a line is never picked above the room’s spice level, for every moment an
 });
 
 test('Mild lines never swear, and Little moments only have Mild lines', () => {
-  const bank = new VoiceBank(LINES, tmpdir());
+  const bank = new VoiceBank(LINES, join(tmpdir(), 'no-manifest.json'));
   const strong = /\b(fuck|shit|bastard|damn|hell|ass)\b/i;
   for (const l of bank.lines.filter((x) => x.spice === 'mild')) assert.ok(!strong.test(l.text), l.id);
   for (const l of bank.lines.filter((x) => ['turn', 'littleRight', 'littleWrong'].includes(x.moment))) assert.equal(l.spice, 'mild', l.id);
@@ -35,7 +35,7 @@ test('Mild lines never swear, and Little moments only have Mild lines', () => {
 });
 
 test('the room’s exact level is preferred, and recent lines are avoided', () => {
-  const bank = new VoiceBank(LINES, tmpdir());
+  const bank = new VoiceBank(LINES, join(tmpdir(), 'no-manifest.json'));
   for (let i = 0; i < 20; i++) assert.equal(bank.pick('intro', 'filthy', new Set())?.spice, 'filthy');
   const all = bank.lines.filter((l) => l.moment === 'intro' && l.spice === 'hot').map((l) => l.id);
   const recent = new Set(all.slice(1));
@@ -52,16 +52,52 @@ test('/media serves recordings and refuses paths outside the media folder', asyn
   const media = mkdtempSync(join(tmpdir(), 'sm-media-'));
   mkdirSync(join(media, 'voice'));
   writeFileSync(join(media, 'voice', 'a.mp3'), 'ID3');
+  writeFileSync(join(media, 'voice', 'manifest.json'), '{}');
   const srv = await startServer({ port: 0, publicUrl: null, allowedOrigins: [], webDir: '.', mediaDir: media });
   const base = `http://127.0.0.1:${(srv.server.address() as { port: number }).port}`;
   try {
     const ok = await fetch(`${base}/media/voice/a.mp3`);
     assert.equal(ok.status, 200);
     assert.equal(ok.headers.get('content-type'), 'audio/mpeg');
+    assert.equal((await fetch(`${base}/media/voice/manifest.json`)).status, 404, 'data files are never served');
     for (const bad of ['/media/..%2f..%2fetc%2fpasswd', '/media/voice/..%2f..%2fsecret', '/media/%00', '/media/']) {
       const r = await fetch(base + bad);
       assert.ok(r.status === 400 || r.status === 404, `${bad} → ${r.status}`);
     }
+  } finally {
+    await srv.close();
+  }
+});
+
+test('the TV gets Salty’s cues: a lobby line, a hello on join, Mild only once a Little is in', async () => {
+  const { WebSocket } = await import('ws');
+  const voice = new VoiceBank(LINES, join(tmpdir(), 'no-manifest.json'));
+  const srv = await startServer({ port: 0, publicUrl: null, allowedOrigins: [], webDir: '.', voice });
+  const port = (srv.server.address() as { port: number }).port;
+  const open = (ws: InstanceType<typeof WebSocket>) => new Promise((r) => ws.on('open', r));
+  type V = { t: string; code?: string; view?: { role: string; salty: { key: string; caption: string | null } | null } };
+  const inbox: V[] = [];
+  try {
+    const host = new WebSocket(`ws://127.0.0.1:${port}/ws`);
+    host.on('message', (d) => inbox.push(JSON.parse(String(d))));
+    await open(host);
+    host.send(JSON.stringify({ t: 'host:create' }));
+    await new Promise((r) => setTimeout(r, 100));
+    const code = inbox.find((m) => m.t === 'host:welcome')?.code as string;
+    const first = inbox.filter((m) => m.t === 'view').at(-1)?.view?.salty;
+    assert.ok(first?.caption, 'a lobby line');
+    const lobbyIds = voice.lines.filter((l) => l.moment === 'lobby').map((l) => caption(l.text));
+    assert.ok(lobbyIds.includes(first.caption as string));
+
+    const kid = new WebSocket(`ws://127.0.0.1:${port}/ws`);
+    await open(kid);
+    kid.send(JSON.stringify({ t: 'player:join', code, name: 'Blue Blob', band: 'little', avatar: 0 }));
+    await new Promise((r) => setTimeout(r, 100));
+    const afterJoin = inbox.filter((m) => m.t === 'view').at(-1)?.view?.salty;
+    assert.notEqual(afterJoin?.key, first.key, 'a new cue for the join');
+    const mildJoins = voice.lines.filter((l) => l.moment === 'join' && l.spice === 'mild').map((l) => caption(l.text));
+    assert.ok(mildJoins.includes(afterJoin?.caption as string), 'a Little in the room: Mild only');
+    host.close(); kid.close();
   } finally {
     await srv.close();
   }

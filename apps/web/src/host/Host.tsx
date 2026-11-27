@@ -1,10 +1,10 @@
 // The TV host screen (ADR 0007, design guide §6 TV). Drawn at 1920×1080 and scaled to the window.
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
-import { APP_NAME, BANDS, HOST_NAME, MAX_PLAYERS, SPICE_LABEL, type HostLobbyView, type HostView, type ServerMsg } from '@smartmouth/protocol';
+import { APP_NAME, BANDS, MAX_PLAYERS, SPICE_LABEL, type HostLobbyView, type HostView, type ServerMsg } from '@smartmouth/protocol';
 import { useSocket, store, save } from '../socket.ts';
 import { Blob, Grin } from '../ui/art.tsx';
-import { captionText, pickLine } from '../lines.ts';
+import { SaltyStrip } from './SaltyStrip.tsx';
 import { TriviaHost } from '../games/trivia/TriviaHost.tsx';
 
 const KEY = 'smartmouth.host';
@@ -99,7 +99,6 @@ function Menu({ onResume, onEnd }: { onResume: () => void; onEnd: () => void }) 
 
 function Lobby({ view, onPick, problem }: { view: HostLobbyView; onPick: (id: string) => void; problem: string | null }) {
   const [qr, setQr] = useState('');
-  const [seed] = useState(() => Math.floor(Math.random() * 1000));
   const firstCard = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -124,7 +123,6 @@ function Lobby({ view, onPick, problem }: { view: HostLobbyView; onPick: (id: st
 
   const display = view.joinUrl.replace(/^https?:\/\//, '').replace(/\/play\?code=.*$/, '');
   const capped = view.spice.effective !== view.spice.chosen;
-  const line = captionText(pickLine(view.spice.effective, seed + view.players.length));
 
   return (
     <>
@@ -160,10 +158,7 @@ function Lobby({ view, onPick, problem }: { view: HostLobbyView; onPick: (id: st
         </div>
       </div>
 
-      <div className="caption" role="status">
-        <Grin talking />
-        <span><span className="who">{HOST_NAME}:</span> {line}</span>
-      </div>
+      <SaltyStrip cue={view.salty} />
 
       <div className={`tiles${view.players.length > 6 ? ' two-rows' : ''}`}>
         {view.players.map((p) => (

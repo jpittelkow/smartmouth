@@ -18,14 +18,15 @@ export interface SaltyState {
 
 export const newSalty = (): SaltyState => ({ stageKey: '', cue: null, recent: [], pending: null, seq: 0 });
 
+/**
+ * Recordings the TV may hold right now. Only a Little turn's picture names go out ahead of time (they're read as the
+ * remote moves); everything else is handed over in a cue at its moment, so nothing reveals an answer early.
+ */
 export function readsFor(room: Room, bank: VoiceBank | null, now: number): { question: QuestionReads | null; turn: QuestionReads | null } {
   const s = room.game?.state;
-  if (!s || !bank) return { question: null, turn: null };
-  const tvQ = s.tvBand ? s.current[s.tvBand] : undefined;
-  return {
-    question: tvQ ? bank.reads(tvQ.id, now) : null,
-    turn: s.turn ? bank.reads(s.turn.question.id, now) : null,
-  };
+  if (!s || !bank || s.stage !== 'turn' || !s.turn) return { question: null, turn: null };
+  const r = bank.reads(s.turn.question.id, now);
+  return { question: null, turn: { prompt: null, answers: r.answers, explain: null } };
 }
 
 export function updateSalty(room: Room, bank: VoiceBank | null, now: number): void {
@@ -44,13 +45,15 @@ export function updateSalty(room: Room, bank: VoiceBank | null, now: number): vo
   const line = bank.pick(moment, spice, new Set(st.recent));
   if (line) st.recent = [line.id, ...st.recent].slice(0, 12);
   const lineClip = line ? bank.lineAudio(line.id, now) : null;
-  const reads = readsFor(room, bank, now);
+  const tvId = s && s.tvBand ? s.current[s.tvBand]?.id : undefined;
+  const reads = { question: tvId !== undefined ? bank.reads(tvId, now) : null, turn: s?.turn ? bank.reads(s.turn.question.id, now) : null };
   const clips: string[] = [];
   let text = line?.text ?? null;
 
   if (s && moment === 'question') {
     // The question is on screen; Salty reads it if there's a recording, else shows a filler caption.
-    if (reads.question?.prompt) { clips.push(reads.question.prompt); text = null; }
+    const tvQ = s.tvBand ? s.current[s.tvBand] : undefined;
+    if (reads.question?.prompt && tvQ) { clips.push(reads.question.prompt); text = tvQ.prompt; }
   } else if (s && (moment === 'allRight' || moment === 'allWrong' || moment === 'mixed')) {
     if (lineClip) clips.push(lineClip);
     const tvQ = s.tvBand ? s.current[s.tvBand] : undefined;

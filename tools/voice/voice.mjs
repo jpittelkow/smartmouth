@@ -12,11 +12,11 @@
 //           to compare them (served at /media/voice/audition/index.html).
 // bank:     VOICE reads every line in content/voice/lines.json, and every live question's prompt, its answers
 //           (picture questions) and its follow-up line, into DATA_DIR/media/voice/<voice>/, then writes
-//           DATA_DIR/media/voice/manifest.json, which the server picks up within seconds. Existing files are kept,
+//           DATA_DIR/voice/manifest.json (outside the served folder), which the server picks up within seconds. Existing files are kept,
 //           so a re-run only makes what's new. MAX_USD stops it when the key's usage has grown by that much.
 //
 // Voices must be stock or designed voices: never a clone or an imitation of a real person (ADR 0013, 0014).
-import { createHash } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -26,6 +26,8 @@ const repo = join(here, '..', '..');
 const KEY = process.env.OPENROUTER_API_KEY;
 const DATA = process.env.DATA_DIR || '/data';
 const MEDIA = join(DATA, 'media', 'voice');
+// Not served: the manifest maps questions to recordings, and the salt keeps file names unguessable from the text.
+const PRIVATE = join(DATA, 'voice');
 const MAX_USD = Number(process.env.MAX_USD || 5);
 const DRY = process.env.DRY === '1';
 const mode = process.argv[2];
@@ -126,7 +128,11 @@ async function bank() {
   const questions = db.prepare("SELECT id, prompt, kind, answers, explain, age_min FROM questions WHERE status = 'live'").all();
   const dir = join(MEDIA, v.slug);
   mkdirSync(dir, { recursive: true });
-  const manifestFile = join(MEDIA, 'manifest.json');
+  mkdirSync(PRIVATE, { recursive: true });
+  const saltFile = join(PRIVATE, 'salt');
+  if (!existsSync(saltFile)) writeFileSync(saltFile, randomBytes(16).toString('hex'), { mode: 0o600 });
+  const salt = readFileSync(saltFile, 'utf8').trim();
+  const manifestFile = join(PRIVATE, 'manifest.json');
   const manifest = { voice: v.spec, model: v.model, made: new Date().toISOString(), lines: {}, questions: {} };
 
   const jobs = [];
@@ -150,7 +156,7 @@ async function bank() {
   const start = await usage();
   let made = 0, kept = 0, failed = 0;
   for (const [i, job] of jobs.entries()) {
-    const name = createHash('sha1').update(`${v.spec}|${job.style}|${job.text}`).digest('hex').slice(0, 16) + '.' + v.ext;
+    const name = createHash('sha256').update(`${salt}|${v.spec}|${job.style}|${job.text}`).digest('hex').slice(0, 24) + '.' + v.ext;
     const file = join(dir, name);
     if (existsSync(file)) { kept++; job.put(`${v.slug}/${name}`); continue; }
     if (made % 20 === 0 && start !== null) {
