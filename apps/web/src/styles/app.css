@@ -141,7 +141,7 @@ button, input { font: inherit; color: inherit; }
 .round-chip { font-size: 40px; color: var(--spot); }
 .join-chip { font-size: 26px; color: var(--muted); }
 .join-chip b { color: var(--paper); }
-.tv-game { min-height: 0; display: grid; overflow: hidden; }
+.tv-game { min-height: 0; display: grid; overflow: hidden; position: relative; }
 /* In a game the tiles shrink to one short row (blob beside the name) so the question gets the room. */
 .tiles.compact { grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); }
 .tiles.compact .tile { grid-template-columns: auto minmax(0, 1fr); justify-items: start; align-items: center; text-align: left; padding: 8px 14px; column-gap: 12px; }
@@ -284,3 +284,60 @@ button, input { font: inherit; color: inherit; }
 .standings.many .st-row svg { width: 44px; height: 44px; }
 @keyframes gain-pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .st-row { transition: none; } .st-row .gain, .st-row .move { animation: none; } }
+
+/* ---------- Transitions (owner, 2026-11-27); all off under prefers-reduced-motion (the rule near the top) ---------- */
+/* The round wipe: a panel sweeps in with the whoosh, holds the round, then wipes off to the left over the question. */
+.round-wipe { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: hidden; }
+.round-wipe-panel {
+  position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 10px;
+  background: linear-gradient(115deg, var(--grape), var(--hot)); border-radius: 32px;
+  animation: wipe 1300ms cubic-bezier(.7, 0, .3, 1) both;
+}
+.round-wipe-num { font-size: 190px; line-height: .95; color: var(--paper); text-shadow: 8px 8px 0 var(--ink); animation: wipe-pop 1300ms var(--pop) both; }
+.round-wipe-sub { font-size: 44px; font-weight: 700; color: var(--ink); animation: wipe-pop 1300ms var(--pop) 80ms both; }
+@keyframes wipe { 0% { transform: translateX(105%) skewX(-8deg); } 24% { transform: translateX(0) skewX(0); } 74% { transform: translateX(0); } 100% { transform: translateX(-108%) skewX(8deg); } }
+@keyframes wipe-pop { 0%, 18% { transform: scale(.6); opacity: 0; } 34% { transform: scale(1.08); opacity: 1; } 44%, 76% { transform: scale(1); opacity: 1; } 100% { transform: scale(.95); opacity: 0; } }
+
+/* The title card: rays turn behind, the grin pops, the title slams down and settles. */
+.title-card { position: relative; display: grid; place-content: center; justify-items: center; text-align: center; gap: 6px; }
+.title-rays {
+  position: absolute; left: 50%; top: 50%; width: 1800px; height: 1800px; margin: -900px 0 0 -900px; z-index: 0; opacity: .5;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 210, 63, .16) 0deg 9deg, transparent 9deg 22deg);
+  animation: rays-in 600ms ease-out both, rays-turn 24s linear infinite;
+  mask: radial-gradient(circle, #000 18%, transparent 62%);
+}
+.title-grin { position: relative; z-index: 1; width: 170px; height: 170px; animation: grin-pop 700ms var(--pop) both; }
+.title-grin svg { width: 100%; height: 100%; }
+.title-word { position: relative; z-index: 1; font-size: 220px; line-height: .9; color: var(--spot); text-shadow: 10px 10px 0 var(--ink); animation: slam 650ms cubic-bezier(.2, 1.4, .4, 1) 250ms both; }
+.title-sub { position: relative; z-index: 1; font-size: 60px; color: var(--paper); animation: rise 500ms ease-out 700ms both; }
+@keyframes rays-in { from { opacity: 0; transform: scale(.6); } }
+@keyframes rays-turn { to { rotate: 360deg; } }
+@keyframes grin-pop { 0% { transform: scale(0) rotate(-30deg); } 70% { transform: scale(1.25) rotate(8deg); } 100% { transform: scale(1) rotate(0); } }
+@keyframes slam { 0% { transform: translateY(-420px) scale(1.4); opacity: 0; } 60% { transform: translateY(18px) scale(.96); opacity: 1; } 100% { transform: none; opacity: 1; } }
+@keyframes rise { from { transform: translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* The reveal: the right answer pops and glows; the others shrink back. */
+.answer { transition: opacity 300ms ease, transform 300ms ease; }
+.answer.dim { transform: scale(.96); }
+.answer.correct { animation: correct-pop 650ms var(--pop) both; box-shadow: 0 0 0 6px var(--zap), 0 0 48px rgba(54, 220, 184, .55), var(--shadow-tv); }
+@keyframes correct-pop { 0% { transform: scale(1); } 45% { transform: scale(1.08); } 100% { transform: scale(1.03); } }
+
+/* The leaderboard rises in before its rows start to move. */
+.standings { animation: rise 420ms ease-out both; }
+
+/* The final: rows drop in one after another, the winner last and biggest. */
+.final-row { animation: rise 450ms ease-out both; }
+.final-row:nth-child(2) { animation-delay: 120ms; } .final-row:nth-child(3) { animation-delay: 240ms; }
+.final-row:nth-child(n+4) { animation-delay: 360ms; }
+.final-row.first { animation: winner-zoom 800ms var(--pop) 500ms both; }
+@keyframes winner-zoom { 0% { transform: scale(.4); opacity: 0; } 70% { transform: scale(1.06); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+
+/* Confetti: pieces fall from the top of the game area, drifting and spinning. */
+.confetti { position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
+.confetti i { position: absolute; top: -30px; animation-name: confetti-fall; animation-timing-function: cubic-bezier(.25, .6, .5, 1); animation-fill-mode: both; }
+@keyframes confetti-fall { from { transform: translate(0, 0) rotate(0); opacity: 1; } 85% { opacity: 1; } to { transform: translate(var(--drift), 900px) rotate(var(--spin)); opacity: 0; } }
+
+/* Sparkles: stars burst out from the middle and fade. */
+.sparkles { position: absolute; left: 50%; top: 55%; z-index: 5; pointer-events: none; }
+.sparkles i { position: absolute; font-style: normal; font-size: 46px; text-shadow: 0 0 14px currentColor; animation: sparkle 1100ms ease-out both; }
+@keyframes sparkle { 0% { transform: translate(-50%, -50%) scale(.2); opacity: 0; } 25% { opacity: 1; } 100% { transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1.1) rotate(160deg); opacity: 0; } }

@@ -9,6 +9,7 @@ import { serverNow } from '../../socket.ts';
 import { SaltyStrip } from '../../host/SaltyStrip.tsx';
 import { sayClip, useSalty } from '../../host/voice.ts';
 import { bed, duck, fx, stopMusic } from './audio.ts';
+import { Confetti, RoundWipe, Sparkles, TitleCard } from './Transitions.tsx';
 import { buzz, tick } from '../../host/sfx.ts';
 
 export function TriviaHost({ view, send }: { view: HostGameView; send: (m: ClientMsg) => void }) {
@@ -68,11 +69,17 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
       </div>
 
       <div className="tv-game">
-        {g.stage === 'intro' && <Intro round={g.round} rounds={g.rounds} />}
+        {g.stage === 'intro' && (g.round === 1 ? <TitleCard rounds={g.rounds} /> : <Intro round={g.round} rounds={g.rounds} />)}
         {(g.stage === 'question' || g.stage === 'reveal') && g.question && <QuestionBoard g={g} q={g.question} />}
         {(g.stage === 'turn' || g.stage === 'turnReveal') && g.turn && <Turn g={g} who={seat(g.turn.playerId)} send={send} answerClips={view.reads.turn?.answers ?? []} />}
         {g.stage === 'standings' && g.standings && <Standings g={g} seat={seat} />}
         {g.stage === 'final' && g.final && <Final g={g} seat={seat} />}
+        {/* Transitions over the game area (owner, 2026-11-27). */}
+        {g.stage === 'question' && g.round > 1 && <RoundWipe key={`wipe-${g.round}`} round={g.round} rounds={g.rounds} category={g.question?.category ?? null} />}
+        {g.stage === 'reveal' && allRight(g) && <Confetti seed={`right-${g.round}`} />}
+        {g.stage === 'turn' && <Sparkles seed={`turn-${g.round}`} />}
+        {g.stage === 'turnReveal' && g.turn && g.turn.picked === g.turn.correct && <Confetti seed={`little-${g.round}`} count={50} />}
+        {g.stage === 'final' && <Confetti seed="final" count={110} />}
       </div>
 
       <SaltyStrip cue={view.salty} />
@@ -94,6 +101,12 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
       </div>
     </>
   );
+}
+
+/** Everyone who answered got it right. */
+function allRight(g: TriviaHostView): boolean {
+  const graded = g.players.filter((p) => p.right !== null);
+  return graded.length > 0 && graded.every((p) => p.right);
 }
 
 function Intro({ round, rounds }: { round: number; rounds: number }) {
