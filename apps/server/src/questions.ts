@@ -172,6 +172,13 @@ export interface GameQuestion {
  * questions are those written for Little; other bands get no picture questions. A question goes to one band only
  * when there's enough to go round.
  */
+/** Fisher-Yates, so every order is equally likely. */
+function shuffle<T>(items: T[], rand: () => number = Math.random): T[] {
+  const a = [...items];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [a[i], a[j]] = [a[j]!, a[i]!]; }
+  return a;
+}
+
 export function pickForGame(
   db: Db, opts: { spice: Question['spice']; exclude: ReadonlySet<number>; perBand: number }, now: number,
 ): Record<Band, GameQuestion[]> {
@@ -187,7 +194,11 @@ export function pickForGame(
         AND ${band === 'little' ? 'age_min = 0' : "kind != 'picture'"}
       ORDER BY last_asked_at IS NOT NULL, last_asked_at, random()
       LIMIT 200`).all({ today: t, rank, spice: spiceRank(opts.spice) }) as Row[];
-    const fits = rows.map((r) => toQuestion(r, now)).filter((q) => !opts.exclude.has(q.id) && inSeason(q.season, t));
+    const sorted = rows.map((r) => toQuestion(r, now)).filter((q) => !opts.exclude.has(q.id) && inSeason(q.season, t));
+    // Random, with one guard (owner, 2026-11-27: "can we just randomize them?"): the most recently shown ~40% of the pool
+    // sits out, so nothing you saw minutes ago comes back. Rows arrive oldest-shown first (never-shown first of all).
+    const eligible = Math.max(opts.perBand, Math.ceil(sorted.length * 0.6));
+    const fits = shuffle(sorted.slice(0, eligible));
     const fresh = fits.filter((q) => !taken.has(q.id));
     const chosen = [...fresh, ...fits.filter((q) => taken.has(q.id))].slice(0, opts.perBand);
     for (const q of chosen) taken.add(q.id);

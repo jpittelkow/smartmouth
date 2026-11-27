@@ -144,3 +144,19 @@ test('house bots play trivia but their answers stay out of the question stats', 
   assert.equal(total, 1, 'only the person’s play counts');
   db.close();
 });
+
+test('questions come out in a random order, and the most recently shown ones sit out', async () => {
+  const { loadSeeds } = await import('../src/seeds.ts');
+  const { fileURLToPath } = await import('node:url');
+  const { pickForGame, markShown } = await import('../src/questions.ts');
+  const db = openDb(':memory:');
+  loadSeeds(db, fileURLToPath(new URL('../../../content/seed', import.meta.url)), 0);
+  const pick = () => pickForGame(db, { spice: 'filthy', exclude: new Set(), perBand: 10 }, 5_000_000).grownups.map((q) => q.id);
+  const orders = new Set(Array.from({ length: 5 }, () => pick().join(',')));
+  assert.ok(orders.size > 1, 'not the same list every time');
+  const all = pickForGame(db, { spice: 'filthy', exclude: new Set(), perBand: 500 }, 5_000_000).grownups.map((q) => q.id);
+  const recent = all.slice(0, 12);
+  for (const id of recent) markShown(db, id, 5_000_000);
+  for (let i = 0; i < 5; i++) assert.ok(pick().every((id) => !recent.includes(id)), 'just-shown questions sit out');
+  db.close();
+});
