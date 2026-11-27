@@ -1,14 +1,18 @@
 {
-  "//": "Second try at Snake Manor's hiss (the first round's shared negative prompt said 'hiss noise', which steered the model away from it). Four prompt styles; the pick replaces the hiss cue in sfx-cues.json. Plays when a banished player turns out to be a Snake.",
-  "negative": "music, melody, speech, voice, words, breathing, wind, steam, white noise, static, radio noise, crowd, reverb, low quality",
+  "//": "Snake Manor's hiss (plays when a banished player turns out to be a Snake). Third try. Round 1's shared negative said 'hiss noise'; round 2's prompts ('sss', 'breathy') came out as a person hissing. These ask for the animal: field and documentary recordings of named species, with people, mouths and whispers in the negative.",
+  "negative": "human, person, man, woman, child, mouth, lips, teeth, whisper, shushing, sss, speech, voice, singing, music, wind, steam, kettle, tire, white noise, static, crowd, low quality",
   "cues": [
-    { "id": "hiss-cobra", "use": "Hiss, style A: a big snake, aggressive and close.", "seconds": 3,
-      "prompt": "Snake hiss sound effect. A large cobra hissing aggressively, sharp breathy reptile hiss, close up, dry studio recording, high quality foley" },
-    { "id": "hiss-slow", "use": "Hiss, style B: slow and menacing, swells then fades.", "seconds": 3.5,
-      "prompt": "Slow menacing serpent hiss, long drawn out sss sound, swelling then fading, cinematic horror sound design, isolated, dry" },
-    { "id": "hiss-strike", "use": "Hiss, style C: two short angry hisses, like a warning before a strike.", "seconds": 2.5,
-      "prompt": "Two short angry snake hisses, sharp attack, threatening warning, close microphone, isolated sound effect, nothing else" },
-    { "id": "hiss-rattle", "use": "Hiss, style D: a rattle, then a hiss (more dramatic).", "seconds": 3.5,
-      "prompt": "A rattlesnake shakes its rattle then hisses loudly, real reptile, close microphone, isolated sound effect, high quality recording" }
+    { "id": "hiss-python", "use": "A real python hissing (documentary).", "seconds": 3,
+      "prompt": "Field recording of a real python snake hissing defensively, reptile animal sound, nature documentary audio, close microphone, high quality" },
+    { "id": "hiss-adder", "use": "A puff adder: loud, forceful, animal.", "seconds": 3,
+      "prompt": "Puff adder snake loud defensive hiss, wild animal sound effect, reptile exhaling forcefully, wildlife recording, no people" },
+    { "id": "hiss-kingcobra", "use": "A king cobra: deep, throaty growl-hiss.", "seconds": 3,
+      "prompt": "King cobra snake growling hiss, deep throaty reptile hiss, animal sound, wildlife documentary recording" },
+    { "id": "hiss-terrarium", "use": "A snake in a terrarium, hissing again and again.", "seconds": 3.5,
+      "prompt": "Snake in a glass terrarium hissing repeatedly, real reptile animal sound, zoo recording, close up" },
+    { "id": "hiss-bullsnake", "use": "A bull snake: raspy and rough.", "seconds": 3,
+      "prompt": "Bull snake defensive hiss, loud raspy animal hiss with a rough texture, wildlife field recording" },
+    { "id": "hiss-serpent", "use": "A giant serpent (film creature): deep, raspy, theatrical.", "seconds": 3.5,
+      "prompt": "Giant serpent creature hiss, deep raspy reptile monster sound effect, low growl under a hiss, cinematic creature sound design" }
   ]
 }
