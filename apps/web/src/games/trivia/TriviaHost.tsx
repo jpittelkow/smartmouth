@@ -106,7 +106,7 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
         {/* The round card sweeps in over the end of the leaderboard and off over the new question (same key across
             both stages, so its animation runs straight through). */}
         {((g.stage === 'standings' && wipeSoon) || (g.stage === 'question' && g.round > 1)) && (
-          <RoundWipe key={`wipe-${wipeRound}`} round={wipeRound} rounds={g.rounds} category={g.stage === 'question' ? g.question?.category ?? null : null} />
+          <RoundWipe key={`wipe-${wipeRound}`} round={wipeRound} rounds={g.rounds} category={g.stage === 'question' ? g.question?.category ?? null : g.nextCategory} />
         )}
         {g.stage === 'reveal' && <div key={`bang-${g.round}`} className="bang-flash" aria-hidden="true" />}
         {g.stage === 'reveal' && allRight(g) && <Confetti seed={`right-${g.round}`} />}

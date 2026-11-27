@@ -92,6 +92,8 @@ export interface TriviaHostView {
   explain: string | null;
   players: TPlayerStatus[];
   turn: null | { playerId: string; question: TPublicQuestion; correct: number | null; picked: number | null; helpers: number };
+  /** The category of the question the TV will show next, so the round card can show it the whole time. */
+  nextCategory: string | null;
   /** When the leaderboard ends (it waits for Salty, so this can move); the round card sweeps in just before. */
   standingsEnd: number | null;
   /** The leaderboard between rounds, best first, with where each player stood before this round. */

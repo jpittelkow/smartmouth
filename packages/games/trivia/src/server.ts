@@ -121,6 +121,14 @@ function skip(s: TriviaState, now: number): TriviaState {
 const littles = (s: TriviaState) => Object.keys(s.players).filter((id) => s.players[id]?.band === 'little');
 const answerers = (s: TriviaState) => Object.keys(s.players).filter((id) => s.players[id]?.band !== 'little');
 
+/** The question the TV will show next round (the oldest answering band's next one), without taking it. */
+function peekTvQuestion(s: TriviaState): TQuestion | null {
+  const bands = [...new Set(answerers(s).map((id) => s.players[id]?.band as Band))].filter((b) => s.queues[b]?.some((q) => spiceAllows(s.spice, q.spice)));
+  if (!bands.length) return null;
+  const tv = bands.reduce((a, b) => (bandRank(b) > bandRank(a) ? b : a));
+  return s.queues[tv]!.find((q) => spiceAllows(s.spice, q.spice)) ?? null;
+}
+
 function takeQuestion(s: TriviaState, band: Band): TQuestion | null {
   const q = s.queues[band];
   while (q.length) {
@@ -307,6 +315,7 @@ export function hostView(s: TriviaState): TriviaHostView {
       picked: t.pick?.choice ?? null, helpers: Object.keys(t.helpers).length,
     } : null,
     standingsEnd: s.stage === 'standings' ? s.stageEnds : null,
+    nextCategory: s.stage === 'standings' ? peekTvQuestion(s)?.category ?? null : null,
     standings: s.stage === 'standings' ? leaderboard(s) : null,
     final: s.stage === 'final' ? standings(s) : null,
   };

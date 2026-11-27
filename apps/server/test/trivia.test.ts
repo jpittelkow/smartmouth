@@ -169,3 +169,15 @@ test('after the leaderboard the question timer starts once the round card is gon
   s = rules.intent(s, 'g', { type: 'answer', choice: 0 }, s.questionStart + 10);
   assert.ok(s.picks.g);
 });
+
+test('during the leaderboard the TV already knows the next question’s category, for the round card', () => {
+  let s = toQuestion(start([['g', 'grownups']], 3));
+  s = rules.intent(s, 'g', { type: 'skip' }, s.questionStart + 1);
+  s = rules.tick(s, s.stageEnds as number);
+  s = rules.tick(s, s.stageEnds as number);
+  assert.equal(s.stage, 'standings');
+  const promised = rules.hostView(s).nextCategory;
+  s = rules.tick(s, s.stageEnds as number);
+  assert.ok(promised);
+  assert.equal(s.current.grownups?.category, promised, 'the card shows the category the question really has');
+});
