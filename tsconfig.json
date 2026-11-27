@@ -1,0 +1,20 @@
+{
+  "//": "Server-side code (server, protocol, game rules). Must stay erasable so Node can run it directly (ADR 0003).",
+  "compilerOptions": {
+    "target": "es2024",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "lib": ["es2024"],
+    "types": ["node"],
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": false,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true
+  },
+  "include": ["apps/server/src", "apps/server/test", "packages/protocol/src", "packages/games/*/src/**/*.ts"],
+  "exclude": ["**/*.tsx"]
+}

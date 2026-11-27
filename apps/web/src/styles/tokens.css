@@ -1,0 +1,28 @@
+/* Design tokens: names and values from docs/design/design-guide.md §5 (ADR 0017). */
+:root {
+  --ink: #14111f;
+  --stage: #1f1a36;
+  --stage-2: #2b2450;
+  --paper: #fff6e6;
+  --muted: #b9b1d6;
+  --spot: #ffd23f;
+  --hot: #ff4f7b;
+  --zap: #36dcb8;
+  --sky: #5aa8ff;
+  --grape: #a77bff;
+
+  --slot-1: var(--spot);
+  --slot-2: var(--hot);
+  --slot-3: var(--zap);
+  --slot-4: var(--sky);
+
+  --font-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible Next', system-ui, sans-serif;
+
+  --outline: 4px solid var(--ink);
+  --radius-tv: 28px;
+  --radius-phone: 18px;
+  --shadow-tv: 8px 8px 0 var(--ink);
+  --shadow-phone: 5px 5px 0 var(--ink);
+  --pop: cubic-bezier(.34, 1.56, .64, 1);
+}

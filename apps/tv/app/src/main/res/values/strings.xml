@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The one place the app's name lives (the TV banner art in drawable/banner.xml is drawn separately). -->
+    <string name="app_name">Smartmouth</string>
+
+    <string name="error_title">Can\'t reach the %1$s server</string>
+    <string name="error_detail">Tried %1$s\nRetrying in %2$d s (attempt %3$d)</string>
+    <string name="error_retrying">Tried %1$s\nConnecting…</string>
+    <string name="error_retry">Retry now</string>
+    <string name="error_settings">Server settings</string>
+    <string name="error_hint">Hold OK on Retry, or hold Menu, to change the server</string>
+    <string name="back_again">Press Back again to quit %1$s</string>
+
+    <string name="config_title">%1$s server</string>
+    <string name="config_hint">http://192.168.1.4:8470</string>
+    <string name="config_help">Address of the %1$s server on your network (the TV page is opened at /host).</string>
+    <string name="config_save">Save</string>
+    <string name="config_reset">Use default</string>
+    <string name="config_cancel">Cancel</string>
+    <string name="config_invalid">Enter an http:// or https:// address</string>
+</resources>

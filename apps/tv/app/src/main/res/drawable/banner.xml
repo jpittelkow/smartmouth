@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated: the app name drawn as strokes (vector drawables cannot render text).
+     If the app is renamed, redraw this; the label itself lives in values/strings.xml. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <path android:fillColor="#1B1035" android:pathData="M0,0h320v180h-320z" />
+    <path android:fillColor="#2E1B5C" android:pathData="M0,130h320v50h-320z" />
+    <path android:fillColor="#FF5C8A" android:pathData="M110,142h100v6h-100z" />
+    <group android:translateX="23.7" android:translateY="62" android:scaleX="0.9" android:scaleY="0.9">
+        <path android:pathData="M22,3H3V20H21V37H2" android:strokeColor="#FFD23F" android:strokeWidth="5.5"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+    </group>
+    <group android:translateX="51.6" android:translateY="62" android:scaleX="0.9" android:scaleY="0.9">
+        <path android:pathData="M3,37V3L12,21L21,3V37" android:strokeColor="#FFD23F" android:strokeWidth="5.5"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+    </group>
+    <group android:translateX="79.5" android:translateY="62" android:scaleX="0.9" android:scaleY="0.9">
+        <path android:pathData="M3,37V3H21V37M3,20H21" android:strokeColor="#FFD23F" android:strokeWidth="5.5"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+    </group>
+    <group android:translateX="107.4" android:translateY="62" android:scaleX="0.9" android:scaleY="0.9">
+        <path android:pathData="M3,37V3H21V20H3M12,20L21,37" android:strokeColor="#FFD23F" android:strokeWidth="5.5"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+    </group>
+    <group android:translateX="135.2" android:translateY="62" android:scaleX="0.9" android:scaleY="0.9">
+        <path android:pathData="M1,3H23M12,3V37" android:strokeColor="#FFD23F" android:strokeWidth="5.5"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+    </group>
+    <group android:translateX="163.2" android:translateY="62" android:scaleX="0.9" android:scaleY="0.9">
+        <path android:pathData="M3,37V3L12,21L21,3V37" android:strokeColor="#FFD23F" android:strokeWidth="5.5"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+    </group>
+    <group android:translateX="191.1" android:translateY="62" android:scaleX="0.9" android:scaleY="0.9">
+        <path android:pathData="M3,3H21V37H3Z" android:strokeColor="#FFD23F" android:strokeWidth="5.5"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+    </group>
+    <group android:translateX="219.0" android:translateY="62" android:scaleX="0.9" android:scaleY="0.9">
+        <path android:pathData="M3,3V37H21V3" android:strokeColor="#FFD23F" android:strokeWidth="5.5"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+    </group>
+    <group android:translateX="246.9" android:translateY="62" android:scaleX="0.9" android:scaleY="0.9">
+        <path android:pathData="M1,3H23M12,3V37" android:strokeColor="#FFD23F" android:strokeWidth="5.5"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+    </group>
+    <group android:translateX="274.8" android:translateY="62" android:scaleX="0.9" android:scaleY="0.9">
+        <path android:pathData="M3,3V37M21,3V37M3,20H21" android:strokeColor="#FFD23F" android:strokeWidth="5.5"
+            android:strokeLineCap="round" android:strokeLineJoin="round" />
+    </group>
+</vector>

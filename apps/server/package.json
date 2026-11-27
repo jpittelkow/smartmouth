@@ -1,0 +1,17 @@
+{
+  "name": "@smartmouth/server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Rooms, the live socket, content and media. Node 24 runs the .ts directly (ADR 0003).",
+  "type": "module",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning --env-file-if-exists=../../.env src/main.ts",
+    "dev": "node --disable-warning=ExperimentalWarning --env-file-if-exists=../../.env --watch src/main.ts",
+    "test": "node --disable-warning=ExperimentalWarning --test \"test/*.test.ts\""
+  },
+  "dependencies": {
+    "@smartmouth/protocol": "0.1.0",
+    "@smartmouth/game-trivia": "0.1.0",
+    "ws": "8.23.0"
+  }
+}

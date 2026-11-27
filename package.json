@@ -1,0 +1,22 @@
+{
+  "name": "smartmouth",
+  "private": true,
+  "description": "A living-room party trivia game: the TV hosts, phones join on the web. See docs/adr.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": { "node": ">=24" },
+  "workspaces": ["packages/protocol", "packages/games/*", "apps/server", "apps/web"],
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "start": "npm --workspace @smartmouth/server run start",
+    "test": "npm --workspace @smartmouth/server run test",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p apps/web/tsconfig.json --noEmit",
+    "build": "npm --workspace @smartmouth/web run build",
+    "check": "npm run typecheck && npm test && npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.11",
+    "@types/ws": "8.18.2",
+    "typescript": "7.0.2"
+  }
+}

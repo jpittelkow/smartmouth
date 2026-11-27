@@ -1,0 +1,12 @@
+# Compose Manager stack for the home server. Written to the server by scripts/deploy.sh.
+# Host port 8470 is what the Cloudflare route for play.303.social points at (set up 2026-11-26). Change both together.
+services:
+  smartmouth:
+    image: smartmouth:latest
+    container_name: smartmouth
+    restart: unless-stopped
+    ports:
+      - "8470:8470"
+    env_file: /mnt/apps/appdata/smartmouth/.env
+    volumes:
+      - /mnt/apps/appdata/smartmouth/data:/data

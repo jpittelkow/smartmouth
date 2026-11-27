@@ -1,0 +1,17 @@
+{
+  "//": "Twelve test lines for picking Salty's voice by ear (ADR 0013). Each candidate voice reads all of them. Audio tags are ElevenLabs v4 delivery cues.",
+  "lines": [
+    { "id": "intro", "spice": "mild", "text": "[sighs] Welcome to the show. My show. The one I host now. Because of reasons. Legal reasons." },
+    { "id": "little-win", "spice": "mild", "text": "[gasps] The little one got it! Again! [muttering] I'm being out-smarted by someone who still naps." },
+    { "id": "little-wrong", "spice": "mild", "text": "Ooh, so close! It was the duck! Ducks are tricky. I've been fooled by a duck. Twice." },
+    { "id": "read-question", "spice": "mild", "text": "Which of these animals says moo? Take your time. I've got nowhere to be. Literally. No ship." },
+    { "id": "time-short", "spice": "spicy", "text": "Five seconds! Panic! Panic is good for you. Builds character. Look at me, I'm all character." },
+    { "id": "all-wrong", "spice": "spicy", "text": "[scoffs] Every single one of you. Wrong. Beautifully, confidently wrong. I respect it, honestly." },
+    { "id": "all-right", "spice": "spicy", "text": "Everybody got it? [sarcastic] Oh great, so you're all geniuses now. Fantastic. Love that for you." },
+    { "id": "comeback", "spice": "hot", "text": "Look who's back from the dead! Last place to second in one question. Damn. I'd bet on you. I wouldn't, but I'd think about it." },
+    { "id": "rant", "spice": "hot", "text": "Who writes these questions? Me. I write them. [sighs] I hate me. I wrote that one at three in the morning and it shows." },
+    { "id": "candy", "spice": "hot", "text": "You want to argue with the answer? Go ahead. [whispers] Please don't. I'm a total candy-ass about conflict." },
+    { "id": "filthy-wrong", "spice": "filthy", "text": "Holy shit. Four of you, four different answers, and not one of them is a country. Unbelievable." },
+    { "id": "filthy-end", "spice": "filthy", "text": "[laughs] That's the game, you magnificent bastards. Go home. Hydrate. Think about what you did." }
+  ]
+}

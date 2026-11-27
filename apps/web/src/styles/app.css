@@ -1,0 +1,137 @@
+@import './tokens.css';
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+button, input { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+.display { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; }
+.muted { color: var(--muted); }
+
+/* Pressable things: ink outline + hard offset shadow; a press drops onto the shadow (guide §5.4). */
+.press {
+  border: var(--outline);
+  border-radius: var(--radius-phone);
+  box-shadow: var(--shadow-phone);
+  background: var(--stage-2);
+  cursor: pointer;
+  transition: transform 80ms ease, box-shadow 80ms ease;
+}
+.press:active { transform: translate(5px, 5px); box-shadow: 0 0 0 var(--ink); }
+.press:disabled { opacity: .45; cursor: not-allowed; }
+.press.primary { background: var(--spot); color: var(--ink); }
+
+/* ---------- TV host screen (1920×1080 reference, scaled to fit) ---------- */
+.tv-viewport { position: fixed; inset: 0; overflow: hidden; background: var(--ink); }
+.tv {
+  position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px;
+  transform-origin: center; padding: 54px 96px; background: var(--ink);
+}
+/* The stage panel (guide §5.4): ink outlines and shadows only read on --stage, not on --ink. */
+.tv-panel {
+  height: 100%; border-radius: 40px; padding: 36px 52px;
+  background:
+    radial-gradient(ellipse 900px 600px at 25% 30%, rgba(255, 210, 63, .08), transparent 70%),
+    var(--stage);
+  display: grid; grid-template-rows: auto 1fr auto auto; gap: 24px;
+}
+.tv-top { display: flex; align-items: center; justify-content: space-between; }
+.wordmark { display: flex; align-items: center; gap: 4px; font-size: 64px; }
+.wordmark svg { width: 64px; height: 64px; margin: 0 -2px; }
+.spice-chip {
+  font-size: 30px; padding: 12px 26px; border-radius: 999px; border: var(--outline);
+  background: var(--stage-2); display: flex; gap: 14px; align-items: center;
+}
+.spice-chip b { color: var(--spot); }
+.tv-main { display: grid; grid-template-columns: 1fr 640px; gap: 72px; align-items: center; }
+.join-card {
+  background: var(--stage-2); border: var(--outline); border-radius: var(--radius-tv); box-shadow: var(--shadow-tv);
+  padding: 40px 48px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center;
+}
+.join-card .how { font-size: 36px; color: var(--muted); }
+.join-card .url { font-size: 48px; color: var(--paper); }
+.room-code { font-size: 160px; letter-spacing: .12em; color: var(--spot); line-height: 1; margin-top: 12px; }
+.qr { width: 280px; height: 280px; background: var(--paper); border: var(--outline); border-radius: 20px; padding: 16px; }
+.qr img { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+.games { display: grid; gap: 24px; }
+.games h2 { font-size: 36px; margin: 0; color: var(--muted); font-weight: 700; }
+.game-card {
+  text-align: left; padding: 32px 36px; border-radius: var(--radius-tv); box-shadow: var(--shadow-tv);
+  display: grid; gap: 8px; outline: none; transition: transform 250ms var(--pop);
+}
+.game-card .name { font-size: 56px; }
+.game-card .pitch { font-size: 30px; color: var(--muted); }
+.game-card.soon { opacity: .5; }
+.game-card:focus-visible, .game-card.focused { box-shadow: 0 0 0 6px var(--spot), var(--shadow-tv); transform: scale(1.04); }
+.notice { font-size: 30px; color: var(--hot); min-height: 40px; }
+.caption {
+  display: flex; align-items: center; gap: 20px; font-size: 34px; background: var(--ink);
+  border: var(--outline); border-radius: 999px; padding: 14px 32px 14px 18px;
+}
+.caption svg { width: 56px; height: 56px; flex: none; }
+.caption .who { color: var(--hot); font-weight: 700; }
+.tiles { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
+/* 7–10 players: two rows of 5, smaller blobs, names keep 32 px (guide §5.4). */
+.tiles.two-rows { grid-template-columns: repeat(5, 1fr); }
+.tiles.two-rows .tile { grid-template-columns: auto 1fr; justify-items: start; align-items: center; text-align: left; padding: 8px 14px; column-gap: 12px; }
+.tiles.two-rows .tile svg { width: 64px; height: 64px; grid-row: span 2; }
+.tile {
+  background: var(--stage-2); border: var(--outline); border-radius: 22px; padding: 14px 10px;
+  display: grid; justify-items: center; gap: 6px; text-align: center; animation: arrive 400ms var(--pop);
+}
+.tile.away { opacity: .4; }
+.tile svg { width: 96px; height: 96px; }
+.tile .name { font-size: 32px; font-weight: 700; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tile .band { font-size: 22px; color: var(--muted); }
+.tile.empty { background: transparent; border-style: dashed; border-color: var(--muted); animation: none; place-content: center; font-size: 28px; color: var(--muted); }
+@keyframes arrive { from { transform: scale(.6) translateY(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.tv-message { display: grid; place-items: center; height: 100%; font-size: 48px; text-align: center; gap: 24px; }
+
+/* ---------- Phone ---------- */
+.phone {
+  min-height: 100%; max-width: 520px; margin: 0 auto; padding: 20px 16px 32px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.phone h1 { font-size: 32px; margin: 4px 0 0; }
+.phone label { font-size: 17px; font-weight: 700; display: grid; gap: 8px; }
+.field {
+  border: var(--outline); border-radius: 14px; background: var(--paper); color: var(--ink); padding: 14px 16px;
+  font-size: 22px; width: 100%; outline: none;
+}
+.field:focus { box-shadow: 0 0 0 4px var(--spot); }
+.field.code { font-family: var(--font-display); font-weight: 800; letter-spacing: .2em; text-transform: uppercase; font-size: 32px; text-align: center; }
+.bands { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.band-btn { padding: 12px 6px; display: grid; justify-items: center; gap: 4px; min-height: 108px; }
+.band-btn svg { width: 48px; height: 48px; }
+.band-btn .label { font-weight: 700; font-size: 17px; }
+.band-btn .ages { font-size: 15px; color: var(--muted); }
+.band-btn[aria-pressed='true'] { background: var(--spot); color: var(--ink); transform: scale(1.04); }
+.band-btn[aria-pressed='true'] .ages { color: var(--ink); }
+.big-btn { min-height: 64px; font-size: 22px; font-weight: 800; font-family: var(--font-display); width: 100%; }
+.avatars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.avatar-btn { aspect-ratio: 1; display: grid; place-items: center; padding: 6px; }
+.avatar-btn svg { width: 100%; height: 100%; }
+.avatar-btn[aria-pressed='true'] { box-shadow: 0 0 0 4px var(--spot), var(--shadow-phone); }
+.error { color: var(--hot); font-weight: 700; min-height: 24px; }
+.waiting { flex: 1; display: grid; place-items: center; text-align: center; gap: 12px; padding: 24px 0; }
+.waiting svg { width: 180px; height: 180px; }
+.waiting .look { font-size: 30px; }
+.sheet { background: var(--stage); border: var(--outline); border-radius: var(--radius-phone); padding: 18px; display: grid; gap: 14px; }
+.sheet h2 { font-size: 20px; margin: 0; }
+.spice-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.spice-row button { min-height: 56px; font-weight: 700; }
+.spice-row button[aria-pressed='true'] { background: var(--spot); color: var(--ink); }
+.kick-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.kick-row button { padding: 8px 14px; min-height: 44px; background: var(--hot); color: var(--ink); }
+.status-dot { position: fixed; top: 8px; right: 8px; font-size: 13px; color: var(--muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

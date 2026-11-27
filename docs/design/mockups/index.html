@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smartmouth Mockups</title>
+<meta name="description" content="UI mockups for Smartmouth (working name): TV host screens and phone controller screens, drawn to the design guide.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+/* ---------- Design guide tokens (§5.2) ---------- */
+:root{
+  --ink:#14111f; --stage:#1f1a36; --stage-2:#2b2450; --paper:#fff6e6; --muted:#b9b1d6;
+  --spot:#ffd23f; --hot:#ff4f7b; --zap:#36dcb8; --sky:#5aa8ff; --grape:#a77bff;
+  /* player colours */
+  --p-yellow:#ffd23f; --p-pink:#ff4f7b; --p-teal:#36dcb8; --p-blue:#5aa8ff; --p-purple:#a77bff;
+  --p-orange:#ff9a3c; --p-lime:#a6e34f; --p-red:#ff5a4e; --p-cyan:#3fd0f0; --p-white:#f4f0ff;
+  --f-display:'Bricolage Grotesque', 'Arial Black', system-ui, sans-serif;
+  --f-body:'Atkinson Hyperlegible Next','Atkinson Hyperlegible', system-ui, sans-serif;
+  --pop:cubic-bezier(.34,1.56,.64,1);
+  /* gallery canvas (not part of the show) */
+  --cv-bg:#0d0c12; --cv-panel:#17161f; --cv-text:#ece9f5; --cv-muted:#9d98b0; --cv-line:#2a2836; --cv-accent:#ffd23f;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --cv-bg:#eceae4; --cv-panel:#f8f7f3; --cv-text:#1b1a22; --cv-muted:#5d5a6a; --cv-line:#d6d3ca; --cv-accent:#8a6a00;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"]{ --cv-bg:#eceae4; --cv-panel:#f8f7f3; --cv-text:#1b1a22; --cv-muted:#5d5a6a; --cv-line:#d6d3ca; --cv-accent:#8a6a00; color-scheme:light; }
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--cv-bg); color:var(--cv-text); font-family:var(--f-body); font-size:16px; line-height:1.45; overflow-x:hidden}
+
+/* ---------- Gallery chrome ---------- */
+.gal{max-width:1720px; margin:0 auto; padding-block:32px 80px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.gal-head h1{font-family:var(--f-display); font-weight:800; font-size:clamp(28px,5vw,44px); margin:0 0 4px; letter-spacing:-.01em}
+.gal-head p{margin:0; color:var(--cv-muted); max-width:70ch}
+.gal h2{font-family:var(--f-display); font-weight:800; font-size:26px; margin:48px 0 16px; padding-top:20px; border-top:1px solid var(--cv-line)}
+.grid-tv{display:grid; gap:28px; grid-template-columns:repeat(auto-fill, minmax(min(100%, 760px), 1fr))}
+.grid-ph{display:grid; gap:28px; grid-template-columns:repeat(auto-fill, minmax(min(100%, 420px), 1fr))}
+.ab{min-width:0}
+.ab h3{font-size:17px; margin:0; font-weight:700}
+.ab h3 b{color:var(--cv-accent); font-family:var(--f-display); margin-right:6px}
+.ab .what{margin:2px 0 10px; color:var(--cv-muted); font-size:14px}
+.fit{position:relative; overflow:hidden; margin:0 auto}
+.fit > .board{position:absolute; left:0; top:0; transform-origin:0 0}
+.ph-row{display:flex; gap:20px; flex-wrap:wrap; justify-content:center}
+.ph-row .fitcol{flex:1 1 300px; min-width:0; max-width:420px}
+.ph-row .sub{font-size:14px; color:var(--cv-muted); text-align:center; margin:8px 0 0}
+.spec{display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-top:10px; font-size:13px; color:var(--cv-muted)}
+.spec .sw{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:8px; border:1px solid var(--cv-line)}
+.notes{background:var(--cv-panel); border:1px solid var(--cv-line); border-radius:12px; padding:20px 24px}
+.notes ol{margin:0; padding-left:22px}
+.notes li{margin:0 0 10px}
+.notes li b{color:var(--cv-text)}
+.notes code{font-size:.92em}
+
+/* ---------- Shared show styles ---------- */
+.tv{width:1920px; height:1080px; background:var(--ink); color:var(--paper); font-family:var(--f-body); position:relative; overflow:hidden; font-size:32px; line-height:1.2}
+.disp{font-family:var(--f-display); font-weight:800; letter-spacing:-.01em}
+.set{position:absolute; left:96px; top:54px; width:1728px; height:972px; background:var(--stage); border-radius:40px}
+.abs{position:absolute}
+.card{background:var(--stage-2); border:4px solid var(--ink); border-radius:28px; box-shadow:8px 8px 0 var(--ink)}
+.press{transition:transform .25s var(--pop)}
+.focus{outline:6px solid var(--spot); outline-offset:6px; transform:scale(1.08); position:relative; z-index:2}
+.muted{color:var(--muted)}
+.chip{display:inline-flex; align-items:center; gap:12px; background:var(--ink); color:var(--paper); border-radius:999px; padding:10px 24px; font-size:32px; font-weight:700; white-space:nowrap}
+.key{display:inline-flex; align-items:center; justify-content:center; min-width:56px; height:56px; padding:0 14px; border-radius:16px; border:3px solid var(--muted); color:var(--paper); font-weight:700; font-size:28px}
+.hints{display:flex; gap:40px; align-items:center; color:var(--muted); font-size:32px}
+.hints span{display:inline-flex; gap:14px; align-items:center}
+svg{display:block}
+.ico{fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+
+/* caption strip */
+.cap{position:absolute; display:flex; align-items:center; gap:28px; background:var(--ink); border-radius:28px; padding:20px 36px 20px 24px}
+.cap .who{font-family:var(--f-display); font-weight:800; color:var(--hot); font-size:32px; letter-spacing:.04em; white-space:nowrap}
+.cap .line{font-size:38px; line-height:1.2; color:var(--paper)}
+.cap .tag{color:var(--muted); font-style:italic}
+.cap .lvl{margin-left:auto; flex:none}
+
+/* player tiles */
+.tiles{position:absolute; display:flex; gap:16px}
+.tile{background:var(--stage-2); border:4px solid var(--ink); border-radius:28px; box-shadow:8px 8px 0 var(--ink); display:flex; align-items:center; gap:16px; padding:14px 22px 14px 16px; position:relative}
+.tile .nm{font-weight:700; font-size:32px; white-space:nowrap}
+.tile .sub{font-size:32px; color:var(--muted); white-space:nowrap}
+.tile .badge{position:absolute; right:-14px; top:-18px; width:56px; height:56px; border-radius:50%; border:4px solid var(--ink); display:flex; align-items:center; justify-content:center}
+.tile.ghost{background:transparent; border:4px dashed #4a4277; box-shadow:none; color:var(--muted)}
+
+/* answer slots */
+.ans{display:flex; align-items:center; gap:28px; padding:0 36px 0 28px; height:150px}
+.ans .t{font-size:52px; font-weight:700}
+.ans .tok{width:96px; height:96px; flex:none}
+
+/* ---------- Phone ---------- */
+.phone{width:414px; height:868px; border-radius:58px; background:#0a0910; padding:12px; box-shadow:0 0 0 2px #3a3650, 0 20px 40px rgba(0,0,0,.35); position:relative}
+.screen{width:390px; height:844px; border-radius:46px; overflow:hidden; position:relative; background:var(--ink); color:var(--paper); font-family:var(--f-body); font-size:17px; line-height:1.3}
+.screen .notch{position:absolute; top:12px; left:50%; transform:translateX(-50%); width:120px; height:32px; background:#0a0910; border-radius:20px; z-index:9}
+.scr{position:absolute; inset:0; padding:64px 20px 28px; display:flex; flex-direction:column}
+.pbtn{display:flex; align-items:center; justify-content:center; gap:12px; min-height:64px; border:4px solid var(--ink); border-radius:18px; box-shadow:5px 5px 0 var(--ink); font-weight:700; font-size:22px; background:var(--spot); color:var(--ink)}
+.pbtn.sec{background:var(--stage-2); color:var(--paper)}
+.pbtn.danger{background:var(--hot); color:var(--ink)}
+.pcard{background:var(--stage-2); border:4px solid var(--ink); border-radius:18px; box-shadow:5px 5px 0 var(--ink)}
+.field{background:var(--ink); border:3px solid #4a4277; border-radius:18px; padding:10px 16px}
+.field label{display:block; font-size:17px; color:var(--muted)}
+.lbl{font-size:17px; color:var(--muted); font-weight:700}
+.tbar{position:absolute; left:20px; right:20px; top:54px; height:8px; border-radius:4px; overflow:hidden; background:rgba(255,255,255,.14); z-index:5}
+.tbar i{display:block; height:100%; background:var(--spot)}
+.tint-yellow{background:color-mix(in srgb, var(--ink) 80%, var(--p-yellow))}
+.tint-teal{background:color-mix(in srgb, var(--ink) 80%, var(--p-teal))}
+.tint-blue{background:color-mix(in srgb, var(--ink) 78%, var(--p-blue))}
+.tint-pink{background:color-mix(in srgb, var(--ink) 80%, var(--p-pink))}
+.tint-orange{background:color-mix(in srgb, var(--ink) 80%, var(--p-orange))}
+.bleep{display:inline-flex; align-items:center; background:var(--hot); color:var(--ink); border-radius:8px; padding:0 6px; font-weight:700; letter-spacing:.06em; font-size:.9em; line-height:1.35}
+@media (prefers-reduced-motion: reduce){ .press{transition:none} }
+</style>
+</head>
+<body>
+
+<!-- ================= SVG symbol library (all original art) ================= -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- The grin, colour: brow slash, lopsided crescent, one gold tooth -->
+    <symbol id="grin" viewBox="0 0 120 100">
+      <path d="M30 26 L66 12" style="stroke:var(--paper)" stroke-width="9" stroke-linecap="round" fill="none"/>
+      <path d="M8 44 Q60 110 112 34 Q64 64 8 44 Z" style="fill:var(--hot)"/>
+      <rect x="55" y="53" width="13" height="15" rx="3" style="fill:var(--spot)"/>
+    </symbol>
+    <!-- The grin, single colour (tooth is a notch) -->
+    <symbol id="grin-mono" viewBox="0 0 120 100">
+      <path d="M30 26 L66 12" stroke="currentColor" stroke-width="9" stroke-linecap="round" fill="none"/>
+      <path fill="currentColor" fill-rule="evenodd" d="M8 44 Q60 110 112 34 Q64 64 8 44 Z M56 55 h11 v11 a2 2 0 0 1 -2 2 h-7 a2 2 0 0 1 -2 -2 z"/>
+    </symbol>
+    <!-- The grin, mid-talk: mouth open, brow up -->
+    <symbol id="grin-talk" viewBox="0 0 120 100">
+      <path d="M28 18 L66 2" style="stroke:var(--paper)" stroke-width="9" stroke-linecap="round" fill="none"/>
+      <path d="M8 42 Q60 134 112 30 Q64 30 8 42 Z" style="fill:var(--hot)"/>
+      <path d="M22 47 Q60 114 99 39 Q64 42 22 47 Z" style="fill:var(--ink)"/>
+      <rect x="55" y="41" width="13" height="15" rx="3" style="fill:var(--spot)"/>
+    </symbol>
+
+    <!-- Blob avatars (body = currentColor) -->
+    <symbol id="blobA" viewBox="0 0 100 100">
+      <path d="M50 8 C78 8 94 30 92 58 C90 86 72 96 50 96 C24 96 8 84 8 58 C8 30 22 8 50 8 Z" fill="currentColor" stroke="#14111f" stroke-width="5"/>
+      <circle cx="36" cy="46" r="13" fill="#fff"/><circle cx="66" cy="42" r="11" fill="#fff"/>
+      <circle cx="39" cy="50" r="6" fill="#14111f"/><circle cx="63" cy="45" r="5" fill="#14111f"/>
+      <path d="M40 72 Q52 80 62 70" stroke="#14111f" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="blobB" viewBox="0 0 100 100">
+      <path d="M48 4 C54 12 52 16 50 18 C76 18 90 40 90 64 C90 86 74 96 50 96 C26 96 10 86 10 64 C10 38 26 20 46 18 C44 12 44 8 48 4 Z" fill="currentColor" stroke="#14111f" stroke-width="5" stroke-linejoin="round"/>
+      <circle cx="50" cy="52" r="17" fill="#fff"/><circle cx="54" cy="55" r="8" fill="#14111f"/>
+      <path d="M38 78 H62" stroke="#14111f" stroke-width="5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="blobC" viewBox="0 0 100 100">
+      <path d="M8 62 C8 34 28 22 50 22 C74 22 92 34 92 62 C92 80 84 90 74 90 C70 90 68 84 62 84 C56 84 54 92 46 92 C38 92 38 84 30 84 C22 84 20 90 16 88 C10 84 8 74 8 62 Z" fill="currentColor" stroke="#14111f" stroke-width="5" stroke-linejoin="round"/>
+      <circle cx="34" cy="52" r="11" fill="#fff"/><circle cx="64" cy="52" r="11" fill="#fff"/>
+      <circle cx="31" cy="54" r="5" fill="#14111f"/><circle cx="61" cy="54" r="5" fill="#14111f"/>
+      <ellipse cx="49" cy="70" rx="7" ry="5" fill="#14111f"/>
+    </symbol>
+    <symbol id="blobD" viewBox="0 0 100 100">
+      <path d="M50 10 C74 10 88 28 88 52 L88 90 L76 82 L64 92 L50 82 L36 92 L24 82 L12 90 L12 52 C12 28 26 10 50 10 Z" fill="currentColor" stroke="#14111f" stroke-width="5" stroke-linejoin="round"/>
+      <circle cx="36" cy="44" r="12" fill="#fff"/><circle cx="64" cy="44" r="12" fill="#fff"/>
+      <circle cx="40" cy="42" r="5" fill="#14111f"/><circle cx="68" cy="42" r="5" fill="#14111f"/>
+      <path d="M38 64 Q50 72 62 64" stroke="#14111f" stroke-width="5" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Answer-slot shapes -->
+    <symbol id="sh-star" viewBox="0 0 100 100"><path d="M50 8 L62 38 L94 39 L69 59 L78 91 L50 73 L22 91 L31 59 L6 39 L38 38 Z" fill="currentColor" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/></symbol>
+    <symbol id="sh-heart" viewBox="0 0 100 100"><path d="M50 88 C20 66 6 50 6 32 C6 18 18 8 31 8 C40 8 46 13 50 20 C54 13 60 8 69 8 C82 8 94 18 94 32 C94 50 80 66 50 88Z" fill="currentColor"/></symbol>
+    <symbol id="sh-moon" viewBox="0 0 100 100"><path d="M60 6 A44 44 0 1 0 94 70 A35 35 0 1 1 60 6 Z" fill="currentColor"/></symbol>
+    <symbol id="sh-bolt" viewBox="0 0 100 100"><path d="M60 4 L16 58 H46 L36 96 L84 38 H54 Z" fill="currentColor" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/></symbol>
+
+    <!-- Icons: rounded 3px strokes (scaled viewBox 24) -->
+    <symbol id="i-tick" viewBox="0 0 24 24"><path class="ico" d="M5 12.5 L10 17.5 L19 7"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect class="ico" x="5" y="11" width="14" height="10" rx="2.5"/><path class="ico" d="M8 11 V8 a4 4 0 0 1 8 0 V11"/></symbol>
+    <symbol id="i-speaker" viewBox="0 0 24 24"><path class="ico" d="M4 9.5 H7.5 L12 5.5 V18.5 L7.5 14.5 H4 Z"/><path class="ico" d="M15.5 9 a4 4 0 0 1 0 6 M18 6.5 a7.5 7.5 0 0 1 0 11"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path class="ico" d="M4 18 L3 8 L8.5 12 L12 5 L15.5 12 L21 8 L20 18 Z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path class="ico" d="M8.5 5 V19 M15.5 5 V19"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path class="ico" d="M7 5 L19 12 L7 19 Z"/></symbol>
+    <symbol id="i-skip" viewBox="0 0 24 24"><path class="ico" d="M5 5 L14 12 L5 19 Z M18 5 V19"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path class="ico" d="M6 6 L18 18 M18 6 L6 18"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect class="ico" x="5" y="5" width="14" height="14" rx="2.5"/></symbol>
+    <symbol id="i-dots" viewBox="0 0 24 24"><path class="ico" d="M6 12 h.01 M12 12 h.01 M18 12 h.01" stroke-width="4"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path class="ico" d="M15 5 L8 12 L15 19"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path class="ico" d="M9 5 L16 12 L9 19"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path class="ico" d="M9 6 L4 11 L9 16 M4 11 H14 a6 6 0 0 1 0 12"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 2 C13 8 16 11 22 12 C16 13 13 16 12 22 C11 16 8 13 2 12 C8 11 11 8 12 2 Z" fill="currentColor"/></symbol>
+    <symbol id="i-captions" viewBox="0 0 24 24"><rect class="ico" x="3" y="5.5" width="18" height="13" rx="3"/><path class="ico" d="M7 14.5 H11 M13 14.5 H17 M7 10.5 H17"/></symbol>
+    <symbol id="i-qmark" viewBox="0 0 24 24"><path class="ico" d="M9 9 a3 3 0 1 1 4.5 2.6 c-1 .6 -1.5 1.2 -1.5 2.4 M12 17.5 h.01"/></symbol>
+    <!-- chili (spice level) -->
+    <symbol id="chili" viewBox="0 0 24 24"><path d="M15.5 6 C19 7 20.5 10.5 19 14 C17 18.5 11 21 5 20.5 C10 18.5 13 15 13.5 9.5 C13.7 7.5 14.5 6.3 15.5 6 Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path class="ico" d="M15.5 6 C15.5 4 16.5 3 18 2.5" stroke-width="2.5"/></symbol>
+    <symbol id="chili-o" viewBox="0 0 24 24"><path class="ico" d="M15.5 6 C19 7 20.5 10.5 19 14 C17 18.5 11 21 5 20.5 C10 18.5 13 15 13.5 9.5 C13.7 7.5 14.5 6.3 15.5 6 Z" stroke-width="2"/><path class="ico" d="M15.5 6 C15.5 4 16.5 3 18 2.5" stroke-width="2.5"/></symbol>
+
+    <!-- Little-seat pictures -->
+    <symbol id="pic-cow" viewBox="0 0 200 200">
+      <path d="M46 62 C30 44 22 40 14 46 C22 60 34 68 50 72 Z" fill="#fff6e6" stroke="#14111f" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M154 62 C170 44 178 40 186 46 C178 60 166 68 150 72 Z" fill="#fff6e6" stroke="#14111f" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M70 46 C66 30 72 22 80 20 M130 46 C134 30 128 22 120 20" stroke="#14111f" stroke-width="10" stroke-linecap="round" fill="none"/>
+      <path d="M70 46 C66 30 72 22 80 20 M130 46 C134 30 128 22 120 20" stroke="#ffd23f" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <rect x="44" y="40" width="112" height="120" rx="52" fill="#fff6e6" stroke="#14111f" stroke-width="6"/>
+      <path d="M58 58 C70 50 86 56 84 70 C82 84 64 86 56 78 C50 72 52 62 58 58 Z" fill="#14111f"/>
+      <path d="M128 92 C140 88 150 96 146 108 C142 118 128 116 124 108 C120 100 122 94 128 92 Z" fill="#14111f"/>
+      <circle cx="78" cy="96" r="9" fill="#14111f"/><circle cx="122" cy="88" r="9" fill="#14111f" opacity="0"/>
+      <circle cx="120" cy="80" r="9" fill="#14111f"/>
+      <circle cx="81" cy="93" r="3" fill="#fff"/><circle cx="123" cy="77" r="3" fill="#fff"/>
+      <rect x="54" y="118" width="92" height="58" rx="29" fill="#ffb3c4" stroke="#14111f" stroke-width="6"/>
+      <ellipse cx="82" cy="146" rx="7" ry="10" fill="#14111f"/><ellipse cx="118" cy="146" rx="7" ry="10" fill="#14111f"/>
+    </symbol>
+    <symbol id="pic-pig" viewBox="0 0 200 200">
+      <path d="M52 66 L40 28 L82 46 Z" fill="#ff9eb8" stroke="#14111f" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M148 66 L160 28 L118 46 Z" fill="#ff9eb8" stroke="#14111f" stroke-width="6" stroke-linejoin="round"/>
+      <circle cx="100" cy="106" r="70" fill="#ff9eb8" stroke="#14111f" stroke-width="6"/>
+      <circle cx="72" cy="86" r="9" fill="#14111f"/><circle cx="128" cy="86" r="9" fill="#14111f"/>
+      <circle cx="75" cy="83" r="3" fill="#fff"/><circle cx="131" cy="83" r="3" fill="#fff"/>
+      <ellipse cx="100" cy="124" rx="36" ry="26" fill="#ff6f96" stroke="#14111f" stroke-width="6"/>
+      <ellipse cx="88" cy="124" rx="6" ry="10" fill="#14111f"/><ellipse cx="112" cy="124" rx="6" ry="10" fill="#14111f"/>
+      <ellipse cx="54" cy="116" rx="10" ry="6" fill="#ff6f96" opacity=".7"/><ellipse cx="146" cy="116" rx="10" ry="6" fill="#ff6f96" opacity=".7"/>
+    </symbol>
+    <symbol id="pic-duck" viewBox="0 0 200 200">
+      <path d="M100 28 C134 28 152 54 150 84 C148 102 140 112 132 118 C160 118 184 128 184 150 C184 176 150 186 104 186 C58 186 24 176 24 148 C24 128 44 118 70 118 C58 108 50 94 50 78 C50 50 70 28 100 28 Z" fill="#ffd23f" stroke="#14111f" stroke-width="6" stroke-linejoin="round"/>
+      <path d="M150 74 C170 70 186 76 190 84 C184 94 166 98 148 94 Z" fill="#ff9a3c" stroke="#14111f" stroke-width="6" stroke-linejoin="round"/>
+      <circle cx="118" cy="66" r="10" fill="#14111f"/><circle cx="121" cy="63" r="3.5" fill="#fff"/>
+      <path d="M60 140 C76 160 108 162 128 144" stroke="#14111f" stroke-width="6" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Game picker art -->
+    <symbol id="pic-trivia" viewBox="0 0 200 200">
+      <path d="M30 40 H170 a20 20 0 0 1 20 20 V124 a20 20 0 0 1 -20 20 H92 L58 172 L62 144 H30 a20 20 0 0 1 -20 -20 V60 a20 20 0 0 1 20 -20 Z" fill="#ffd23f" stroke="#14111f" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M80 78 a20 20 0 1 1 30 17 c-6 4 -10 8 -10 15" fill="none" stroke="#14111f" stroke-width="12" stroke-linecap="round"/>
+      <circle cx="100" cy="126" r="7" fill="#14111f"/>
+    </symbol>
+  </defs>
+</svg>
+
+<main class="gal">
+  <header class="gal-head">
+    <h1>Smartmouth mockups</h1>
+    <p>Working names: Smartmouth (the game) and Salty (the host). Drawn to <code>docs/design/design-guide.md</code>. TV boards use real 1920×1080 coordinates, scaled to fit. Phone boards are 390×844 at 1:1 (they shrink only if the window is narrower). The game is always dark. Only this gallery background follows your light or dark setting.</p>
+  </header>
+
+  <!-- ===================================================== TV ===================================================== -->
+  <h2>TV (host screen)</h2>
+  <div class="grid-tv">
+
+    <!-- 1. Title -->
+    <section class="ab">
+      <h3><b>01</b>Title / attract</h3>
+      <p class="what">Wordmark with the grin in place of the "o", the big logo mark, and one focused action: press OK to start a room.</p>
+      <div class="fit" data-w="1920" data-h="1080"><div class="board tv">
+        <div class="set"></div>
+        <svg class="abs" style="left:780px;top:150px;width:360px;height:300px"><use href="#grin"/></svg>
+        <div class="abs disp" style="left:0;right:0;top:450px;display:flex;justify-content:center;align-items:flex-end;font-size:230px;line-height:1;color:var(--paper)">
+          <span>smartm</span><svg style="width:190px;height:158px;margin:0 6px 14px" viewBox="0 0 120 100"><use href="#grin"/></svg><span>uth</span>
+        </div>
+        <div class="abs muted" style="left:0;right:0;top:720px;text-align:center;font-size:40px">Trivia night on your couch. Hosted, badly, by Salty.</div>
+        <div class="abs card focus disp" style="left:510px;top:820px;width:900px;height:120px;display:flex;align-items:center;justify-content:center;gap:20px;font-size:52px;background:var(--spot);color:var(--ink)">
+          Press <span class="key" style="border-color:var(--ink);color:var(--ink);font-family:var(--f-body);height:64px;font-size:32px">OK</span> to start a room
+        </div>
+      </div></div>
+      <div class="spec"><span>Mark at 24 px, one colour:</span>
+        <span class="sw" style="background:#14111f;color:#fff6e6"><svg width="29" height="24" viewBox="0 0 120 100"><use href="#grin-mono"/></svg> on ink</span>
+        <span class="sw" style="background:#fff6e6;color:#14111f"><svg width="29" height="24" viewBox="0 0 120 100"><use href="#grin-mono"/></svg> on paper</span>
+        <span class="sw" style="background:#14111f;color:#fff6e6"><svg width="29" height="24" viewBox="0 0 120 100"><use href="#grin"/></svg> full colour</span>
+      </div>
+    </section>
+
+    <!-- 2. Lobby -->
+    <section class="ab">
+      <h3><b>02</b>Lobby</h3>
+      <p class="what">Room code, QR, URL, 5 joined players (one Little), Salty's idle line at Mild, spice level locked at Mild.</p>
+      <div class="fit" data-w="1920" data-h="1080"><div class="board tv">
+        <div class="set"></div>
+        <!-- top row -->
+        <div class="abs disp" style="left:150px;top:96px;display:flex;align-items:flex-end;font-size:64px;line-height:1">
+          <span>smartm</span><svg style="width:54px;height:45px;margin:0 2px 4px" viewBox="0 0 120 100"><use href="#grin"/></svg><span>uth</span>
+        </div>
+        <div class="abs chip" style="right:150px;top:92px;padding:12px 28px">
+          <span style="display:flex;gap:2px;color:var(--hot)"><svg width="40" height="40"><use href="#chili"/></svg><svg width="40" height="40" style="color:#463e70"><use href="#chili"/></svg><svg width="40" height="40" style="color:#463e70"><use href="#chili"/></svg><svg width="40" height="40" style="color:#463e70"><use href="#chili"/></svg></span>
+          <span>Mild</span><span class="muted" style="font-weight:400">— a little one's playing</span>
+          <svg width="36" height="36" style="color:var(--muted)"><use href="#i-lock"/></svg>
+        </div>
+        <!-- join block -->
+        <div class="abs" style="left:150px;top:220px">
+          <div class="muted" style="font-size:36px">Grab your phone and go to</div>
+          <div class="disp" style="font-size:80px;color:var(--sky);line-height:1.1">play.example.com</div>
+          <div class="muted" style="font-size:36px;margin-top:28px">Room code</div>
+          <div class="disp" style="font-size:160px;letter-spacing:.12em;color:var(--spot);line-height:1">ZUMP</div>
+        </div>
+        <!-- QR -->
+        <div class="abs card" style="left:1290px;top:200px;width:430px;height:430px;background:var(--paper);display:flex;align-items:center;justify-content:center">
+          <svg width="370" height="370" viewBox="-1 -1 31 31" shape-rendering="crispEdges"><path fill="#14111f" d="M0 0h1v1h-1zM1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM9 0h1v1h-1zM14 0h1v1h-1zM19 0h1v1h-1zM22 0h1v1h-1zM23 0h1v1h-1zM24 0h1v1h-1zM25 0h1v1h-1zM26 0h1v1h-1zM27 0h1v1h-1zM28 0h1v1h-1zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM10 1h1v1h-1zM11 1h1v1h-1zM15 1h1v1h-1zM16 1h1v1h-1zM18 1h1v1h-1zM19 1h1v1h-1zM20 1h1v1h-1zM22 1h1v1h-1zM28 1h1v1h-1zM0 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM6 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM13 2h1v1h-1zM14 2h1v1h-1zM15 2h1v1h-1zM16 2h1v1h-1zM19 2h1v1h-1zM22 2h1v1h-1zM24 2h1v1h-1zM25 2h1v1h-1zM26 2h1v1h-1zM28 2h1v1h-1zM0 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM6 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM12 3h1v1h-1zM16 3h1v1h-1zM18 3h1v1h-1zM20 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM25 3h1v1h-1zM26 3h1v1h-1zM28 3h1v1h-1zM0 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM6 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM12 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM16 4h1v1h-1zM17 4h1v1h-1zM19 4h1v1h-1zM20 4h1v1h-1zM22 4h1v1h-1zM24 4h1v1h-1zM25 4h1v1h-1zM26 4h1v1h-1zM28 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM10 5h1v1h-1zM12 5h1v1h-1zM17 5h1v1h-1zM19 5h1v1h-1zM22 5h1v1h-1zM28 5h1v1h-1zM0 6h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM3 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM23 6h1v1h-1zM24 6h1v1h-1zM25 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM9 7h1v1h-1zM12 7h1v1h-1zM16 7h1v1h-1zM19 7h1v1h-1zM1 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM15 8h1v1h-1zM16 8h1v1h-1zM18 8h1v1h-1zM20 8h1v1h-1zM22 8h1v1h-1zM23 8h1v1h-1zM24 8h1v1h-1zM25 8h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM15 9h1v1h-1zM17 9h1v1h-1zM19 9h1v1h-1zM20 9h1v1h-1zM22 9h1v1h-1zM23 9h1v1h-1zM24 9h1v1h-1zM25 9h1v1h-1zM26 9h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM13 10h1v1h-1zM14 10h1v1h-1zM15 10h1v1h-1zM16 10h1v1h-1zM17 10h1v1h-1zM21 10h1v1h-1zM22 10h1v1h-1zM23 10h1v1h-1zM25 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM1 11h1v1h-1zM2 11h1v1h-1zM5 11h1v1h-1zM8 11h1v1h-1zM10 11h1v1h-1zM16 11h1v1h-1zM17 11h1v1h-1zM19 11h1v1h-1zM20 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM27 11h1v1h-1zM28 11h1v1h-1zM0 12h1v1h-1zM2 12h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM15 12h1v1h-1zM16 12h1v1h-1zM17 12h1v1h-1zM18 12h1v1h-1zM20 12h1v1h-1zM25 12h1v1h-1zM28 12h1v1h-1zM4 13h1v1h-1zM8 13h1v1h-1zM10 13h1v1h-1zM16 13h1v1h-1zM17 13h1v1h-1zM18 13h1v1h-1zM21 13h1v1h-1zM22 13h1v1h-1zM27 13h1v1h-1zM2 14h1v1h-1zM3 14h1v1h-1zM4 14h1v1h-1zM5 14h1v1h-1zM6 14h1v1h-1zM7 14h1v1h-1zM8 14h1v1h-1zM10 14h1v1h-1zM11 14h1v1h-1zM14 14h1v1h-1zM15 14h1v1h-1zM16 14h1v1h-1zM21 14h1v1h-1zM23 14h1v1h-1zM26 14h1v1h-1zM27 14h1v1h-1zM2 15h1v1h-1zM3 15h1v1h-1zM8 15h1v1h-1zM9 15h1v1h-1zM12 15h1v1h-1zM13 15h1v1h-1zM16 15h1v1h-1zM22 15h1v1h-1zM23 15h1v1h-1zM24 15h1v1h-1zM25 15h1v1h-1zM28 15h1v1h-1zM0 16h1v1h-1zM1 16h1v1h-1zM6 16h1v1h-1zM13 16h1v1h-1zM15 16h1v1h-1zM19 16h1v1h-1zM20 16h1v1h-1zM22 16h1v1h-1zM23 16h1v1h-1zM25 16h1v1h-1zM26 16h1v1h-1zM27 16h1v1h-1zM0 17h1v1h-1zM5 17h1v1h-1zM7 17h1v1h-1zM9 17h1v1h-1zM10 17h1v1h-1zM12 17h1v1h-1zM15 17h1v1h-1zM16 17h1v1h-1zM17 17h1v1h-1zM21 17h1v1h-1zM22 17h1v1h-1zM23 17h1v1h-1zM24 17h1v1h-1zM25 17h1v1h-1zM26 17h1v1h-1zM27 17h1v1h-1zM0 18h1v1h-1zM3 18h1v1h-1zM6 18h1v1h-1zM7 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM10 18h1v1h-1zM14 18h1v1h-1zM16 18h1v1h-1zM18 18h1v1h-1zM19 18h1v1h-1zM20 18h1v1h-1zM21 18h1v1h-1zM22 18h1v1h-1zM23 18h1v1h-1zM24 18h1v1h-1zM25 18h1v1h-1zM27 18h1v1h-1zM2 19h1v1h-1zM3 19h1v1h-1zM4 19h1v1h-1zM8 19h1v1h-1zM10 19h1v1h-1zM11 19h1v1h-1zM12 19h1v1h-1zM15 19h1v1h-1zM16 19h1v1h-1zM19 19h1v1h-1zM24 19h1v1h-1zM25 19h1v1h-1zM26 19h1v1h-1zM28 19h1v1h-1zM0 20h1v1h-1zM3 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM9 20h1v1h-1zM15 20h1v1h-1zM18 20h1v1h-1zM19 20h1v1h-1zM20 20h1v1h-1zM21 20h1v1h-1zM22 20h1v1h-1zM23 20h1v1h-1zM24 20h1v1h-1zM25 20h1v1h-1zM27 20h1v1h-1zM28 20h1v1h-1zM8 21h1v1h-1zM10 21h1v1h-1zM11 21h1v1h-1zM13 21h1v1h-1zM15 21h1v1h-1zM17 21h1v1h-1zM18 21h1v1h-1zM19 21h1v1h-1zM20 21h1v1h-1zM24 21h1v1h-1zM25 21h1v1h-1zM26 21h1v1h-1zM28 21h1v1h-1zM0 22h1v1h-1zM1 22h1v1h-1zM2 22h1v1h-1zM3 22h1v1h-1zM4 22h1v1h-1zM5 22h1v1h-1zM6 22h1v1h-1zM13 22h1v1h-1zM15 22h1v1h-1zM17 22h1v1h-1zM18 22h1v1h-1zM19 22h1v1h-1zM20 22h1v1h-1zM22 22h1v1h-1zM24 22h1v1h-1zM0 23h1v1h-1zM6 23h1v1h-1zM8 23h1v1h-1zM11 23h1v1h-1zM13 23h1v1h-1zM14 23h1v1h-1zM15 23h1v1h-1zM16 23h1v1h-1zM17 23h1v1h-1zM18 23h1v1h-1zM19 23h1v1h-1zM20 23h1v1h-1zM24 23h1v1h-1zM28 23h1v1h-1zM0 24h1v1h-1zM2 24h1v1h-1zM3 24h1v1h-1zM4 24h1v1h-1zM6 24h1v1h-1zM9 24h1v1h-1zM11 24h1v1h-1zM12 24h1v1h-1zM13 24h1v1h-1zM14 24h1v1h-1zM15 24h1v1h-1zM16 24h1v1h-1zM20 24h1v1h-1zM21 24h1v1h-1zM22 24h1v1h-1zM23 24h1v1h-1zM24 24h1v1h-1zM25 24h1v1h-1zM27 24h1v1h-1zM0 25h1v1h-1zM2 25h1v1h-1zM3 25h1v1h-1zM4 25h1v1h-1zM6 25h1v1h-1zM8 25h1v1h-1zM9 25h1v1h-1zM10 25h1v1h-1zM13 25h1v1h-1zM15 25h1v1h-1zM19 25h1v1h-1zM20 25h1v1h-1zM21 25h1v1h-1zM23 25h1v1h-1zM24 25h1v1h-1zM0 26h1v1h-1zM2 26h1v1h-1zM3 26h1v1h-1zM4 26h1v1h-1zM6 26h1v1h-1zM9 26h1v1h-1zM11 26h1v1h-1zM14 26h1v1h-1zM16 26h1v1h-1zM19 26h1v1h-1zM21 26h1v1h-1zM26 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM9 27h1v1h-1zM10 27h1v1h-1zM11 27h1v1h-1zM12 27h1v1h-1zM13 27h1v1h-1zM15 27h1v1h-1zM17 27h1v1h-1zM18 27h1v1h-1zM21 27h1v1h-1zM22 27h1v1h-1zM23 27h1v1h-1zM24 27h1v1h-1zM25 27h1v1h-1zM28 27h1v1h-1zM0 28h1v1h-1zM1 28h1v1h-1zM2 28h1v1h-1zM3 28h1v1h-1zM4 28h1v1h-1zM5 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM13 28h1v1h-1zM14 28h1v1h-1zM19 28h1v1h-1zM21 28h1v1h-1zM26 28h1v1h-1zM28 28h1v1h-1z"/></svg>
+        </div>
+        <div class="abs muted" style="left:1290px;width:430px;top:650px;text-align:center;font-size:32px">or scan this</div>
+        <!-- caption -->
+        <div class="cap" style="left:150px;right:150px;top:716px">
+          <svg width="96" height="80" style="flex:none"><use href="#grin-talk"/></svg>
+          <span class="who">SALTY</span>
+          <span class="line"><span class="tag">(sighs)</span> Five of you. I used to have a crew of forty. And a ship. And a hat.</span>
+        </div>
+        <!-- players -->
+        <div class="tiles" style="left:150px;top:858px">
+          <div class="tile"><svg width="72" height="72" style="color:var(--p-yellow)"><use href="#blobA"/></svg><div><div class="nm">Toast</div><div class="sub">Grown-up</div></div><div class="badge" style="background:var(--spot);color:var(--ink)"><svg width="32" height="32"><use href="#i-crown"/></svg></div></div>
+          <div class="tile"><svg width="72" height="72" style="color:var(--p-pink)"><use href="#blobB"/></svg><div><div class="nm">Noodle</div><div class="sub">13–17</div></div></div>
+          <div class="tile"><svg width="72" height="72" style="color:var(--p-lime)"><use href="#blobC"/></svg><div><div class="nm">Pickle</div><div class="sub">9–12</div></div></div>
+          <div class="tile"><svg width="72" height="72" style="color:var(--p-teal)"><use href="#blobD"/></svg><div><div class="nm">Zed</div><div class="sub">6–8</div></div></div>
+          <div class="tile"><svg width="72" height="72" style="color:var(--p-blue)"><use href="#blobA"/></svg><div><div class="nm">Blue Blob</div><div class="sub" style="color:var(--spot)">3–5 · Little</div></div></div>
+          <div class="tile ghost"><div class="sub">+5 seats</div></div>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- 3. Game picker -->
+    <section class="ab">
+      <h3><b>03</b>Game picker</h3>
+      <p class="what">Trivia focused with the D-pad ring and 1.08 scale; two locked "coming soon" slots. Join chip stays top right.</p>
+      <div class="fit" data-w="1920" data-h="1080"><div class="board tv">
+        <div class="set"></div>
+        <div class="abs disp" style="left:150px;top:110px;font-size:88px">Pick a game</div>
+        <div class="abs chip" style="right:150px;top:118px"><span class="muted" style="font-weight:400">play.example.com</span><span class="disp" style="color:var(--spot);letter-spacing:.12em">ZUMP</span></div>
+        <!-- cards -->
+        <div class="abs card focus" style="left:190px;top:280px;width:480px;height:500px;background:var(--stage-2);padding:40px;display:flex;flex-direction:column;align-items:center;gap:16px">
+          <svg width="240" height="240"><use href="#pic-trivia"/></svg>
+          <div class="disp" style="font-size:72px">Trivia</div>
+          <div class="muted" style="font-size:32px;text-align:center">Everyone answers. Salty sulks.</div>
+        </div>
+        <div class="abs card" style="left:720px;top:280px;width:480px;height:500px;background:#252043;border-style:dashed;border-color:#4a4277;box-shadow:none;padding:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;color:#8f87b3">
+          <svg width="120" height="120"><use href="#i-lock"/></svg>
+          <div class="disp" style="font-size:56px">Coming soon</div>
+          <div style="font-size:32px">Game two</div>
+        </div>
+        <div class="abs card" style="left:1250px;top:280px;width:480px;height:500px;background:#252043;border-style:dashed;border-color:#4a4277;box-shadow:none;padding:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;color:#8f87b3">
+          <svg width="120" height="120"><use href="#i-lock"/></svg>
+          <div class="disp" style="font-size:56px">Coming soon</div>
+          <div style="font-size:32px">Game three</div>
+        </div>
+        <div class="cap" style="left:150px;right:150px;top:836px">
+          <svg width="96" height="80" style="flex:none"><use href="#grin-talk"/></svg>
+          <span class="who">SALTY</span>
+          <span class="line">Trivia. Lovely. It's the only one they let me host.</span>
+          <span class="lvl hints" style="gap:20px;font-size:32px"><span><span class="key">◀ ▶</span>choose</span><span><span class="key">OK</span>play</span></span>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- 4. Question -->
+    <section class="ab">
+      <h3><b>04</b>Question, all-answer round</h3>
+      <p class="what">Category chip, question, 4 slots (star, heart, moon, bolt), draining timer ring, who's locked in, caption strip, join chip.</p>
+      <div class="fit" data-w="1920" data-h="1080"><div class="board tv">
+        <div class="set"></div>
+        <div class="abs" style="left:150px;top:100px;display:flex;gap:20px;align-items:center">
+          <span class="chip" style="background:var(--grape);color:var(--ink)">Animals</span>
+          <span class="muted">Question 4 of 10</span>
+        </div>
+        <div class="abs chip" style="right:150px;top:100px;font-size:32px"><span class="muted" style="font-weight:400">Join: play.example.com</span><span class="disp" style="color:var(--spot);letter-spacing:.12em">ZUMP</span></div>
+        <div class="abs disp" style="left:150px;top:190px;width:1320px;font-size:84px;line-height:1.05">What colour is a polar bear's skin, under the fur?</div>
+        <!-- timer ring -->
+        <div class="abs" style="left:1540px;top:180px;width:220px;height:220px">
+          <svg width="220" height="220" viewBox="0 0 220 220"><circle cx="110" cy="110" r="88" fill="var(--ink)" stroke="#3a3366" stroke-width="30"/><circle cx="110" cy="110" r="88" fill="none" stroke="var(--spot)" stroke-width="30" stroke-dasharray="553" stroke-dashoffset="221" stroke-linecap="round" transform="rotate(-90 110 110)"/></svg>
+          <div class="abs disp" style="inset:0;display:flex;align-items:center;justify-content:center;font-size:80px">12</div>
+        </div>
+        <!-- answers -->
+        <div class="abs" style="left:150px;top:420px;width:1620px;display:grid;grid-template-columns:1fr 1fr;gap:28px 36px">
+          <div class="card ans"><svg class="tok" style="color:var(--spot)"><use href="#sh-star"/></svg><span class="t">White</span></div>
+          <div class="card ans"><svg class="tok" style="color:var(--hot)"><use href="#sh-heart"/></svg><span class="t">Pink</span></div>
+          <div class="card ans"><svg class="tok" style="color:var(--zap)"><use href="#sh-moon"/></svg><span class="t">Black</span></div>
+          <div class="card ans"><svg class="tok" style="color:var(--sky)"><use href="#sh-bolt"/></svg><span class="t">Pale yellow</span></div>
+        </div>
+        <div class="cap" style="left:150px;right:150px;top:772px;padding-top:12px;padding-bottom:12px">
+          <svg width="80" height="66" style="flex:none"><use href="#grin-talk"/></svg>
+          <span class="who">SALTY</span>
+          <span class="line">Take your time. I'm paid by the hour. I'm not paid.</span>
+        </div>
+        <div class="tiles" style="left:150px;top:884px">
+          <div class="tile"><svg width="64" height="64" style="color:var(--p-yellow)"><use href="#blobA"/></svg><div><div class="nm">Toast</div><div class="sub" style="color:var(--zap)">Locked in</div></div><div class="badge" style="background:var(--zap);color:var(--ink)"><svg width="34" height="34"><use href="#i-tick"/></svg></div></div>
+          <div class="tile"><svg width="64" height="64" style="color:var(--p-pink)"><use href="#blobB"/></svg><div><div class="nm">Noodle</div><div class="sub" style="color:var(--zap)">Locked in</div></div><div class="badge" style="background:var(--zap);color:var(--ink)"><svg width="34" height="34"><use href="#i-tick"/></svg></div></div>
+          <div class="tile"><svg width="64" height="64" style="color:var(--p-lime)"><use href="#blobC"/></svg><div><div class="nm">Pickle</div><div class="sub">Thinking…</div></div></div>
+          <div class="tile"><svg width="64" height="64" style="color:var(--p-teal)"><use href="#blobD"/></svg><div><div class="nm">Zed</div><div class="sub" style="color:var(--zap)">Locked in</div></div><div class="badge" style="background:var(--zap);color:var(--ink)"><svg width="34" height="34"><use href="#i-tick"/></svg></div></div>
+          <div class="tile"><svg width="64" height="64" style="color:var(--p-blue)"><use href="#blobA"/></svg><div><div class="nm">Blue Blob</div><div class="sub" style="color:var(--spot)">Turn next</div></div></div>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- 5. Little's turn -->
+    <section class="ab">
+      <h3><b>05</b>Little's turn</h3>
+      <p class="what">Banner with the seat's blob name, "Who says moo?" read aloud, 3 picture cards, the middle one D-pad focused, no timer, no text on the cards.</p>
+      <div class="fit" data-w="1920" data-h="1080"><div class="board tv">
+        <div class="set"></div>
+        <div class="abs card" style="left:150px;top:96px;height:150px;width:1000px;background:var(--spot);color:var(--ink);display:flex;align-items:center;gap:28px;padding:0 40px 0 24px">
+          <svg width="112" height="112" style="color:var(--p-blue)"><use href="#blobA"/></svg>
+          <div><div class="disp" style="font-size:80px;line-height:1">Little's turn!</div><div style="font-size:32px;font-weight:700">Blue Blob</div></div>
+        </div>
+        <div class="abs" style="right:150px;top:110px;display:flex;align-items:center;gap:20px">
+          <svg width="88" height="88" style="color:var(--paper)"><use href="#i-speaker"/></svg>
+        </div>
+        <div class="abs disp" style="left:150px;right:150px;top:262px;font-size:88px;text-align:center;line-height:1">Who says moo?</div>
+        <!-- picture cards: 576 wide = 30% of 1920 -->
+        <div class="abs" style="left:60px;top:418px;width:1800px;display:flex;gap:36px">
+          <div class="card" style="width:576px;height:400px;background:#d9ecff;display:flex;align-items:center;justify-content:center"><svg width="340" height="340"><use href="#pic-duck"/></svg></div>
+          <div class="card focus" style="width:576px;height:400px;background:#ffe3ea;display:flex;align-items:center;justify-content:center"><svg width="340" height="340"><use href="#pic-pig"/></svg></div>
+          <div class="card" style="width:576px;height:400px;background:#e6f8da;display:flex;align-items:center;justify-content:center"><svg width="340" height="340"><use href="#pic-cow"/></svg></div>
+        </div>
+        <div class="cap" style="left:150px;right:150px;top:878px">
+          <svg width="96" height="80" style="flex:none"><use href="#grin-talk"/></svg>
+          <span class="who">SALTY</span>
+          <span class="line">A piggy! Oink oink. Does a piggy say moo?</span>
+          <span class="lvl hints" style="gap:20px;font-size:32px"><span><span class="key">◀ ▶</span>look</span><span><span class="key">OK</span>pick</span></span>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- 6. Reveal -->
+    <section class="ab">
+      <h3><b>06</b>Reveal (Spicy)</h3>
+      <p class="what">Right answer lit and ticked, wrong ones dimmed, who picked what, +points, Salty mid-talk with a Spicy roast of the answer. Blue Blob has gone to bed, so the cap lifted to Spicy.</p>
+      <div class="fit" data-w="1920" data-h="1080"><div class="board tv">
+        <div class="set"></div>
+        <div class="abs muted" style="left:150px;top:100px;width:1200px;font-size:40px;font-family:var(--f-display);font-weight:700">What colour is a polar bear's skin, under the fur?</div>
+        <div class="abs chip" style="right:150px;top:96px">
+          <span style="display:flex;gap:2px;color:var(--hot)"><svg width="40" height="40"><use href="#chili"/></svg><svg width="40" height="40"><use href="#chili"/></svg><svg width="40" height="40" style="color:#463e70"><use href="#chili"/></svg><svg width="40" height="40" style="color:#463e70"><use href="#chili"/></svg></span>Spicy
+        </div>
+        <!-- answers column -->
+        <div class="abs" style="left:150px;top:180px;width:1000px;display:flex;flex-direction:column;gap:18px">
+          <div class="card ans" style="height:116px;opacity:.45"><svg class="tok" style="color:var(--spot)"><use href="#sh-star"/></svg><span class="t">White</span><span style="margin-left:auto;display:flex;gap:6px"><svg width="64" height="64" style="color:var(--p-lime)"><use href="#blobC"/></svg></span></div>
+          <div class="card ans" style="height:116px;opacity:.45"><svg class="tok" style="color:var(--hot)"><use href="#sh-heart"/></svg><span class="t">Pink</span><span style="margin-left:auto;display:flex;gap:6px"><svg width="64" height="64" style="color:var(--p-pink)"><use href="#blobB"/></svg></span></div>
+          <div class="card ans" style="height:140px;background:var(--zap);color:var(--ink);outline:6px solid var(--paper);outline-offset:6px">
+            <svg class="tok" style="color:var(--ink)"><use href="#sh-moon"/></svg><span class="t disp" style="font-size:60px">Black</span>
+            <span style="margin-left:24px;width:72px;height:72px;border-radius:50%;background:var(--ink);color:var(--zap);display:flex;align-items:center;justify-content:center"><svg width="48" height="48"><use href="#i-tick"/></svg></span>
+            <span style="margin-left:auto;display:flex;gap:6px"><svg width="72" height="72" style="color:var(--p-yellow)"><use href="#blobA"/></svg><svg width="72" height="72" style="color:var(--p-teal)"><use href="#blobD"/></svg></span>
+          </div>
+          <div class="card ans" style="height:116px;opacity:.45"><svg class="tok" style="color:var(--sky)"><use href="#sh-bolt"/></svg><span class="t">Pale yellow</span><span style="margin-left:auto" class="muted">nobody</span></div>
+        </div>
+        <!-- who got it -->
+        <div class="abs" style="left:1200px;top:190px;width:560px">
+          <div class="muted" style="margin-bottom:16px">Got it</div>
+          <div class="tile" style="margin-bottom:20px"><svg width="64" height="64" style="color:var(--p-yellow)"><use href="#blobA"/></svg><div class="nm">Toast</div><div class="disp" style="margin-left:auto;color:var(--zap);font-size:48px">+600</div></div>
+          <div class="tile"><svg width="64" height="64" style="color:var(--p-teal)"><use href="#blobD"/></svg><div class="nm">Zed</div><div class="disp" style="margin-left:auto;color:var(--zap);font-size:48px">+450</div></div>
+          <div class="muted" style="margin-top:30px;font-size:32px">Zed was first. Toast took the scenic route.</div>
+        </div>
+        <!-- Salty -->
+        <div class="abs" style="left:150px;top:806px;right:150px;display:flex;align-items:center;gap:36px">
+          <svg width="200" height="166" style="flex:none"><use href="#grin-talk"/></svg>
+          <div class="cap" style="position:relative;flex:1;padding:28px 40px">
+            <span class="line" style="font-size:42px">White? That's the FUR, people. Fur. Under there it's black. Like my heart.</span>
+          </div>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- 7. Scoreboard -->
+    <section class="ab">
+      <h3><b>07</b>Scoreboard</h3>
+      <p class="what">Ranked rows with scores mid count-up (+deltas), and Blue Blob celebrated as Superstar whatever the rank. Mild room again.</p>
+      <div class="fit" data-w="1920" data-h="1080"><div class="board tv">
+        <div class="set"></div>
+        <div class="abs disp" style="left:150px;top:96px;font-size:88px">Scores</div>
+        <div class="abs muted" style="left:150px;top:200px">After question 10 of 10</div>
+        <div class="abs" style="left:150px;top:256px;width:1000px;display:flex;flex-direction:column;gap:14px">
+          <div class="tile" style="padding:6px 30px;height:100px"><span class="disp" style="font-size:56px;width:60px;color:var(--spot)">1</span><svg width="72" height="72" style="color:var(--p-yellow)"><use href="#blobA"/></svg><span class="nm" style="font-size:40px">Toast</span><span style="margin-left:auto;color:var(--zap);font-weight:700">+600</span><span class="disp" style="font-size:56px;width:200px;text-align:right">4,180</span></div>
+          <div class="tile" style="padding:6px 30px;height:100px"><span class="disp" style="font-size:56px;width:60px">2</span><svg width="72" height="72" style="color:var(--p-teal)"><use href="#blobD"/></svg><span class="nm" style="font-size:40px">Zed</span><span style="margin-left:auto;color:var(--zap);font-weight:700">+450</span><span class="disp" style="font-size:56px;width:200px;text-align:right">3,760</span></div>
+          <div class="tile" style="padding:6px 30px;height:100px"><span class="disp" style="font-size:56px;width:60px">3</span><svg width="72" height="72" style="color:var(--p-pink)"><use href="#blobB"/></svg><span class="nm" style="font-size:40px">Noodle</span><span class="disp" style="margin-left:auto;font-size:56px;width:200px;text-align:right">3,100</span></div>
+          <div class="tile" style="padding:6px 30px;height:100px"><span class="disp" style="font-size:56px;width:60px">4</span><svg width="72" height="72" style="color:var(--p-lime)"><use href="#blobC"/></svg><span class="nm" style="font-size:40px">Pickle</span><span class="disp" style="margin-left:auto;font-size:56px;width:200px;text-align:right">2,700</span></div>
+          <div class="tile" style="padding:6px 30px;height:100px"><span class="disp" style="font-size:56px;width:60px">5</span><svg width="72" height="72" style="color:var(--p-blue)"><use href="#blobA"/></svg><span class="nm" style="font-size:40px">Blue Blob</span><svg width="40" height="40" style="margin-left:16px;color:var(--spot)"><use href="#i-sparkle"/></svg><span class="disp" style="margin-left:auto;font-size:56px;width:200px;text-align:right">1,900</span></div>
+        </div>
+        <!-- Superstar -->
+        <div class="abs card" style="left:1200px;top:256px;width:560px;height:556px;background:var(--spot);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+          <svg class="abs" width="60" height="60" style="left:40px;top:40px;color:var(--ink)"><use href="#i-sparkle"/></svg>
+          <svg class="abs" width="44" height="44" style="right:56px;top:70px;color:var(--hot)"><use href="#i-sparkle"/></svg>
+          <svg class="abs" width="40" height="40" style="right:70px;bottom:40px;color:var(--ink)"><use href="#i-sparkle"/></svg>
+          <svg width="240" height="240" style="color:var(--p-blue)"><use href="#blobA"/></svg>
+          <div class="disp" style="font-size:96px;line-height:1">Superstar!</div>
+          <div style="font-size:36px;font-weight:700">Blue Blob</div>
+          <div style="font-size:32px">beat Salty at moos</div>
+        </div>
+        <div class="cap" style="left:150px;right:150px;top:842px">
+          <svg width="96" height="80" style="flex:none"><use href="#grin-talk"/></svg>
+          <span class="who">SALTY</span>
+          <span class="line">Blue Blob beat me. Again. I'm going to go lie down in the sea.</span>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- 8. Pause -->
+    <section class="ab">
+      <h3><b>08</b>Pause menu (Back pressed)</h3>
+      <p class="what">The question dims under a flat ink overlay. Resume is focused first. Spice shows its cap. End game is last and red.</p>
+      <div class="fit" data-w="1920" data-h="1080"><div class="board tv">
+        <div class="set"></div>
+        <div class="abs disp" style="left:150px;top:190px;width:1320px;font-size:84px;line-height:1.05">What colour is a polar bear's skin, under the fur?</div>
+        <div class="abs" style="left:150px;top:420px;width:1620px;display:grid;grid-template-columns:1fr 1fr;gap:28px 36px">
+          <div class="card ans"><svg class="tok" style="color:var(--spot)"><use href="#sh-star"/></svg><span class="t">White</span></div>
+          <div class="card ans"><svg class="tok" style="color:var(--hot)"><use href="#sh-heart"/></svg><span class="t">Pink</span></div>
+          <div class="card ans"><svg class="tok" style="color:var(--zap)"><use href="#sh-moon"/></svg><span class="t">Black</span></div>
+          <div class="card ans"><svg class="tok" style="color:var(--sky)"><use href="#sh-bolt"/></svg><span class="t">Pale yellow</span></div>
+        </div>
+        <div class="abs" style="inset:0;background:rgba(20,17,31,.88)"></div>
+        <div class="abs" style="left:560px;top:120px;width:800px;height:840px;background:var(--stage);border-radius:40px;padding:56px 70px;display:flex;flex-direction:column;gap:30px">
+          <div style="display:flex;align-items:center;gap:20px"><svg width="72" height="72" style="color:var(--spot)"><use href="#i-pause"/></svg><span class="disp" style="font-size:88px">Paused</span></div>
+          <div class="muted" style="margin-top:-12px">The timer is stopped. Nobody gets extra thinking time. Probably.</div>
+          <div class="card focus" style="height:130px;display:flex;align-items:center;gap:24px;padding:0 36px;background:var(--spot);color:var(--ink);font-size:48px;font-weight:700"><svg width="56" height="56"><use href="#i-play"/></svg>Resume</div>
+          <div class="card" style="min-height:130px;display:flex;align-items:center;gap:24px;padding:16px 36px;font-size:48px;font-weight:700">
+            <span style="display:flex;color:var(--hot)"><svg width="48" height="48"><use href="#chili"/></svg></span>
+            <span>Spice level<div class="muted" style="font-size:32px;font-weight:400">Mild · locked by a little one</div></span>
+            <svg width="44" height="44" style="margin-left:auto;color:var(--muted)"><use href="#i-lock"/></svg>
+          </div>
+          <div class="card" style="height:130px;display:flex;align-items:center;gap:24px;padding:0 36px;font-size:48px;font-weight:700;color:var(--hot)"><svg width="56" height="56"><use href="#i-stop"/></svg>End game</div>
+          <div class="hints" style="margin-top:auto;font-size:32px"><span><span class="key">▲ ▼</span>move</span><span><span class="key">OK</span>pick</span><span><span class="key"><svg width="32" height="32"><use href="#i-back"/></svg></span>resume</span></div>
+        </div>
+      </div></div>
+    </section>
+  </div>
+
+  <!-- ===================================================== PHONE ===================================================== -->
+  <h2>Phone (controller)</h2>
+  <div class="grid-ph">
+
+    <!-- 9 Join -->
+    <section class="ab">
+      <h3><b>09</b>Join</h3>
+      <p class="what">One screen: code (pre-filled from the QR), name, age as a picture choice, Join.</p>
+      <div class="fit" data-w="414" data-h="868" data-max="1"><div class="board phone"><div class="screen"><div class="notch"></div>
+        <div class="scr" style="gap:14px">
+          <div class="disp" style="display:flex;align-items:flex-end;font-size:30px;line-height:1">smartm<svg style="width:28px;height:23px;margin:0 1px 2px" viewBox="0 0 120 100"><use href="#grin"/></svg>uth</div>
+          <div class="field"><label>Room code</label><div class="disp" style="font-size:40px;letter-spacing:.12em;color:var(--spot);line-height:1.1">ZUMP</div></div>
+          <div class="field" style="border-color:var(--spot)"><label>Your name</label><div style="font-size:24px;font-weight:700">Toast<span style="display:inline-block;width:2px;height:26px;background:var(--spot);vertical-align:-4px;margin-left:2px"></span></div></div>
+          <div class="lbl" style="margin-top:4px">How old are you?</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+            <div class="pcard" style="height:100px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8px;gap:4px"><svg width="30" height="30" style="color:var(--p-blue)"><use href="#blobA"/></svg><b>3–5</b></div>
+            <div class="pcard" style="height:100px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8px;gap:4px"><svg width="38" height="38" style="color:var(--p-teal)"><use href="#blobA"/></svg><b>6–8</b></div>
+            <div class="pcard" style="height:100px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8px;gap:4px"><svg width="46" height="46" style="color:var(--p-lime)"><use href="#blobA"/></svg><b>9–12</b></div>
+            <div class="pcard" style="height:100px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:8px;gap:4px"><svg width="54" height="54" style="color:var(--p-pink)"><use href="#blobA"/></svg><b>13–17</b></div>
+            <div class="pcard" style="grid-column:span 2;height:100px;display:flex;align-items:center;justify-content:center;gap:12px;background:var(--spot);color:var(--ink);outline:4px solid var(--paper);outline-offset:3px"><svg width="62" height="62" style="color:var(--p-yellow)"><use href="#blobA"/></svg><b style="font-size:22px">Grown-up</b><svg width="28" height="28"><use href="#i-tick"/></svg></div>
+          </div>
+          <div class="muted" style="font-size:17px">Your age stays on this phone. It sets Salty's manners.</div>
+          <div class="pbtn" style="margin-top:auto">Join room</div>
+        </div>
+      </div></div></div>
+    </section>
+
+    <!-- 10 Pick blob -->
+    <section class="ab">
+      <h3><b>10</b>Pick your blob</h3>
+      <p class="what">Ten blobs, one per free seat colour; taken colours are crossed out. Skip gives you a random one.</p>
+      <div class="fit" data-w="414" data-h="868" data-max="1"><div class="board phone"><div class="screen tint-yellow"><div class="notch"></div>
+        <div class="scr" style="gap:16px">
+          <div class="disp" style="font-size:32px;line-height:1.1">Pick your blob</div>
+          <div class="muted">This is you on the big screen.</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+            <div class="pcard" style="height:104px;display:flex;align-items:center;justify-content:center;outline:4px solid var(--paper);outline-offset:3px;background:var(--stage)"><svg width="80" height="80" style="color:var(--p-yellow)"><use href="#blobA"/></svg></div>
+            <div class="pcard" style="height:104px;display:flex;align-items:center;justify-content:center"><svg width="76" height="76" style="color:var(--p-orange)"><use href="#blobB"/></svg></div>
+            <div class="pcard" style="height:104px;display:flex;align-items:center;justify-content:center"><svg width="76" height="76" style="color:var(--p-purple)"><use href="#blobC"/></svg></div>
+            <div class="pcard" style="height:104px;display:flex;align-items:center;justify-content:center"><svg width="76" height="76" style="color:var(--p-red)"><use href="#blobD"/></svg></div>
+            <div class="pcard" style="height:104px;display:flex;align-items:center;justify-content:center"><svg width="76" height="76" style="color:var(--p-cyan)"><use href="#blobA"/></svg></div>
+            <div class="pcard" style="height:104px;display:flex;align-items:center;justify-content:center"><svg width="76" height="76" style="color:var(--p-white)"><use href="#blobB"/></svg></div>
+            <div class="pcard" style="height:104px;display:flex;align-items:center;justify-content:center;opacity:.35;box-shadow:none"><svg width="64" height="64" style="color:var(--p-pink)"><use href="#blobB"/></svg></div>
+            <div class="pcard" style="height:104px;display:flex;align-items:center;justify-content:center;opacity:.35;box-shadow:none"><svg width="64" height="64" style="color:var(--p-lime)"><use href="#blobC"/></svg></div>
+            <div class="pcard" style="height:104px;display:flex;align-items:center;justify-content:center;opacity:.35;box-shadow:none"><svg width="64" height="64" style="color:var(--p-teal)"><use href="#blobD"/></svg></div>
+          </div>
+          <div class="muted" style="font-size:17px">Faded ones are taken.</div>
+          <div class="pbtn" style="margin-top:auto">That's me</div>
+          <div style="text-align:center;color:var(--sky);font-weight:700;text-decoration:underline;text-underline-offset:4px;min-height:44px;display:flex;align-items:center;justify-content:center">Skip, surprise me</div>
+        </div>
+      </div></div></div>
+    </section>
+
+    <!-- 11 Waiting -->
+    <section class="ab">
+      <h3><b>11</b>Waiting in lobby (admin)</h3>
+      <p class="what">Your blob big, "Look at the TV", and Grown-up controls, because Toast was the first Grown-up to join.</p>
+      <div class="fit" data-w="414" data-h="868" data-max="1"><div class="board phone"><div class="screen tint-yellow"><div class="notch"></div>
+        <div class="scr" style="align-items:center;text-align:center;gap:10px">
+          <div class="chip" style="font-size:17px;padding:8px 16px;margin-top:8px"><span class="muted" style="font-weight:400">Room</span><span class="disp" style="color:var(--spot);letter-spacing:.12em">ZUMP</span></div>
+          <svg width="220" height="220" style="color:var(--p-yellow);margin-top:40px"><use href="#blobA"/></svg>
+          <div class="disp" style="font-size:40px">Toast</div>
+          <div style="display:flex;align-items:center;gap:8px;color:var(--spot);font-weight:700"><svg width="22" height="22"><use href="#i-crown"/></svg>You run this room</div>
+          <div class="disp" style="font-size:32px;margin-top:36px">Look at the TV</div>
+          <div class="muted">5 players in. Start with the remote or here.</div>
+          <div style="margin-top:auto;width:100%;display:flex;flex-direction:column;gap:12px">
+            <div class="pbtn">Start the game</div>
+            <div class="pbtn sec"><svg width="26" height="26"><use href="#i-crown"/></svg>Grown-up controls</div>
+          </div>
+        </div>
+      </div></div></div>
+    </section>
+
+    <!-- 12 Answer -->
+    <section class="ab">
+      <h3><b>12</b>Answer (older player)</h3>
+      <p class="what">Thin timer bar on top, 4 tall buttons with shape, colour and a short answer. Stacked, not a 2×2 colour grid.</p>
+      <div class="fit" data-w="414" data-h="868" data-max="1"><div class="board phone"><div class="screen tint-teal"><div class="notch"></div>
+        <div class="tbar"><i style="width:60%"></i></div>
+        <div class="scr" style="gap:14px;padding-top:76px">
+          <div style="display:flex;align-items:center;gap:10px"><svg width="40" height="40" style="color:var(--p-teal)"><use href="#blobD"/></svg><b>Zed</b><span class="muted" style="margin-left:auto">Question 4</span></div>
+          <div class="muted" style="text-align:center">Question's on the TV</div>
+          <div class="pcard" style="flex:1;min-height:64px;display:flex;align-items:center;gap:18px;padding:0 20px"><svg width="64" height="64" style="color:var(--spot)"><use href="#sh-star"/></svg><span style="font-size:28px;font-weight:700">White</span></div>
+          <div class="pcard" style="flex:1;min-height:64px;display:flex;align-items:center;gap:18px;padding:0 20px"><svg width="64" height="64" style="color:var(--hot)"><use href="#sh-heart"/></svg><span style="font-size:28px;font-weight:700">Pink</span></div>
+          <div class="pcard" style="flex:1;min-height:64px;display:flex;align-items:center;gap:18px;padding:0 20px"><svg width="64" height="64" style="color:var(--zap)"><use href="#sh-moon"/></svg><span style="font-size:28px;font-weight:700">Black</span></div>
+          <div class="pcard" style="flex:1;min-height:64px;display:flex;align-items:center;gap:18px;padding:0 20px"><svg width="64" height="64" style="color:var(--sky)"><use href="#sh-bolt"/></svg><span style="font-size:28px;font-weight:700">Pale yellow</span></div>
+        </div>
+      </div></div></div>
+    </section>
+
+    <!-- 13 Locked in -->
+    <section class="ab">
+      <h3><b>13</b>Locked in</h3>
+      <p class="what">The whole screen floods with the picked slot's colour, a big tick and the shape, so you can see what you chose.</p>
+      <div class="fit" data-w="414" data-h="868" data-max="1"><div class="board phone"><div class="screen" style="background:var(--zap);color:var(--ink)"><div class="notch"></div>
+        <div class="scr" style="align-items:center;justify-content:center;text-align:center;gap:16px">
+          <div style="width:200px;height:200px;border-radius:50%;background:var(--ink);color:var(--zap);display:flex;align-items:center;justify-content:center;border:4px solid var(--ink);box-shadow:5px 5px 0 rgba(20,17,31,.35)"><svg width="140" height="140"><use href="#i-tick"/></svg></div>
+          <div class="disp" style="font-size:48px;margin-top:12px">Locked in!</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:24px;font-weight:700"><svg width="36" height="36"><use href="#sh-moon"/></svg>Black</div>
+          <div style="font-size:20px;margin-top:40px;font-weight:700">Now watch the TV.</div>
+        </div>
+      </div></div></div>
+    </section>
+
+    <!-- 14 Kid mode -->
+    <section class="ab">
+      <h3><b>14</b>Kid mode answer (Little on a grown-up's phone)</h3>
+      <p class="what">Three picture buttons, no words, no back control, no timer. For the grown-up: long-press the top-left corner for 3 seconds to leave kid mode.</p>
+      <div class="fit" data-w="414" data-h="868" data-max="1"><div class="board phone"><div class="screen tint-blue"><div class="notch"></div>
+        <div class="scr" style="gap:18px;padding-top:56px">
+          <div style="display:flex;justify-content:center"><svg width="64" height="64" style="color:var(--p-blue)"><use href="#blobA"/></svg></div>
+          <div class="pcard" style="flex:1;background:#d9ecff;display:flex;align-items:center;justify-content:center"><svg width="190" height="190"><use href="#pic-duck"/></svg></div>
+          <div class="pcard" style="flex:1;background:#ffe3ea;display:flex;align-items:center;justify-content:center"><svg width="190" height="190"><use href="#pic-pig"/></svg></div>
+          <div class="pcard" style="flex:1;background:#e6f8da;display:flex;align-items:center;justify-content:center"><svg width="190" height="190"><use href="#pic-cow"/></svg></div>
+        </div>
+      </div></div></div>
+    </section>
+
+    <!-- 15 Admin sheet -->
+    <section class="ab">
+      <h3><b>15</b>Grown-up controls sheet</h3>
+      <p class="what">Skip Salty, pause, spice slider with the cap explained, kick a player, end game. Slides up over the waiting screen.</p>
+      <div class="fit" data-w="414" data-h="868" data-max="1"><div class="board phone"><div class="screen tint-yellow"><div class="notch"></div>
+        <div class="abs" style="inset:0;background:rgba(20,17,31,.7)"></div>
+        <div class="abs" style="left:0;right:0;bottom:0;top:58px;background:var(--stage);border-radius:28px 28px 0 0;padding:12px 20px 24px;display:flex;flex-direction:column;gap:12px">
+          <div style="width:48px;height:5px;border-radius:3px;background:#4a4277;margin:0 auto 2px"></div>
+          <div style="display:flex;align-items:center"><span class="disp" style="font-size:26px">Grown-up controls</span><span style="margin-left:auto;width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--muted)"><svg width="26" height="26"><use href="#i-x"/></svg></span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="pbtn sec" style="font-size:19px"><svg width="24" height="24"><use href="#i-skip"/></svg>Skip Salty</div>
+            <div class="pbtn sec" style="font-size:19px"><svg width="24" height="24"><use href="#i-pause"/></svg>Pause</div>
+          </div>
+          <div class="field" style="border-color:#4a4277;background:var(--ink)">
+            <div style="display:flex;align-items:center;justify-content:space-between"><b style="font-size:17px">Spice level</b><b style="color:var(--hot)">Mild</b></div>
+            <div style="position:relative;height:44px;margin:6px 6px 0">
+              <div class="abs" style="left:0;right:0;top:19px;height:6px;border-radius:3px;background:#3a3366"></div>
+              <div class="abs" style="left:0;width:2%;top:19px;height:6px;border-radius:3px;background:var(--hot)"></div>
+              <div class="abs" style="left:33%;top:14px;width:16px;height:16px;border-radius:50%;background:#3a3366;margin-left:-8px"></div>
+              <div class="abs" style="left:66%;top:14px;width:16px;height:16px;border-radius:50%;background:#3a3366;margin-left:-8px"></div>
+              <div class="abs" style="left:100%;top:14px;width:16px;height:16px;border-radius:50%;background:#3a3366;margin-left:-8px"></div>
+              <div class="abs" style="left:0;top:4px;width:36px;height:36px;border-radius:50%;background:var(--hot);border:4px solid var(--ink);margin-left:-6px"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);font-size:17px;text-align:center;margin:0 -8px">
+              <b style="color:var(--paper)">Mild</b>
+              <span class="muted" style="display:flex;align-items:center;justify-content:center;gap:2px"><svg width="14" height="14"><use href="#i-lock"/></svg>Spicy</span>
+              <span class="muted" style="display:flex;align-items:center;justify-content:center;gap:2px"><svg width="14" height="14"><use href="#i-lock"/></svg>Hot</span>
+              <span class="muted" style="display:flex;align-items:center;justify-content:center;gap:2px"><svg width="14" height="14"><use href="#i-lock"/></svg>Filthy</span>
+            </div>
+            <div class="muted" style="font-size:17px;margin-top:8px">Held at Mild while a 3–5 player is in the room. You can always turn it down; it goes up only when they leave.</div>
+          </div>
+          <div class="lbl" style="margin-top:2px">Kick a player</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:0 4px 0 12px;background:var(--stage-2);border-radius:18px"><svg width="40" height="40" style="color:var(--p-pink)"><use href="#blobB"/></svg><b>Noodle</b><span class="muted">13–17</span><span style="margin-left:auto;width:56px;height:56px;display:flex;align-items:center;justify-content:center;color:var(--hot)"><svg width="26" height="26"><use href="#i-x"/></svg></span></div>
+            <div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:0 4px 0 12px;background:var(--stage-2);border-radius:18px"><svg width="40" height="40" style="color:var(--p-lime)"><use href="#blobC"/></svg><b>Pickle</b><span class="muted">9–12</span><span style="margin-left:auto;width:56px;height:56px;display:flex;align-items:center;justify-content:center;color:var(--hot)"><svg width="26" height="26"><use href="#i-x"/></svg></span></div>
+            <div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:0 4px 0 12px;background:var(--stage-2);border-radius:18px"><svg width="40" height="40" style="color:var(--p-teal)"><use href="#blobD"/></svg><b>Zed</b><span class="muted">6–8</span><span style="margin-left:auto;width:56px;height:56px;display:flex;align-items:center;justify-content:center;color:var(--hot)"><svg width="26" height="26"><use href="#i-x"/></svg></span></div>
+            <div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:0 4px 0 12px;background:var(--stage-2);border-radius:18px"><svg width="40" height="40" style="color:var(--p-blue)"><use href="#blobA"/></svg><b>Blue Blob</b><span class="muted">3–5</span><span style="margin-left:auto;width:56px;height:56px;display:flex;align-items:center;justify-content:center;color:var(--hot)"><svg width="26" height="26"><use href="#i-x"/></svg></span></div>
+          </div>
+          <div class="pbtn danger" style="margin-top:auto"><svg width="24" height="24"><use href="#i-stop"/></svg>End game</div>
+        </div>
+      </div></div></div>
+    </section>
+
+    <!-- 16 Filthy -->
+    <section class="ab" style="grid-column:1/-1">
+      <h3><b>16</b>Filthy-level result: bleeped vs uncensored caption</h3>
+      <p class="what">Phone result after a wrong answer in an all-adult room at Filthy. The audio swears either way. Pick how the text shows it: left bleeps with a fixed four-star pill, right prints the word.</p>
+      <div class="ph-row">
+        <div class="fitcol">
+          <div class="fit" data-w="414" data-h="868" data-max="1"><div class="board phone"><div class="screen tint-orange"><div class="notch"></div>
+            <div class="scr" style="gap:14px;text-align:center;align-items:center">
+              <div style="display:flex;align-items:center;gap:10px;align-self:stretch"><svg width="40" height="40" style="color:var(--p-orange)"><use href="#blobB"/></svg><b>Gravy</b><span class="muted" style="margin-left:auto">4th of 4</span></div>
+              <div style="width:150px;height:150px;border-radius:50%;background:var(--hot);color:var(--ink);display:flex;align-items:center;justify-content:center;border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin-top:24px"><svg width="96" height="96"><use href="#i-x"/></svg></div>
+              <div class="disp" style="font-size:44px">Nope.</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:20px">You said <svg width="24" height="24" style="color:var(--hot)"><use href="#sh-heart"/></svg><b>Pink</b></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:20px">It was <svg width="24" height="24" style="color:var(--zap)"><use href="#sh-moon"/></svg><b>Black</b></div>
+              <div class="disp" style="font-size:28px;color:var(--muted)">+0</div>
+              <div style="margin-top:28px;align-self:stretch;background:var(--ink);border-radius:18px;padding:16px 18px;text-align:left;display:flex;gap:12px;align-items:flex-start">
+                <svg width="48" height="40" style="flex:none;margin-top:2px"><use href="#grin-talk"/></svg>
+                <div><div class="disp" style="color:var(--hot);font-size:17px;letter-spacing:.04em">SALTY</div><div style="font-size:20px;line-height:1.3">Pink?! Holy <span class="bleep" aria-label="bleep">★★★★</span>. I lost a ship on a pair of twos and THAT was a better call.</div></div>
+              </div>
+              <div class="muted" style="margin-top:auto;font-weight:700">Scores are on the TV</div>
+            </div>
+          </div></div></div>
+          <p class="sub">A. Bleeped: text always uses a ★★★★ pill (fixed length)</p>
+        </div>
+        <div class="fitcol">
+          <div class="fit" data-w="414" data-h="868" data-max="1"><div class="board phone"><div class="screen tint-orange"><div class="notch"></div>
+            <div class="scr" style="gap:14px;text-align:center;align-items:center">
+              <div style="display:flex;align-items:center;gap:10px;align-self:stretch"><svg width="40" height="40" style="color:var(--p-orange)"><use href="#blobB"/></svg><b>Gravy</b><span class="muted" style="margin-left:auto">4th of 4</span></div>
+              <div style="width:150px;height:150px;border-radius:50%;background:var(--hot);color:var(--ink);display:flex;align-items:center;justify-content:center;border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);margin-top:24px"><svg width="96" height="96"><use href="#i-x"/></svg></div>
+              <div class="disp" style="font-size:44px">Nope.</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:20px">You said <svg width="24" height="24" style="color:var(--hot)"><use href="#sh-heart"/></svg><b>Pink</b></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:20px">It was <svg width="24" height="24" style="color:var(--zap)"><use href="#sh-moon"/></svg><b>Black</b></div>
+              <div class="disp" style="font-size:28px;color:var(--muted)">+0</div>
+              <div style="margin-top:28px;align-self:stretch;background:var(--ink);border-radius:18px;padding:16px 18px;text-align:left;display:flex;gap:12px;align-items:flex-start">
+                <svg width="48" height="40" style="flex:none;margin-top:2px"><use href="#grin-talk"/></svg>
+                <div><div class="disp" style="color:var(--hot);font-size:17px;letter-spacing:.04em">SALTY</div><div style="font-size:20px;line-height:1.3">Pink?! Holy shit. I lost a ship on a pair of twos and THAT was a better call.</div></div>
+              </div>
+              <div class="muted" style="margin-top:auto;font-weight:700">Scores are on the TV</div>
+            </div>
+          </div></div></div>
+          <p class="sub">B. Uncensored: text matches the audio word for word</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===================================================== NOTES ===================================================== -->
+  <h2>Choices the guide didn't make</h2>
+  <div class="notes">
+    <p style="margin-top:0;color:var(--cv-muted)">Each one is a call made while drawing. Accept or reject one by one.</p>
+    <ol>
+      <li><b>TV "set" panel.</b> The guide makes <code>--ink</code> the stage background and gives cards an <code>--ink</code> outline and shadow, but ink on ink is invisible. So the TV fills its 5% safe margin with <code>--ink</code> and puts a big <code>--stage</code> panel (40 px corners) over the safe area. Cards sit on that panel, where the outline and shadow show.</li>
+      <li><b>Caption strip look.</b> An <code>--ink</code> bar with 28 px corners: the talking grin, "SALTY" in <code>--hot</code>, the line in paper at 38 px. It sits just above the player tiles. Audio tags show as a muted italic stage direction, e.g. <i>(sighs)</i>, never in brackets.</li>
+      <li><b>Focus ring placement.</b> A 6 px <code>--spot</code> outline set 6 px outside the card's 4 px ink border, so a dark gap separates ring and card even on yellow cards.</li>
+      <li><b>Spice indicator.</b> Four chilli icons, filled up to the level, plus the level name. When it's capped it also gets a lock and the reason ("— a little one's playing").</li>
+      <li><b>Age-band icons.</b> The same blob drawn bigger for each band (3–5 smallest, Grown-up biggest). No emoji, no birthdays.</li>
+      <li><b>Admin marker.</b> A crown badge on the admin's TV tile and "You run this room" on their phone.</li>
+      <li><b>Phone answer layout.</b> Four full-width buttons stacked top to bottom: dark card, coloured shape, answer text. I avoided a 2×2 grid of solid colour blocks so it can't be mistaken for the game we're not copying.</li>
+      <li><b>Locked-in flood colour.</b> The screen floods with the colour of the slot you picked (not your player colour), with its shape shown, so you can check your pick at a glance.</li>
+      <li><b>Player tint.</b> Phone background = 80% <code>--ink</code> mixed with 20% player colour. That's dark enough for paper text and light enough for ink shadows to show.</li>
+      <li><b>Lobby with fewer than 10 players.</b> Joined tiles are wide. The empty seats collapse into one dashed "+5 seats" tile instead of five empty ones.</li>
+      <li><b>In-game tile status.</b> "Locked in" with a <code>--zap</code> tick badge, "Thinking…" in muted, and "Turn next" in <code>--spot</code> for a Little whose picture question is coming up.</li>
+      <li><b>Wrong answers at reveal</b> drop to 45% opacity. The right one floods <code>--zap</code> with a paper ring and a tick, and the pickers' blobs sit on each row.</li>
+      <li><b>Superstar badge.</b> A separate yellow card next to the ranks, with the Little's blob big and sparkles. Their ranked row also gets a sparkle, so the rank is still honest but the celebration is louder.</li>
+      <li><b>Pause menu.</b> A flat 88% ink overlay (no blur, since the guide bans glass). The menu is Resume, Spice level and End game, as briefed. End game is in <code>--hot</code>, and Back resumes.</li>
+      <li><b>Picture cards</b> get pale pastel backgrounds (sky, pink, green tints) so the drawings read well and the ink-outlined animals pop. These pastels are new colours, not tokens.</li>
+      <li><b>Kid-mode exit</b> is a 3-second long-press on the top-left corner, with no visible handle on screen.</li>
+      <li><b>Bleep style.</b> A <code>--hot</code> pill with four ★ whatever the word's length, so the length doesn't give the word away. Shown next to the uncensored option (artboard 16).</li>
+      <li><b>Filthy sample line.</b> I used an exclamation ("Holy shit") rather than a swear-word noun aimed at the player ("you absolute ★★★★"), to stay clearly inside "punch up or punch himself".</li>
+      <li><b>Game picker placeholders</b> say "Coming soon / Game two / Game three", with no invented titles that might clash with real games.</li>
+      <li><b>Grin construction.</b> The colour mark is a <code>--hot</code> crescent with a <code>--spot</code> tooth and a paper brow. The one-colour mark cuts the tooth out as a notch. The talking version opens the mouth (ink inside) and raises the brow.</li>
+      <li><b>Room code "ZUMP"</b> and nicknames Toast, Noodle, Pickle, Zed, Blue Blob and Gravy are all made up.</li>
+    </ol>
+  </div>
+
+  <h2>Where the guide was unclear or contradicts itself</h2>
+  <p class="what" style="max-width:80ch">Resolved in the design guide on 2026-11-26: the stage panel (1), Little cards at about 28% width (2), two rows of tiles for 7+ players (3), a Little's question as its own turn (4), "nincompoop" removed (5), a new Filthy example aimed at the situation (6), the cap lifting when the youngest leaves (7), the PG-13 level renamed <b>Hot</b> (8), the pause menu (10), the cross-reference (11), and captions on the TV only (12). The bands are Little 3–5, Kids 6–8, Tweens 9–12, Teens 13–17 and Grown-ups 18+ (ADR 0008).</p>
+  <div class="notes">
+    <ol>
+      <li><b>Ink shadows on an ink stage</b> (§5.2 vs §5.4): the outline and offset shadow vanish on the <code>--ink</code> background. Choice 1 works around it.</li>
+      <li><b>The Little's picture cards can't all fit.</b> Three cards at "at least 30% of the screen width" take 1728 px, which is the whole 5% safe area with no gaps and no room for the 1.08 focus scale. Artboard 05 keeps 576 px cards and lets the row run past the safe margin (60 px each side). The guide needs to pick one: 28% cards, or allow Little cards past the margin.</li>
+      <li><b>Ten tiles and 32 px names don't fit.</b> 10 tiles across 1728 px leaves about 150 px each, and a name like "Blue Blob" at 32 px doesn't fit next to an avatar. The guide needs a rule: two rows, shorter names, or a smaller tile with names on focus.</li>
+      <li><b>"One thing on screen at a time" vs "older players keep playing while the Little's question waits"</b> (§6 TV rule 2 vs Little rule 3). It's unclear whether the TV splits the screen or runs the Little's turn in sequence. These mockups run them in sequence.</li>
+      <li><b>"Nincompoop" is allowed at Spicy, but rule 1 forbids mocking intelligence as a person.</b> Calling a player a nincompoop sits on that line. Artboard 06 uses it (it's in the guide's own list); decide whether it stays.</li>
+      <li><b>The Filthy example</b> ("you absolute ***") aims the insult at the player, and it mentions "a picture of a cow", which is a Little-seat question, in a room that has to be all adults.</li>
+      <li><b>Mild needs a Little, but the brief has a Spicy reveal and a Little on the scoreboard.</b> They can't be one room, so artboard 06 says Blue Blob has gone to bed. The guide doesn't say whether the level rises on its own when the Little leaves, or waits for a grown-up.</li>
+      <li><b>"Salty" is both the host and the PG-13 level</b>, which made the admin slider and captions confusing to label.</li>
+      <li><b>Bands are undefined.</b> <code>--grape</code> is "the Kids band", but the guide never says which ages "Kids" covers, and there are five join choices against bands called Little, Kids and others. Filthy needs "every player 18+", but the top band is just "Grown-up"; I read Grown-up as 18+.</li>
+      <li><b>Pause menu contents</b>: §6 says "resume, settings, end game", but the brief says Resume / Spice level / End game. The caption on/off switch (§7) has no stated home either.</li>
+      <li><b>Wrong cross-reference</b>: §2 says the answer slots are in §5.4, but they're in §5.2.</li>
+      <li><b>Captions on the phone</b>: §7 puts captions on the TV only. The Filthy brief wanted Salty's line on the phone's result screen, and the guide doesn't say whether phones show his lines.</li>
+      <li><b>Fonts</b>: the guide says the fonts are self-hosted with no CDN at play time. These mockups load them from Google Fonts, which is fine for a design file only.</li>
+    </ol>
+  </div>
+</main>
+
+<script>
+/* Scale each artboard to its column. Inner coordinates stay at real size. */
+(function(){
+  var fits = [].slice.call(document.querySelectorAll('.fit'));
+  function size(el){
+    var w = +el.dataset.w, h = +el.dataset.h, max = el.dataset.max ? +el.dataset.max : Infinity;
+    var avail = el.parentElement.clientWidth;
+    var s = Math.min(max, avail / w);
+    el.style.width = (w * s) + 'px';
+    el.style.height = (h * s) + 'px';
+    el.firstElementChild.style.transform = 'scale(' + s + ')';
+  }
+  function all(){ fits.forEach(size); }
+  all();
+  if (window.ResizeObserver){ var ro = new ResizeObserver(all); fits.forEach(function(f){ ro.observe(f.parentElement); }); }
+  else window.addEventListener('resize', all);
+})();
+</script>
+</body>
+</html>

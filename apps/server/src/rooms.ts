@@ -1,0 +1,150 @@
+// Rooms live in memory only (ADR 0004, 0005, 0016). Everything here is pure apart from token/code generation:
+// the socket layer (ws.ts) calls these and sends the views.
+import {
+  AVATAR_COUNT, MAX_PLAYERS, NAME_MAX, PLAYER_COLORS, effectiveSpice, spiceCap,
+  type Band, type ErrorCode, type GameManifest, type HostLobbyView, type PlayerLobbyView, type PublicSeat, type Spice,
+  type SpiceState,
+} from '@smartmouth/protocol';
+import { makeCode, makeToken, normalizeCode } from './codes.ts';
+
+/** A room with no host and no players connected is deleted after this long. */
+export const IDLE_MS = 15 * 60 * 1000;
+
+export interface Seat {
+  id: string;
+  token: string;
+  name: string;
+  band: Band;
+  avatar: number;
+  color: string;
+  score: number;
+  connected: boolean;
+}
+
+export interface Room {
+  code: string;
+  hostToken: string;
+  hostConnected: boolean;
+  seats: Seat[];
+  spiceChosen: Spice;
+  notice: string | null;
+  /** Last time anything was connected or anything happened. */
+  lastActive: number;
+  nextSeat: number;
+}
+
+export type Result<T> = { ok: true; value: T } | { ok: false; code: ErrorCode; message: string };
+
+const fail = (code: ErrorCode, message: string): { ok: false; code: ErrorCode; message: string } => ({ ok: false, code, message });
+
+export function cleanName(raw: unknown): string | null {
+  if (typeof raw !== 'string') return null;
+  // Drop control and invisible characters, collapse whitespace.
+  const name = raw.replace(/[\p{Cc}\p{Cf}]/gu, '').replace(/\s+/g, ' ').trim();
+  if (name.length < 1) return null;
+  return [...name].slice(0, NAME_MAX).join('');
+}
+
+export class RoomStore {
+  rooms = new Map<string, Room>();
+
+  create(now: number): Room {
+    const code = makeCode((c) => this.rooms.has(c));
+    const room: Room = {
+      code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy',
+      notice: null, lastActive: now, nextSeat: 1,
+    };
+    this.rooms.set(code, room);
+    return room;
+  }
+
+  get(rawCode: string): Room | undefined {
+    return this.rooms.get(normalizeCode(rawCode));
+  }
+
+  join(room: Room, input: { name: unknown; band: Band; avatar: unknown }, now: number): Result<Seat> {
+    if (room.seats.length >= MAX_PLAYERS) return fail('room-full', `This room is full (${MAX_PLAYERS} players).`);
+    const base = cleanName(input.name);
+    if (!base) return fail('bad-name', 'Type a name first.');
+    const avatar = typeof input.avatar === 'number' && Number.isInteger(input.avatar) && input.avatar >= 0 && input.avatar < AVATAR_COUNT
+      ? input.avatar : 0;
+    const seat: Seat = {
+      id: `s${room.nextSeat++}`, token: makeToken(), name: uniqueName(room, base), band: input.band, avatar,
+      color: freeColor(room), score: 0, connected: true,
+    };
+    room.seats.push(seat);
+    room.lastActive = now;
+    return { ok: true, value: seat };
+  }
+
+  seatByToken(room: Room, token: unknown): Seat | undefined {
+    if (typeof token !== 'string' || token.length === 0) return undefined;
+    return room.seats.find((s) => s.token === token);
+  }
+
+  remove(room: Room, seatId: string, now: number): Seat | undefined {
+    const i = room.seats.findIndex((s) => s.id === seatId);
+    if (i < 0) return undefined;
+    const [seat] = room.seats.splice(i, 1);
+    room.lastActive = now;
+    return seat;
+  }
+
+  /** Deletes rooms that have had nothing connected for IDLE_MS. Returns the deleted codes. */
+  sweep(now: number): string[] {
+    const gone: string[] = [];
+    for (const room of this.rooms.values()) {
+      const anyone = room.hostConnected || room.seats.some((s) => s.connected);
+      if (anyone) room.lastActive = now;
+      else if (now - room.lastActive > IDLE_MS) gone.push(room.code);
+    }
+    for (const code of gone) this.rooms.delete(code);
+    return gone;
+  }
+}
+
+function uniqueName(room: Room, base: string): string {
+  const taken = new Set(room.seats.map((s) => s.name.toLowerCase()));
+  if (!taken.has(base.toLowerCase())) return base;
+  for (let n = 2; ; n++) {
+    const suffix = ` ${n}`;
+    const name = [...base].slice(0, NAME_MAX - suffix.length).join('') + suffix;
+    if (!taken.has(name.toLowerCase())) return name;
+  }
+}
+
+function freeColor(room: Room): string {
+  const used = new Set(room.seats.map((s) => s.color));
+  return PLAYER_COLORS.find((c) => !used.has(c)) ?? PLAYER_COLORS[0];
+}
+
+/** The first grown-up to join is the admin; it moves on when they leave (ADR 0005). */
+export function adminSeatId(room: Room): string | null {
+  return room.seats.find((s) => s.band === 'grownups')?.id ?? null;
+}
+
+export function spiceState(room: Room): SpiceState {
+  const bands = room.seats.map((s) => s.band);
+  return { chosen: room.spiceChosen, cap: spiceCap(bands), effective: effectiveSpice(room.spiceChosen, bands) };
+}
+
+function publicSeat(room: Room, s: Seat): PublicSeat {
+  return {
+    id: s.id, name: s.name, band: s.band, avatar: s.avatar, color: s.color, score: s.score,
+    connected: s.connected, isAdmin: adminSeatId(room) === s.id,
+  };
+}
+
+export function hostView(room: Room, joinUrl: string, games: GameManifest[]): HostLobbyView {
+  return {
+    role: 'host', phase: 'lobby', code: room.code, joinUrl,
+    players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), games, notice: room.notice,
+  };
+}
+
+export function playerView(room: Room, seat: Seat, games: GameManifest[]): PlayerLobbyView {
+  return {
+    role: 'player', phase: 'lobby', code: room.code, you: publicSeat(room, seat),
+    playerCount: room.seats.length, spice: spiceState(room), games, notice: room.notice,
+  };
+}

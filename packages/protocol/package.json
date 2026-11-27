@@ -1,0 +1,8 @@
+{
+  "name": "@smartmouth/protocol",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Types and small pure helpers shared by the server, the TV host screen and the phones (ADR 0003, 0004).",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" }
+}
