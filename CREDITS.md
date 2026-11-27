@@ -20,6 +20,40 @@ Generated with **Google Lyria 3** (`google/lyria-3-clip-preview`) through OpenRo
 prompts in `tools/sounds/sounds.mjs`. The files carry Google's content credentials (a C2PA tag).
 Cues: theme, mission, table, night, breakfast, reveal, guests-win, snakes-win, bell.
 
+## Sound effects (Trivia)
+All from [Freesound](https://freesound.org), released under **CC0 1.0** (no credit required; we credit them anyway).
+Picked by the owner on 2026-11-27 from the audition (`tools/sounds/trivia/`); moments with several files rotate.
+Trimmed and levelled with ffmpeg (design guide 4.1).
+
+| Cue | Sound | Author | Used for |
+|---|---|---|---|
+| trivia-start | [Notification](https://freesound.org/people/Fupicat/sounds/538149/) | Fupicat | Game starts |
+| trivia-round | [Deep Whoosh #5](https://freesound.org/people/Kinoton/sounds/558827/) | Kinoton | Round change (transition) |
+| trivia-lock | [UI Button Click](https://freesound.org/people/benzix2/sounds/467951/) | benzix2 | Someone locks in an answer |
+| trivia-tick | [single-tick.wav](https://freesound.org/people/DeltaCode/sounds/668355/) | DeltaCode | Countdown tick (last 5 seconds) |
+| trivia-reveal | [buzz roll.wav](https://freesound.org/people/bigjoedrummer/sounds/77305/) | bigjoedrummer | Answer reveal |
+| trivia-right | [Correct Bell](https://freesound.org/people/Fupicat/sounds/538147/) | Fupicat | Correct answer |
+| trivia-allwrong | [horn_fail_wahwah_1.wav](https://freesound.org/people/TaranP/sounds/362206/) | TaranP | Nobody got it |
+| trivia-applause | [Small Crowd Applause 1](https://freesound.org/people/snakebarney/sounds/138113/) | snakebarney | Everyone got it |
+| trivia-slide | [whoosh_short_mid.wav](https://freesound.org/people/DJT4NN3R/sounds/449996/) | DJT4NN3R | Leaderboard rows slide |
+| trivia-sparkle | [Sparkle Burst](https://freesound.org/people/Qvantor/sounds/880771/) | Qvantor | A Little's turn starts |
+| trivia-join-1 | [Simple Pop Sound Effect](https://freesound.org/people/SplendidJams/sounds/570459/) | SplendidJams | Player joins (rotates) |
+| trivia-join-2 | [Pop up!](https://freesound.org/people/Losh.id/sounds/791346/) | Losh.id | Player joins (rotates) |
+| trivia-join-3 | [TOONY pops.wav](https://freesound.org/people/mikala_oidua/sounds/321163/) | mikala_oidua | Player joins (rotates) |
+| trivia-timeup-1 | [Loud Buzzer.mp3](https://freesound.org/people/SomeoneCool15/sounds/419086/) | SomeoneCool15 | Time's up (rotates) |
+| trivia-timeup-2 | [buzzer_feeback.aif](https://freesound.org/people/scarfield/sounds/52002/) | scarfield | Time's up (rotates) |
+| trivia-timeup-3 | [buzzer sportif.wav](https://freesound.org/people/Naïma/sounds/510026/) | Naïma | Time's up (rotates) |
+| trivia-count-1 | [Retro, Coin 03.wav](https://freesound.org/people/LilMati/sounds/402767/) | LilMati | Scores count up (rotates) |
+| trivia-count-2 | [Retro, Coin 06.wav](https://freesound.org/people/LilMati/sounds/515736/) | LilMati | Scores count up (rotates) |
+| trivia-count-3 | [Retro, Coin 01.wav](https://freesound.org/people/LilMati/sounds/402067/) | LilMati | Scores count up (rotates) |
+| trivia-yay-1 | [Party horn.wav](https://freesound.org/people/audiosmedia/sounds/170583/) | audiosmedia | A Little gets it right (rotates) |
+| trivia-yay-2 | [Fail Jingle Party Horn](https://freesound.org/people/qubodup/sounds/825292/) | qubodup | A Little gets it right (rotates) |
+
+## Music (Trivia)
+Generated with **Google Lyria 3** (`google/lyria-3-clip-preview`) through OpenRouter on 2026-11-27, from our own
+prompts in `tools/sounds/trivia/music.mjs`; two takes of each, rotating. Cues: trivia-lobby, trivia-think,
+trivia-leaderboard, trivia-winner.
+
 ## Synthesized
 Everything else (the snake hiss, the lute, the fanfares, the chimes, the countdown ticks) is synthesized in the browser
 with Web Audio by our own code (`apps/web/src/games/snakes/sound.ts`, `apps/web/src/host/sfx.ts`).
