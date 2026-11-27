@@ -30,6 +30,9 @@ _Last updated: 2026-11-26_
   `deploy.sh` reads the stack files with `git show HEAD:...`, which are always LF.
 - The tunnel's traffic reaches the container from `172.24.0.1` (the gateway of the `smartmouth_default` network). If that
   network is ever recreated with another subnet, update `TRUSTED_PROXIES` in the server `.env`.
+- Editing `/mnt/apps/appdata/smartmouth/.env` needs the container **recreated** (`docker compose -p smartmouth up -d
+  --force-recreate` in the Compose Manager project folder, or a deploy); `docker restart` keeps the old values. Docker
+  strips quotes around values, so a quoted password is the text inside them (2026-11-27).
 - Restarting the container (a deploy) kills any `docker exec` voice run inside it. Don't deploy while `voice.mjs` is running.
 - Test games played against the live server count in the question stats. Wipe them after testing (journal 2026-11-26 has the
   one-liner).
