@@ -6,6 +6,7 @@ import { useSocket, store, save } from '../socket.ts';
 import { Blob, Grin } from '../ui/art.tsx';
 import { SaltyStrip } from './SaltyStrip.tsx';
 import { TriviaHost } from '../games/trivia/TriviaHost.tsx';
+import { SnakesHost } from '../games/snakes/SnakesHost.tsx';
 
 const KEY = 'smartmouth.host';
 
@@ -49,17 +50,18 @@ export function Host() {
   useEffect(() => { if (!inGame) setMenu(false); }, [inGame]);
 
   return (
-    <Stage>
+    <Stage variant={view?.phase === 'game' && view.gameId === 'snakes' && !menu ? 'snakes' : undefined}>
       {!view && <div className="tv-message display"><Grin />{status === 'open' ? 'Setting up a room…' : `Finding the ${APP_NAME} server…`}</div>}
       {view?.phase === 'lobby' && <Lobby view={view} onPick={(gameId) => send({ t: 'admin:start', gameId })} problem={problem} />}
-      {view?.phase === 'game' && !menu && <TriviaHost view={view} send={send} />}
+      {view?.phase === 'game' && !menu && view.gameId === 'snakes' && <SnakesHost view={view} send={send} />}
+      {view?.phase === 'game' && !menu && view.gameId !== 'snakes' && <TriviaHost view={view} send={send} />}
       {view?.phase === 'game' && menu && <Menu onResume={() => setMenu(false)} onEnd={() => { setMenu(false); send({ t: 'admin:end' }); }} />}
     </Stage>
   );
 }
 
 /** Scales the 1920×1080 stage to fit any window, keeping its proportions. */
-function Stage({ children }: { children: React.ReactNode }) {
+function Stage({ children, variant }: { children: React.ReactNode; variant?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     const fit = () => {
@@ -70,7 +72,7 @@ function Stage({ children }: { children: React.ReactNode }) {
     window.addEventListener('resize', fit);
     return () => window.removeEventListener('resize', fit);
   }, []);
-  return <div className="tv-viewport"><div className="tv" ref={ref}><div className="tv-panel">{children}</div></div></div>;
+  return <div className="tv-viewport"><div className={`tv${variant ? ` ${variant}` : ''}`} ref={ref}><div className="tv-panel">{children}</div></div></div>;
 }
 
 /** The pause menu (Back on the remote). The game keeps its own clock; this just gets out of the way. */

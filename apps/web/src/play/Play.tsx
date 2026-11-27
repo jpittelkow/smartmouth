@@ -7,6 +7,7 @@ import {
 import { useSocket, store, save } from '../socket.ts';
 import { BandIcon, Blob } from '../ui/art.tsx';
 import { TriviaController } from '../games/trivia/TriviaController.tsx';
+import { SnakesController } from '../games/snakes/SnakesController.tsx';
 
 const seatKey = (code: string) => `smartmouth.seat.${code}`;
 const LAST_NAME = 'smartmouth.name';
@@ -51,6 +52,7 @@ export function Play() {
     return <AvatarPick view={view} onPick={(a) => { send({ t: 'player:avatar', avatar: a }); setPickedAvatar(true); }}
       onSkip={() => setPickedAvatar(true)} />;
   }
+  if (view.phase === 'game' && view.gameId === 'snakes') return <SnakesController view={view} send={send} />;
   if (view.phase === 'game') return <TriviaController view={view} send={send} />;
   return <Waiting view={view} send={send} online={status === 'open'} onLeave={() => {
     send({ t: 'player:leave' }); save(seatKey(view.code), null); setView(null);
