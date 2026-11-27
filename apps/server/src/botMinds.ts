@@ -34,7 +34,7 @@ export class BotMinds {
   talkWindow(room: Room, seatId: string, bots: number): TalkWindow | null {
     const s = this.snakes(room);
     if (!s || !rules.canTalk(s, seatId)) return null;
-    const max = s.stage === 'debate' ? (bots <= 4 ? 2 : 1) : s.stage === 'voteReveal' ? 0 : 1;
+    const max = s.stage === 'debate' ? (bots <= 6 ? 2 : 1) : s.stage === 'voteReveal' ? 0 : 1;
     return max ? { key: `${s.round}:${s.stage}:${s.endgame ? 'end' : ''}`, max } : null;
   }
 

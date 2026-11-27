@@ -15,6 +15,17 @@ export const DEFAULT_BOT_MODEL = 'anthropic/claude-haiku-5.5';
 /** No room spends more than this many model calls on its bots. */
 export const MAX_CALLS_PER_ROOM = 200;
 
+/** Each bot plays the table its own way, so they argue instead of agreeing (picked from the seat id). */
+export const TEMPERS = [
+  'blunt and impatient: you pick one suspect and push hard',
+  'paranoid: you notice odd votes and small contradictions',
+  'charming and reasonable: you defend people who are piled on, and ask good questions',
+  'theatrical: you love an accusation and a dramatic flourish',
+  'cool and logical: you argue from the record (votes, missions), never from feelings',
+  'contrary: you distrust whatever the table agrees on and say so',
+];
+const temperOf = (seatId: string) => TEMPERS[[...seatId].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % TEMPERS.length]!;
+
 const STRONG = /\b(fuck\w*|shit\w*|bastards?|bitch\w*|assholes?|dicks?|piss\w*|damn\w*|hell|ass)\b/i;
 
 export interface BrainContext {
@@ -42,7 +53,7 @@ export class BotBrain {
     if (!v.me) return null;
     const prompt = buildPrompt(v, seatId, kind, ctx);
     const r = await this.chat({
-      model: this.model, maxTokens: 300, timeoutMs: 12_000,
+      model: this.model, maxTokens: 200, timeoutMs: 12_000,
       messages: [{ role: 'system', content: prompt.system }, { role: 'user', content: prompt.user }],
       schema: { name: `snake_${kind}`, schema: prompt.schema },
     });
@@ -81,7 +92,9 @@ export function buildPrompt(v: SnakesPlayerView, seatId: string, kind: ThinkKind
     snake
       ? `You are secretly a SNAKE. ${v.fellows.length ? `Your fellow Snake${v.fellows.length > 1 ? 's are' : ' is'} ${v.fellows.map((f) => nameOf(ctx, f)).join(', ')}.` : 'You are the only Snake left.'} Never reveal that you or they are Snakes. Act like a suspicious, helpful Guest. Steer suspicion toward Guests.`
       : 'You are a GUEST. You do not know who the Snakes are. Work it out from the record: who voted for whom, who sank missions, who was revealed.',
-    'Talk like a player at a table: short, punchy, specific, about the game only (votes, missions, who seems shifty). One sentence, 140 characters at most.',
+    `Your style at the table: ${temperOf(seatId)}.`,
+    'Talk like a player at a table: short, punchy, specific, about the game only (votes, missions, who seems shifty). One sentence of 20 words or fewer.',
+    'Don’t just agree with the last speaker or repeat a point already made. Bring your own read, and name names.',
     'Never insult anyone personally, never mention real people, politics or religion.',
     cleanSpice ? 'Keep it family friendly: no swearing at all; children may be playing.' : 'Mild swearing is allowed but not needed.',
   ].join('\n');
@@ -101,7 +114,7 @@ export function buildPrompt(v: SnakesPlayerView, seatId: string, kind: ThinkKind
     type: 'object', additionalProperties: false,
     required: kind === 'talk' ? ['line'] : kind === 'vote' ? ['target'] : ['target', 'line'],
     properties: {
-      ...(kind !== 'vote' ? { line: { type: 'string', description: 'One sentence, at most 140 characters.' } } : {}),
+      ...(kind !== 'vote' ? { line: { type: 'string', description: 'One sentence, 20 words or fewer.' } } : {}),
       ...(kind !== 'talk' ? { target: { type: 'string', enum: names.length ? names : ['none'] } } : {}),
     },
   };
@@ -110,7 +123,7 @@ export function buildPrompt(v: SnakesPlayerView, seatId: string, kind: ThinkKind
 
 /** Checks a line before it reaches the table. Null drops it. */
 export function checkLine(raw: unknown, v: SnakesPlayerView, ctx: BrainContext): string | null {
-  const line = cleanText(raw);
+  const line = cleanText(typeof raw === 'string' ? fit(raw) : raw);
   if (!line) return null;
   if (spiceRank(ctx.spice) < spiceRank('hot') && STRONG.test(line)) return null;
   // A Snake bot must never out its partner, or itself.
@@ -122,6 +135,14 @@ export function checkLine(raw: unknown, v: SnakesPlayerView, ctx: BrainContext):
     }
   }
   return line;
+}
+
+/** Too long for the table: cut at a word, never mid-word. */
+function fit(s: string, max = 140): string {
+  const t = s.trim();
+  if ([...t].length <= max) return t;
+  const cut = [...t].slice(0, max - 1).join('');
+  return `${cut.slice(0, Math.max(cut.lastIndexOf(' '), max / 2)).replace(/[\s,;:–—-]+$/, '')}…`;
 }
 
 function toIntents(v: SnakesPlayerView, seatId: string, kind: ThinkKind, json: Record<string, unknown>, ctx: BrainContext): unknown[] | null {

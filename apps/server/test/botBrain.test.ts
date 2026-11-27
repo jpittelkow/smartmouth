@@ -60,7 +60,9 @@ test('lines are checked: spice, length, and a Snake never outs a partner', () =>
   const gv = rules.playerView(s, g);
   assert.equal(checkLine('What the hell, Agnes?', gv, ctx('mild')), null);
   assert.equal(checkLine('What the hell, Agnes?', gv, ctx('hot')), 'What the hell, Agnes?');
-  assert.equal(checkLine('x'.repeat(400), gv, ctx())!.length, 140);
+  assert.ok(checkLine('x'.repeat(400), gv, ctx())!.length <= 140);
+  const long = checkLine('word '.repeat(60), gv, ctx())!;
+  assert.ok(long.length <= 140 && long.endsWith('word…'), long);
   const sn = snakesOf(s)[0]!;
   const partner = snakesOf(s).find((id) => id !== sn);
   const sv = rules.playerView(s, sn);
