@@ -1,5 +1,7 @@
 # Snake Manor's sounds and music
 
+**The recipe for sourcing any sound or music is [design guide §4.1](../../docs/design/design-guide.md#41-getting-sounds-and-music-the-recipe): download first, generate second.** This folder holds the tools for its steps.
+
 Snake Manor's sounds are synthesized on the TV for now (`apps/web/src/games/snakes/sound.ts`), and they sound like
 it (owner, 2026-11-27: "more MIDI"). `sounds.mjs` makes real candidates to pick from by ear: two takes of each music
 bed and sound effect from **Google Lyria 3** through OpenRouter (`google/lyria-3-clip-preview`, 30 s instrumental mp3,

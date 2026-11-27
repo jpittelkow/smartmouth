@@ -93,10 +93,44 @@ The room has a **spice level**, capped by the youngest player in it ([ADR 0014](
 - **Voice:** Salty, through OpenRouter speech ([ADR 0013](../adr/0013-host-voice-openrouter-tts-as-files.md)), made ahead of time
   and played from files. Picking the voice is done by ear on an audition page, the way Crayon Box did it.
 - **Music:** a short loopable game-show bed for the lobby and a "thinking" loop, ducked 8 dB under Salty. Sourced
-  as CC0 or made by AI, and listed in `CREDITS.md`.
+  as CC0 or made by AI (§4.1), and listed in [`CREDITS.md`](../../CREDITS.md).
 - **Stings:** join pop, right ding, wrong honk (cartoonish, never harsh), drumroll, crowd cheer for the winner.
 - Everything is levelled to one loudness. The TV is the only thing that plays sound; phones stay silent
   apart from an optional tap click.
+
+### 4.1 Getting sounds and music: the recipe
+How every effect and music bed is sourced, from Snake Manor's first round (2026-11-27). **Download first, generate
+second** (owner, 2026-11-27).
+
+1. **Download first.** Look in free libraries before making anything:
+   - Freesound, CC0 only (search with `f=license:"Creative Commons 0"`).
+   - The Sonniss GDC bundle (royalty-free, no credit needed).
+   - Pixabay sound effects and music.
+
+   Skip anything non-commercial, tagged as AI-made, or with music or voices in an effect. Freesound previews (the
+   `-hq.mp3` link on each search result) are good enough for the TV. Its search rate-limits fast callers (429), so
+   leave about 7 seconds between searches. **Downloads need the owner's OK first**: list each file, its source and the
+   total size.
+2. **Generate second**, only for what the libraries don't have:
+   - **Music:** Google Lyria 3 through OpenRouter (`tools/sounds/sounds.mjs`): 30-second clips at $0.04, two takes a
+     cue, with a `MAX_USD` stop. It returns audio only with `modalities` and `stream` set (gotchas).
+   - **Effects:** never from a music model. Lyria turned every effect into a song. A dedicated effects generator
+     (for example ElevenLabs' sound effects, which needs its own key) is the option if a library has nothing.
+3. **Synthesized sound is a placeholder only.** Web Audio tones sound like MIDI (owner, 2026-11-27). They stay as the
+   fallback when a file is missing and for tiny UI blips, never as the final sound for a big moment.
+4. **Pick by ear.** Every candidate goes on an audition page (`/media/sounds/...`): the current sound, two or three
+   takes, and "none". Picks are copied back as text. The owner chooses; Claude never picks for them.
+5. **Process every pick** with ffmpeg: trim leading silence, cap the length to what the moment needs, and level it
+   (`loudnorm`: beds I=-20, effects I=-18, true peak -2). Add short fades, and save as 44.1 kHz, 160 kbps mp3. A
+   one-take recording that has to change speed (the heartbeat) gets a playback-rate ramp in the game rather than a
+   second file.
+6. **Ship as files on the server, not in the repo.** Put them in `DATA_DIR/media/sounds/game/<cue>.<version>.mp3`.
+   The version is in the name because Cloudflare keeps `/media` files for a year, headers and all. `/api/sounds` lists
+   the newest file per cue, and the game falls back to its synthesized sound when a cue has none.
+7. **Credit everything** in `CREDITS.md`: author, link and license, even for CC0. Generated music is credited to its
+   model and prompts.
+8. **Wire it like the drama rules say** (ADR 0024): every sound with its visual, beds ducked about 8 dB under Salty,
+   a caption for every sound that carries meaning, and silence where silence is the point.
 
 ## 5. Visual system
 

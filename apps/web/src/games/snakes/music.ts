@@ -86,14 +86,58 @@ export function stopMusic() {
   playBed(null);
 }
 
-/** A one-shot clip (the bell), after `delaySec`. False when there's no file, so the caller synthesizes it instead. */
-export function playClip(cue: string, delaySec = 0, volume = 0.8): boolean {
+export interface ClipOptions {
+  /** Stop after this many seconds (with a short fade). */
+  maxSec?: number;
+  /** Playback speed at the start, and the speed it ramps to over `maxSec` (the heartbeat speeding up). */
+  rate?: number;
+  rateTo?: number;
+}
+
+/**
+ * A one-shot clip, after `delaySec`. False when there's no file, so the caller synthesizes the sound instead
+ * (sound.ts). A speed ramp changes the pitch with the speed, like a real heartbeat racing.
+ */
+export function playClip(cue: string, delaySec = 0, volume = 0.8, opts: ClipOptions = {}): boolean {
   const url = sounds[cue];
   if (!url) return false;
   setTimeout(() => {
     const el = new Audio(url);
     el.volume = volume;
+    el.preservesPitch = false;
+    if (opts.rate) el.playbackRate = opts.rate;
     el.play().catch(() => {});
+    const started = performance.now();
+    if (opts.rate && opts.rateTo && opts.maxSec) {
+      const from = opts.rate, to = opts.rateTo, sec = opts.maxSec;
+      const ramp = setInterval(() => {
+        const p = Math.min(1, (performance.now() - started) / (sec * 1000));
+        el.playbackRate = from + (to - from) * p;
+        if (p >= 1) clearInterval(ramp);
+      }, 100);
+    }
+    if (opts.maxSec) setTimeout(() => fade(el, 0, 120, () => el.pause()), opts.maxSec * 1000);
   }, delaySec * 1000);
   return true;
+}
+
+const loops = new Map<string, HTMLAudioElement>();
+
+/** A looping layer under the music (the night wind). */
+export function startLoop(cue: string, volume = 0.3): boolean {
+  const url = sounds[cue];
+  if (!url || loops.has(cue)) return !!url;
+  const el = new Audio(url);
+  el.loop = true;
+  el.volume = 0;
+  loops.set(cue, el);
+  el.play().then(() => fade(el, volume, 2000)).catch(() => {});
+  return true;
+}
+
+export function stopLoop(cue: string) {
+  const el = loops.get(cue);
+  if (!el) return;
+  loops.delete(cue);
+  fade(el, 0, 1500, () => el.pause());
 }

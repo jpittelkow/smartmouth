@@ -5,6 +5,9 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { serverNow } from '../../socket.ts';
 import { hasSound, playClip } from './music.ts';
 
+/** When the quill recording last started, so nine strokes in a row play it once (it's 1.5 s of real scratching). */
+let quillUntil = 0;
+
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
 
@@ -107,7 +110,14 @@ export const SFX = {
     d.gain.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + 0.9);
     for (const o of d.oscs) o.stop(a.currentTime + 1);
   },
-  /** One heartbeat: lub-dub. */
+  /**
+   * The heartbeat recording across `sec`, its speed ramping from 62 to 140 a minute (the recording is 97), cut dead
+   * at the end. False when there's no recording: the caller plays synthesized beats instead.
+   */
+  heartbeatRun(sec: number): boolean {
+    return playClip('heartbeat', 0, 0.9, { rate: 62 / 97, rateTo: 140 / 97, maxSec: sec });
+  },
+  /** One synthesized heartbeat: lub-dub. */
   heartbeat() {
     const a = audio();
     if (!a || !master) return;
@@ -123,10 +133,22 @@ export const SFX = {
       o.stop(t + 0.3);
     }
   },
-  /** One quill stroke. */
-  quill() { burst(0.12, 'bandpass', 3800, 0.16); },
+  /** A quill stroke: the recording (once per 1.5 s, however many strokes), else a synthesized scratch. */
+  quill() {
+    if (hasSound('quill')) {
+      const now = performance.now();
+      if (now < quillUntil) return;
+      quillUntil = now + 1400;
+      playClip('quill', 0, 0.55, { maxSec: 1.5 });
+      return;
+    }
+    burst(0.12, 'bandpass', 3800, 0.16);
+  },
   /** A wax seal pressed down. */
-  thud() { tone(70, 'sine', 0.7, 0.005, 0.25); burst(0.08, 'lowpass', 600, 0.25); },
+  thud() {
+    if (playClip('seal', 0, 0.9)) return;
+    tone(70, 'sine', 0.7, 0.005, 0.25); burst(0.08, 'lowpass', 600, 0.25);
+  },
   /** The great bell: the picked recording when there is one (tools/sounds), else synthesized. */
   bell(delay = 0) {
     if (playClip('bell', delay)) return;
@@ -136,7 +158,10 @@ export const SFX = {
     burst(0.08, 'highpass', 2000, 0.3, delay);
   },
   hiss() { burst(2.2, 'highpass', 4200, 0.3, 0.15); },
-  snuff() { burst(0.15, 'lowpass', 900, 0.12); },
+  snuff() {
+    if (playClip('candles', 0, 0.45, { maxSec: 1 })) return;
+    burst(0.15, 'lowpass', 900, 0.12);
+  },
   lute(step: number) { tone(step === 0 ? 196 : 233.1, 'triangle', 0.18, 0.005, 1.8); },
   /** A bright little flourish: a mission's target hit. */
   flourish() { [523.3, 659.3, 784, 1046.5].forEach((hz, i) => tone(hz, 'triangle', 0.15, 0.005, 0.5, i * 0.09)); },

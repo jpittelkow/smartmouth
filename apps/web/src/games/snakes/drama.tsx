@@ -39,11 +39,18 @@ export function Drama({ g, seat }: { g: SnakesHostView; seat: (id: string) => Pu
     // The quill: one stroke per step of the ink wipe (the name is written in 9 steps over 1.4 s).
     for (let i = 0; i < 9; i++) cues.push({ at: at(B.name) + i * 155, run: () => { SFX.quill(); if (i === 0) captionSound('[a quill writes the name]'); } });
     // The heartbeat, speeding from 62 to 140 a minute, from the push-in to the held silence.
-    cues.push({ at: at(B.push), run: () => { SFX.droneOff(); captionSound('[a heartbeat, faster and faster]'); } });
+    // The recorded heartbeat runs across the whole build; without it, each beat is synthesized. Either way the
+    // light throbs on the same schedule.
+    let recorded = false;
+    cues.push({ at: at(B.push), run: () => {
+      SFX.droneOff();
+      recorded = SFX.heartbeatRun((at(B.hold) - at(B.push)) / 1000);
+      captionSound('[a heartbeat, faster and faster]');
+    } });
     for (let off = 0, n = 0; at(B.push) + off < at(B.hold) - 150; n++) {
       const p = off / (at(B.hold) - at(B.push));
       const time = at(B.push) + off;
-      cues.push({ at: time, run: () => { SFX.heartbeat(); setBeat((x) => x + 1); } });
+      cues.push({ at: time, run: () => { if (!recorded) SFX.heartbeat(); setBeat((x) => x + 1); } });
       off += 60_000 / (62 + (140 - 62) * p);
     }
     cues.push({ at: at(B.hold), run: () => captionSound('[silence: even the flames stop]') });

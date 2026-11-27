@@ -25,6 +25,10 @@ _Last confirmed: 2026-11-26_
   - **`/admin` uses our own password**, not Cloudflare Access (ADR 0015).
   - The owner will review the ADRs later.
 
+- **Sound: download first, generate second** (2026-11-27). Free CC0/royalty-free libraries before AI generation; never
+  a music model for effects; synthesized Web Audio only as a placeholder ("sounded more MIDI"). Picks are made by
+  ear on an audition page. The recipe is design guide §4.1.
+
 ## Working style
 - ADRs in the owner's usual format. Memory (long-term) and a journal (short-term) live in the repo (2026-11-26).
 - The owner's habit from other projects: see a choice running or mocked up before deciding, rather than only reading

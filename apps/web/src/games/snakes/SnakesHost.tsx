@@ -8,7 +8,7 @@ import { useSalty } from '../../host/voice.ts';
 import { Arms, Candle, Mark, Seal, clock, useLeft } from './arms.tsx';
 import { Drama } from './drama.tsx';
 import { SFX, captionSound, useCues, useSoundCaption } from './sound.ts';
-import { bedFor, duck, loadSounds, playBed, stopMusic } from './music.ts';
+import { bedFor, duck, loadSounds, playBed, startLoop, stopLoop, stopMusic } from './music.ts';
 import './fonts.ts';
 import './snakes.css';
 
@@ -268,8 +268,9 @@ function Night({ g }: { g: SnakesHostView }) {
   const { left } = useLeft(g.deadline);
   useCues(`night:${g.stageStart}`, () => [
     { at: g.stageStart, run: () => { SFX.bell(); SFX.bell(2.2); SFX.bell(4.4); captionSound('[three bell tolls]'); } },
-    { at: g.stageStart + 5000, run: () => { SFX.droneOn('night'); captionSound('[wind around the manor]'); } },
+    { at: g.stageStart + 5000, run: () => { if (!startLoop('wind', 0.3)) SFX.droneOn('night'); captionSound('[wind around the manor]'); } },
   ]);
+  useEffect(() => () => stopLoop('wind'), []);
   return (
     <div className="sm-night">
       <div className="moon" />
