@@ -9,7 +9,7 @@
 //   docker exec smartmouth node tools/voice/draft-lines.mjs                 every cell below target
 //   docker exec -e MOMENTS=hello,lobby -e SPICES=filthy smartmouth node tools/voice/draft-lines.mjs
 // Writes DATA_DIR/voice/drafts/<moment>-<spice>.json and prints a summary. MAX_USD stops the run (default 2).
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -72,6 +72,8 @@ for (const m of brief.moments) {
     const need = m.target - have.length;
     if (need <= 0) continue;
     if (spent > MAX_USD) { console.error(`stopping at the cap ($${spent.toFixed(2)})`); break; }
+    // Resumable: a section already drafted is skipped (FORCE=1 redoes it).
+    if (!process.env.FORCE && existsSync(join(OUT, `${m.id}-${spice}.json`))) { console.log(`${m.id}/${spice}: already drafted`); continue; }
     const ask = Math.ceil(need * 2);
     try {
       // 1. Write.
