@@ -46,3 +46,8 @@ of Salty's voice. All ADRs except 0021 are **Proposed** (the owner will review t
 2. The first family playtest on the office TV, with sound.
 3. Back actually pauses; the kid-mode lock; more tracking (results by age band, which wrong answer people pick, the average answer time
    fix); images (on the question itself, uploads, AI-made Little pictures); 
+
+## Logged for later (owner, 2026-11-27)
+- **Drunk mode:** a level above Filthy (adults only). The longer the game goes, the more Salty's speech slurs, the more
+  annoyed and belligerent she gets, with drinking sounds between lines (sips, a hiccup, a bottle); near the end she's
+  almost incomprehensible, and dirtier as she goes. Details and what it needs: `future.drunk` in `content/voice/brief.json`.

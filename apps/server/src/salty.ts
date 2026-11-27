@@ -15,9 +15,35 @@ export interface SaltyState {
   /** A one-off moment to say next (a player joined). */
   pending: Moment | null;
   seq: number;
+  /** When Salty last started saying something. */
+  spokeAt: number;
+  /** Idle lobby lines said in a row (the gap grows with each). */
+  idle: number;
 }
 
-export const newSalty = (): SaltyState => ({ stageKey: '', cue: null, recent: [], pending: null, seq: 0 });
+export const newSalty = (): SaltyState => ({ stageKey: '', cue: null, recent: [], pending: null, seq: 0, spokeAt: 0, idle: 0 });
+
+/** Lines for a quiet lobby (owner, 2026-11-27: "she should be talking more at the start screen while waiting"). */
+export const IDLE_MOMENTS = new Set(['lobbyEmpty', 'lobbyWaiting']);
+const IDLE_FIRST_MS = 30_000;
+const IDLE_MAX_GAP_MS = 180_000;
+/** A TV left on in an empty room: Salty goes quiet after this long without anything happening. */
+const IDLE_GIVE_UP_MS = 15 * 60_000;
+
+/**
+ * A quiet lobby: if it's been long enough since Salty last spoke, he says an idle line (nobody here yet, or players
+ * waiting to start). The gap grows (30 s, 45 s, 68 s... up to 3 min) and he stops after 15 quiet minutes.
+ */
+export function idleCue(room: Room, now: number): boolean {
+  if (room.game || !room.hostConnected) return false;
+  if (now - room.lastActive > IDLE_GIVE_UP_MS) return false;
+  const st = room.salty;
+  const gap = Math.min(IDLE_MAX_GAP_MS, IDLE_FIRST_MS * 1.5 ** st.idle);
+  if (now - st.spokeAt < gap) return false;
+  st.pending = room.seats.length ? 'lobbyWaiting' : 'lobbyEmpty';
+  st.idle++;
+  return true;
+}
 
 function tools(room: Room, bank: VoiceBank, now: number): SaltyTools {
   const spice = spiceState(room).effective;
@@ -65,11 +91,15 @@ export function updateSalty(room: Room, bank: VoiceBank | null, now: number): nu
     ({ text, clips } = said);
     parts = said.parts?.map((p) => ({ at: p.at, caption: p.text ? caption(p.text) : null, clip: p.clip }));
   } else if (lobbyMoment) {
-    const line = t.line(lobbyMoment);
+    // Until a moment has lines of its own (new idle moments), Salty falls back to a lobby line.
+    const line = t.line(lobbyMoment) ?? (lobbyMoment !== 'lobby' ? t.line('lobby') : null);
+    if (!IDLE_MOMENTS.has(lobbyMoment)) st.idle = 0;
     text = line?.text ?? null;
     if (line?.clip) clips = [line.clip];
   }
   st.seq++;
+  st.spokeAt = now;
+  if (g) st.idle = 0;
   st.cue = { key: `${stageKey}#${st.seq}`, caption: text ? caption(text) : null, clips, ...(parts ? { parts } : {}) };
   // A line in timed parts runs until its last part has been said.
   if (parts?.length) return Math.max(0, ...parts.map((p) => p.at - now + (p.clip ? bank.clipsMs([p.clip]) : 0)));

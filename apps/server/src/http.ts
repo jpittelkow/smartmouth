@@ -223,6 +223,7 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
   });
 
   const sweeper = setInterval(() => { sockets.sweep(); admin.prune(now()); }, 60_000);
+  const chatter = setInterval(() => sockets.lobbyChatter(), 5_000);
   sweeper.unref();
 
   return new Promise((ok) => {
@@ -230,6 +231,7 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
       server, store, db,
       close: () => new Promise<void>((done) => {
         clearInterval(sweeper);
+        clearInterval(chatter);
         sockets.stop();
         for (const c of wss.clients) c.terminate();
         wss.close();

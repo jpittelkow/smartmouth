@@ -8,7 +8,7 @@ import { RateLimit, clientAddress, originAllowed } from './limits.ts';
 import { normalizeCode } from './codes.ts';
 import type { Db } from './db.ts';
 import { botMovesFor, holdForSpeech, pauseGame, resumeGame, deadline, drainLog, endGame, gameIntent, pruneLimits, skip, startGame, syncRoom, tickGame } from './gameRuntime.ts';
-import { cueJoin, readsFor, updateSalty } from './salty.ts';
+import { idleCue, cueJoin, readsFor, updateSalty } from './salty.ts';
 import type { VoiceBank } from './voice.ts';
 import type { BotMinds } from './botMinds.ts';
 
@@ -416,6 +416,12 @@ const SPEECH_TAIL_MS = 1200;
   });
 
   return {
+    /** Salty fills a quiet lobby (salty.ts idleCue). Called every few seconds. */
+    lobbyChatter() {
+      if (stopped) return;
+      const t = now();
+      for (const room of store.rooms.values()) if (idleCue(room, t)) broadcast(room);
+    },
     sweep() {
       const t = now();
       joinLimit.prune(t);

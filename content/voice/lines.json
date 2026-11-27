@@ -1363,21 +1363,179 @@
    "spice": "filthy",
    "text": "The Snakes win. They took the whole damn pot. I'm weirdly proud. Fuck."
   },
-  { "id": "sm-how-mission-m1", "moment": "sm-how-mission", "spice": "mild", "text": "First, a mission! Answer on your phone. Right answers fill the pot. Some sneaky someone might miss on purpose." },
-  { "id": "sm-how-mission-s1", "moment": "sm-how-mission", "spice": "spicy", "text": "A mission! Answer on your phone. Right answers fill the pot. A Snake might miss on purpose. Watch for it." },
-  { "id": "sm-how-mission-h1", "moment": "sm-how-mission", "spice": "hot", "text": "Mission rules: answer on your phone, fill the pot. Miss the target and the Snakes get a Dagger. Damn." },
-  { "id": "sm-how-mission-f1", "moment": "sm-how-mission", "spice": "filthy", "text": "Mission rules: answer, fill the pot. Miss the target and the Snakes get a Dagger. Don't screw it up." },
-  { "id": "sm-how-table-m1", "moment": "sm-how-table", "spice": "mild", "text": "The Round Table! Talk out loud. Who seems sneaky? Then you'll vote on your phones." },
-  { "id": "sm-how-table-s1", "moment": "sm-how-table", "spice": "spicy", "text": "The Round Table. Talk it out, out loud. Who sank that mission? Then everyone votes, in secret." },
-  { "id": "sm-how-table-h1", "moment": "sm-how-table", "spice": "hot", "text": "Round Table rules: argue out loud, then vote in secret. Whoever gets the most is out. Hell of a system." },
-  { "id": "sm-how-table-f1", "moment": "sm-how-table", "spice": "filthy", "text": "Round Table rules: argue, accuse, then vote in secret. Most votes gets thrown the hell out." },
-  { "id": "sm-how-vote-m1", "moment": "sm-how-vote", "spice": "mild", "text": "Pick a name on your phone and seal it. Your vote is a secret letter until it's opened." },
-  { "id": "sm-how-vote-s1", "moment": "sm-how-vote", "spice": "spicy", "text": "Pick a name and seal it. Each vote is a sealed letter. We open them one at a time. Dramatically." },
-  { "id": "sm-how-vote-h1", "moment": "sm-how-vote", "spice": "hot", "text": "Seal your vote. Each one's a letter. We open them one by one, and nobody can take it back. Damn right." },
-  { "id": "sm-how-vote-f1", "moment": "sm-how-vote", "spice": "filthy", "text": "Seal your vote. Each one's a letter, opened one by one. No take-backs. Holy shit, I love this." },
-  { "id": "sm-how-night-m1", "moment": "sm-how-night", "spice": "mild", "text": "[whispers] Night time. Everyone's phone looks the same. Write, pick a name, then lock. Shh." },
-  { "id": "sm-how-night-s1", "moment": "sm-how-night", "spice": "spicy", "text": "[whispers] Night. Every phone looks the same, so nobody can peek. Write, pick, lock. And hush." },
-  { "id": "sm-how-night-h1", "moment": "sm-how-night", "spice": "hot", "text": "[whispers] Night. Every phone looks identical. Snakes pick a victim. Everyone else, look busy. Damn." },
-  { "id": "sm-how-night-f1", "moment": "sm-how-night", "spice": "filthy", "text": "[whispers] Night. Every phone looks the same. The Snakes pick someone. Everyone else, act natural. Shit." }
-  ]
+  {
+   "id": "sm-how-mission-m1",
+   "moment": "sm-how-mission",
+   "spice": "mild",
+   "text": "First, a mission! Answer on your phone. Right answers fill the pot. Some sneaky someone might miss on purpose."
+  },
+  {
+   "id": "sm-how-mission-s1",
+   "moment": "sm-how-mission",
+   "spice": "spicy",
+   "text": "A mission! Answer on your phone. Right answers fill the pot. A Snake might miss on purpose. Watch for it."
+  },
+  {
+   "id": "sm-how-mission-h1",
+   "moment": "sm-how-mission",
+   "spice": "hot",
+   "text": "Mission rules: answer on your phone, fill the pot. Miss the target and the Snakes get a Dagger. Damn."
+  },
+  {
+   "id": "sm-how-mission-f1",
+   "moment": "sm-how-mission",
+   "spice": "filthy",
+   "text": "Mission rules: answer, fill the pot. Miss the target and the Snakes get a Dagger. Don't screw it up."
+  },
+  {
+   "id": "sm-how-table-m1",
+   "moment": "sm-how-table",
+   "spice": "mild",
+   "text": "The Round Table! Talk out loud. Who seems sneaky? Then you'll vote on your phones."
+  },
+  {
+   "id": "sm-how-table-s1",
+   "moment": "sm-how-table",
+   "spice": "spicy",
+   "text": "The Round Table. Talk it out, out loud. Who sank that mission? Then everyone votes, in secret."
+  },
+  {
+   "id": "sm-how-table-h1",
+   "moment": "sm-how-table",
+   "spice": "hot",
+   "text": "Round Table rules: argue out loud, then vote in secret. Whoever gets the most is out. Hell of a system."
+  },
+  {
+   "id": "sm-how-table-f1",
+   "moment": "sm-how-table",
+   "spice": "filthy",
+   "text": "Round Table rules: argue, accuse, then vote in secret. Most votes gets thrown the hell out."
+  },
+  {
+   "id": "sm-how-vote-m1",
+   "moment": "sm-how-vote",
+   "spice": "mild",
+   "text": "Pick a name on your phone and seal it. Your vote is a secret letter until it's opened."
+  },
+  {
+   "id": "sm-how-vote-s1",
+   "moment": "sm-how-vote",
+   "spice": "spicy",
+   "text": "Pick a name and seal it. Each vote is a sealed letter. We open them one at a time. Dramatically."
+  },
+  {
+   "id": "sm-how-vote-h1",
+   "moment": "sm-how-vote",
+   "spice": "hot",
+   "text": "Seal your vote. Each one's a letter. We open them one by one, and nobody can take it back. Damn right."
+  },
+  {
+   "id": "sm-how-vote-f1",
+   "moment": "sm-how-vote",
+   "spice": "filthy",
+   "text": "Seal your vote. Each one's a letter, opened one by one. No take-backs. Holy shit, I love this."
+  },
+  {
+   "id": "sm-how-night-m1",
+   "moment": "sm-how-night",
+   "spice": "mild",
+   "text": "[whispers] Night time. Everyone's phone looks the same. Write, pick a name, then lock. Shh."
+  },
+  {
+   "id": "sm-how-night-s1",
+   "moment": "sm-how-night",
+   "spice": "spicy",
+   "text": "[whispers] Night. Every phone looks the same, so nobody can peek. Write, pick, lock. And hush."
+  },
+  {
+   "id": "sm-how-night-h1",
+   "moment": "sm-how-night",
+   "spice": "hot",
+   "text": "[whispers] Night. Every phone looks identical. Snakes pick a victim. Everyone else, look busy. Damn."
+  },
+  {
+   "id": "sm-how-night-f1",
+   "moment": "sm-how-night",
+   "spice": "filthy",
+   "text": "[whispers] Night. Every phone looks the same. The Snakes pick someone. Everyone else, act natural. Shit."
+  },
+  {
+   "id": "lobbyempty-m1",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "Hello? Anyone want to join me? I'm very fun. Ask the couch."
+  },
+  {
+   "id": "lobbyempty-m2",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "Helloooo? Is anybody out there? Grab a phone and scan the code. I promise I don't bite. Much."
+  },
+  {
+   "id": "lobbyempty-m3",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "Still just me. Talking to an empty room. This is fine. Totally normal."
+  },
+  {
+   "id": "lobbyempty-m4",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "Psst. The code's right there on the screen. Phones out. Come play with me!"
+  },
+  {
+   "id": "lobbyempty-m5",
+   "moment": "lobbyEmpty",
+   "spice": "mild",
+   "text": "I've been practicing my jokes on the lamp. The lamp didn't laugh. Please come save me."
+  },
+  {
+   "id": "lobbywaiting-m1",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "Whenever you're ready, a grown-up can start the game. I'll just wait here. Patiently. Very patiently."
+  },
+  {
+   "id": "lobbywaiting-m2",
+   "moment": "lobbyWaiting",
+   "spice": "mild",
+   "text": "Anyone else joining? Grab a phone! The more the merrier."
+  },
+  {
+   "id": "lobbywaiting-s1",
+   "moment": "lobbyWaiting",
+   "spice": "spicy",
+   "text": "We have players! Now somebody press start before I start reading the instructions out loud."
+  },
+  {
+   "id": "lobbywaiting-s2",
+   "moment": "lobbyWaiting",
+   "spice": "spicy",
+   "text": "Waiting for a grown-up to press start. No pressure. I'm just standing here. Aging."
+  },
+  {
+   "id": "lobbywaiting-h1",
+   "moment": "lobbyWaiting",
+   "spice": "hot",
+   "text": "We're all here. Somebody hit start. My patience has a battery, and it's at two percent."
+  },
+  {
+   "id": "lobbywaiting-h2",
+   "moment": "lobbyWaiting",
+   "spice": "hot",
+   "text": "Anyone else coming, or are we doing this? Hell, I'm ready. I was born ready. Then I lost a ship."
+  },
+  {
+   "id": "lobbywaiting-f1",
+   "moment": "lobbyWaiting",
+   "spice": "filthy",
+   "text": "Are we playing, or just staring at each other? Somebody press the damn start button."
+  },
+  {
+   "id": "lobbywaiting-f2",
+   "moment": "lobbyWaiting",
+   "spice": "filthy",
+   "text": "I've got a drink, you've got phones. What the hell are we waiting for? Press start!"
+  }
+ ]
 }

@@ -29,3 +29,24 @@ test('clip lengths come from file sizes: mp3 at 16 bytes a ms, wav at 48, missin
   assert.equal(bank.clipsMs(['/media/voice/v/a.mp3', '/media/voice/v/b.wav', '/media/voice/v/gone.mp3']), 2000);
   assert.equal(new VoiceBank(LINES, join(media, 'manifest.json')).clipsMs(['/media/voice/v/a.mp3']), 0);
 });
+
+test('a quiet lobby gets Salty talking, less often each time, and he stops after 15 quiet minutes', async () => {
+  const { RoomStore } = await import('../src/rooms.ts');
+  const { idleCue } = await import('../src/salty.ts');
+  const store = new RoomStore();
+  const room = store.create(0);
+  room.hostConnected = true;
+  room.lastActive = 0;
+  assert.equal(idleCue(room, 10_000), false, 'not yet');
+  assert.equal(idleCue(room, 31_000), true);
+  assert.equal(room.salty.pending, 'lobbyEmpty', 'nobody here yet');
+  room.salty.pending = null; room.salty.spokeAt = 31_000;
+  assert.equal(idleCue(room, 31_000 + 40_000), false, 'the gap grows to 45 s');
+  assert.equal(idleCue(room, 31_000 + 46_000), true);
+  store.join(room, { name: 'One', band: 'grownups', avatar: 0 }, 77_000);
+  room.lastActive = 0; room.salty.spokeAt = 0;
+  assert.equal(idleCue(room, 16 * 60_000), false, 'quiet for 15 minutes: stops');
+  room.lastActive = 15 * 60_000;
+  assert.equal(idleCue(room, 16 * 60_000), true);
+  assert.equal(room.salty.pending, 'lobbyWaiting', 'players in, nobody has started');
+});
