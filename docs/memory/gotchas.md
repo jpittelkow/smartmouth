@@ -12,6 +12,10 @@ _Last updated: 2026-11-26_
   request. Today it uses `PUBLIC_URL` instead (2026-11-26).
 
 ## Web
+- Every response carries a Content-Security-Policy (`apps/server/src/headers.ts`, 2026-11-27). App pages: scripts and network
+  from the same origin only, images also `data:`/`blob:`. A new external script, font, image host or API call is blocked
+  until it's added there. `/media` pages may use inline script and style but get no fetch/XHR/socket. Don't add `sandbox`
+  there: it blocks localStorage (the sounds page) and, with CORP, the page's own recordings.
 - The phone's blob picker must show only right after joining. Showing it on every load sent reconnecting phones back
   to the picker (found 2026-11-26).
 - The TV design needs a `--stage` panel: ink outlines and shadows are invisible on the `--ink` background (found

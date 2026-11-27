@@ -9,7 +9,7 @@ of Salty's voice. All ADRs except 0021 are **Proposed** (the owner will review t
 ## What exists
 - **Live:** https://play.303.social is the LoudMouth container `smartmouth` on port 8470, through the Cloudflare tunnel (route
   made 2026-11-26). Deploy with `bash scripts/deploy.sh`. The settings file is `/mnt/apps/appdata/smartmouth/.env` (ADMIN_PASSWORD,
-  OPENROUTER_API_KEY copied from crayon-box-sync "for now", TRUSTED_PROXIES=172.24.0.1). Data lives in
+  OPENROUTER_API_KEY = its own key with spend limits set in OpenRouter since 2026-11-27, TRUSTED_PROXIES=172.24.0.1). Data lives in
   `/mnt/apps/appdata/smartmouth/data` (SQLite, `media/voice`, `voice/manifest.json` + salt).
 - **TV app** (`apps/tv`): installed on the **office Chromecast** (`192.168.1.109`), defaulting to play.303.social.
   Tested there with the real remote keys over adb. Not yet on any other TV.
