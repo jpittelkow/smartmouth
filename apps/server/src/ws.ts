@@ -1,7 +1,7 @@
 // The live socket: turns client intents into room changes and sends every client its own view (ADR 0004).
 import type { IncomingMessage } from 'node:http';
 import { WebSocketServer, WebSocket } from 'ws';
-import { isBand, isDrama, isLength, isSpice, isVoice, type ClientMsg, type ErrorCode, type ServerMsg } from '@smartmouth/protocol';
+import { isBand, isDrama, isLength, isLevel, isSpice, isVoice, type ClientMsg, type ErrorCode, type ServerMsg } from '@smartmouth/protocol';
 import { RoomStore, hostView, playerView, adminSeatId, type Room } from './rooms.ts';
 import { GAMES, findGame } from './games.ts';
 import { RateLimit, clientAddress, originAllowed } from './limits.ts';
@@ -62,6 +62,10 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
 const SPEECH_TAIL_MS = 1200;
 
   const timers = new Map<string, ReturnType<typeof setTimeout>>();
+  /** Each room's start countdown (setup on the TV, everyone ready). */
+  const setupTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  /** How long the 3-2-1 runs once everyone is ready. */
+  const COUNTDOWN_MS = 3000;
   /** One pending move per house bot (`code:seatId`). */
   const botTimers = new Map<string, ReturnType<typeof setTimeout>>();
   /** One pending line at the table per bot (`code:seatId`), and how many lines each bot has said per window. */
@@ -77,7 +81,38 @@ const SPEECH_TAIL_MS = 1200;
     send_views(room);
   }
 
+  /**
+   * The TV's setup (owner, 2026-11-27): once the TV is Ready, wait for every connected person to tap Ready on their phone
+   * (bots always are), then count down and start. Anyone joining, leaving or un-readying puts it back to waiting.
+   */
+  function syncSetup(room: Room) {
+    const s = room.setup;
+    if (!s || room.game) { if (room.game) room.setup = null; return; }
+    if (s.step === 'options') return;
+    const people = room.seats.filter((x) => !x.bot && x.connected);
+    const allReady = people.length > 0 && people.every((x) => s.ready.has(x.id));
+    if (s.step === 'waiting' && allReady) {
+      s.step = 'countdown';
+      s.startsAt = now() + COUNTDOWN_MS;
+      clearTimeout(setupTimers.get(room.code));
+      setupTimers.set(room.code, setTimeout(() => {
+        setupTimers.delete(room.code);
+        if (!store.rooms.has(room.code) || room.setup !== s || s.step !== 'countdown') return;
+        const r = startGame(room, s.gameId, opts.db, now());
+        if (r.ok) room.setup = null;
+        else { room.notice = r.message; s.step = 'options'; s.ready.clear(); s.startsAt = null; }
+        broadcast(room);
+      }, COUNTDOWN_MS));
+    } else if (s.step === 'countdown' && !allReady) {
+      s.step = 'waiting';
+      s.startsAt = null;
+      clearTimeout(setupTimers.get(room.code));
+      setupTimers.delete(room.code);
+    }
+  }
+
   function settle(room: Room) {
+    syncSetup(room);
     const t = now();
     drainLog(room, opts.db, t);
     // The game's pause waits for Salty to finish (plus a beat), so he isn't cut off.
@@ -347,6 +382,54 @@ const SPEECH_TAIL_MS = 1200;
         return broadcast(room);
       }
 
+      case 'setup:pick': {
+        const room = roomOf(c);
+        if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only the TV or a grown-up can do that.');
+        if (room.game) return;
+        const game = findGame(msg.gameId);
+        if (!game) return error(c, 'bad-message', 'Unknown game.');
+        if (!game.ready) { room.notice = `${game.name} isn't built yet. Salty is "rehearsing".`; return broadcast(room); }
+        room.notice = null;
+        room.setup = { gameId: game.id, step: 'options', ready: new Set(), startsAt: null };
+        return broadcast(room);
+      }
+
+      case 'setup:level': {
+        const room = roomOf(c);
+        if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only the TV or a grown-up can do that.');
+        if (!isLevel(msg.level)) return error(c, 'bad-message', 'Unknown difficulty.');
+        room.level = msg.level;
+        return broadcast(room);
+      }
+
+      case 'setup:ready': {
+        const room = roomOf(c);
+        if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only the TV or a grown-up can do that.');
+        if (!room.setup || room.setup.step !== 'options') return;
+        room.setup.step = 'waiting';
+        room.setup.ready = new Set();
+        return broadcast(room);
+      }
+
+      case 'setup:back': {
+        const room = roomOf(c);
+        if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only the TV or a grown-up can do that.');
+        const s = room.setup;
+        if (!s) return;
+        clearTimeout(setupTimers.get(room.code));
+        setupTimers.delete(room.code);
+        if (s.step === 'options') room.setup = null;
+        else { s.step = 'options'; s.ready.clear(); s.startsAt = null; }
+        return broadcast(room);
+      }
+
+      case 'player:ready': {
+        const room = roomOf(c);
+        if (!room || c.conn.kind !== 'player' || !room.setup || room.setup.step === 'options') return;
+        if (msg.ready) room.setup.ready.add(c.conn.seatId); else room.setup.ready.delete(c.conn.seatId);
+        return broadcast(room);
+      }
+
       case 'admin:start': {
         const room = roomOf(c);
         if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
@@ -430,6 +513,7 @@ const SPEECH_TAIL_MS = 1200;
       const gone = store.sweep(t);
       for (const code of gone) {
         clearTimeout(timers.get(code)); timers.delete(code);
+        clearTimeout(setupTimers.get(code)); setupTimers.delete(code);
         for (const [k, tm] of botTimers) if (k.startsWith(`${code}:`)) { clearTimeout(tm); botTimers.delete(k); }
         for (const [k, tm] of talkTimers) if (k.startsWith(`${code}:`)) { clearTimeout(tm); talkTimers.delete(k); }
         for (const k of talked.keys()) if (k.startsWith(`${code}:`)) talked.delete(k);
@@ -443,7 +527,8 @@ const SPEECH_TAIL_MS = 1200;
       for (const tm of timers.values()) clearTimeout(tm);
       for (const tm of botTimers.values()) clearTimeout(tm);
       for (const tm of talkTimers.values()) clearTimeout(tm);
-      timers.clear(); botTimers.clear(); talkTimers.clear();
+      for (const tm of setupTimers.values()) clearTimeout(tm);
+      timers.clear(); botTimers.clear(); talkTimers.clear(); setupTimers.clear();
     },
     normalizeCode,
   };

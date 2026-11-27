@@ -31,7 +31,7 @@ export function startGame(room: Room, gameId: string, db: Db, now: number, seed:
     return { ok: false, code: 'not-ready', message: `${manifest.name} isn't for ${who} players. Pick another game, or play without them.` };
   }
   const adapter = adapterFor(manifest.id);
-  const r = adapter.start({ players: players(room), spice: spiceState(room).effective, seed, drama: room.drama, length: room.length, db, exclude: room.asked, now });
+  const r = adapter.start({ players: players(room), spice: spiceState(room).effective, seed, drama: room.drama, length: room.length, level: room.level, db, exclude: room.asked, now });
   if (!r.ok) return r;
   room.game = { id: manifest.id, state: r.state, seed, logged: 0 };
   room.notice = null;

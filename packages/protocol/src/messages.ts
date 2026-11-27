@@ -1,7 +1,7 @@
 // Every message on the socket (ADR 0004). Clients send intents; the server sends views.
 import type { Band } from './bands.ts';
 import type { Spice } from './spice.ts';
-import type { Drama, GameLength, GameManifest } from './game.ts';
+import type { Drama, GameLength, GameManifest, QuestionLevel, SetupView } from './game.ts';
 
 export const MAX_PLAYERS = 10;
 export const NAME_MAX = 16;
@@ -34,6 +34,13 @@ export type ClientMsg =
   | { t: 'admin:drama'; drama: Drama }
   /** Short, Medium or Long, for the next game. */
   | { t: 'admin:length'; length: GameLength }
+  /** The TV sets up a game: pick it, pick the question difficulty, Ready (then phones ready up), or Back. */
+  | { t: 'setup:pick'; gameId: string }
+  | { t: 'setup:level'; level: QuestionLevel }
+  | { t: 'setup:ready' }
+  | { t: 'setup:back' }
+  /** A phone taps Ready (or un-readies) while the TV waits for everyone. */
+  | { t: 'player:ready'; ready: boolean }
   | { t: 'admin:kick'; seatId: string }
   /** Pause or resume the game: every clock stops while paused. */
   | { t: 'admin:pause'; paused: boolean }
@@ -104,6 +111,8 @@ export interface HostLobbyView {
   drama: Drama;
   length: GameLength;
   games: GameManifest[];
+  /** A game being set up on the TV (null: still picking). */
+  setup: SetupView | null;
   notice: string | null;
   salty: SaltyCue | null;
 }
@@ -119,6 +128,8 @@ export interface PlayerLobbyView {
   drama: Drama;
   length: GameLength;
   games: GameManifest[];
+  /** A game being set up on the TV (null: still picking). */
+  setup: SetupView | null;
   notice: string | null;
 }
 

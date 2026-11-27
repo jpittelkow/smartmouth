@@ -1,5 +1,5 @@
 // Trivia on the platform: questions from the library, intents from sockets, and Salty's lines per stage.
-import { LENGTH_QUESTIONS } from '@smartmouth/protocol';
+import { LENGTH_QUESTIONS, LEVEL_RANGE } from '@smartmouth/protocol';
 import { manifest, rules, type TriviaContent, type TriviaIntent, type TriviaState } from '@smartmouth/game-trivia';
 import { pickForGame } from '../questions.ts';
 import type { Moment } from '../voice.ts';
@@ -8,11 +8,11 @@ import type { GameAdapter } from './types.ts';
 export const trivia: GameAdapter<TriviaState> = {
   manifest,
 
-  start({ players, spice, length, db, exclude, now }) {
+  start({ players, spice, length, level, db, exclude, now }) {
     // Questions per game from the grown-up's setting: 10, 30 or 50, the leaderboard after each (owner, 2026-11-27).
     const rounds = LENGTH_QUESTIONS[length] ?? LENGTH_QUESTIONS.short;
     // Spares beyond the rounds let the rules skip questions if the spice goes down mid-game.
-    const content = pickForGame(db, { spice, exclude, perBand: rounds + 4 }, now) as TriviaContent;
+    const content = pickForGame(db, { spice, exclude, perBand: rounds + 4, levels: LEVEL_RANGE[level ?? 'mixed'] }, now) as TriviaContent;
     const bands = new Set(players.map((p) => p.band));
     const short = [...bands].filter((b) => content[b].length === 0);
     if (short.length === bands.size) {

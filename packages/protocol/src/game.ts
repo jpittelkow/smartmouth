@@ -41,6 +41,28 @@ export const LENGTH_QUESTIONS: Record<GameLength, number> = { short: 10, medium:
 export const LENGTH_LABEL: Record<GameLength, string> = { short: 'Short', medium: 'Medium', long: 'Long' };
 export const isLength = (v: unknown): v is GameLength => v === 'short' || v === 'medium' || v === 'long';
 
+/** How hard the questions are, picked on the TV before a game (owner, 2026-11-27). Ranges are question difficulty 1-5. */
+export type QuestionLevel = 'mixed' | 'easy' | 'medium' | 'hard';
+export const LEVELS: readonly QuestionLevel[] = ['mixed', 'easy', 'medium', 'hard'];
+export const LEVEL_LABEL: Record<QuestionLevel, string> = { mixed: 'Mixed', easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+export const LEVEL_RANGE: Record<QuestionLevel, [number, number]> = { mixed: [1, 5], easy: [1, 2], medium: [2, 4], hard: [3, 5] };
+export const isLevel = (v: unknown): v is QuestionLevel => v === 'mixed' || v === 'easy' || v === 'medium' || v === 'hard';
+
+/**
+ * Setting up a game on the TV (owner, 2026-11-27): pick the game, pick the question difficulty, press Ready; then
+ * everyone taps Ready on their phone, and a countdown starts it. `ready` lists the seats that are ready (bots always are).
+ */
+export interface SetupView {
+  gameId: string;
+  step: 'options' | 'waiting' | 'countdown';
+  /** The game uses question difficulty (trivia does; Snake Manor doesn't ask). */
+  asksLevel: boolean;
+  level: QuestionLevel;
+  ready: string[];
+  /** When the countdown ends and the game starts. */
+  startsAt: number | null;
+}
+
 export interface GameModule<State, Intent, HostView, PlayerView> {
   manifest: GameManifest;
   init(players: readonly GamePlayer[], settings: GameSettings, now: number): State;

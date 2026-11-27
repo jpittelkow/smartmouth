@@ -180,7 +180,7 @@ function shuffle<T>(items: T[], rand: () => number = Math.random): T[] {
 }
 
 export function pickForGame(
-  db: Db, opts: { spice: Question['spice']; exclude: ReadonlySet<number>; perBand: number }, now: number,
+  db: Db, opts: { spice: Question['spice']; exclude: ReadonlySet<number>; perBand: number; levels?: [number, number] }, now: number,
 ): Record<Band, GameQuestion[]> {
   const t = today(now);
   const taken = new Set<number>();
@@ -194,7 +194,11 @@ export function pickForGame(
         AND ${band === 'little' ? 'age_min = 0' : "kind != 'picture'"}
       ORDER BY last_asked_at IS NOT NULL, last_asked_at, random()
       LIMIT 200`).all({ today: t, rank, spice: spiceRank(opts.spice) }) as Row[];
-    const sorted = rows.map((r) => toQuestion(r, now)).filter((q) => !opts.exclude.has(q.id) && inSeason(q.season, t));
+    const all = rows.map((r) => toQuestion(r, now)).filter((q) => !opts.exclude.has(q.id) && inSeason(q.season, t));
+    // The TV's difficulty (Easy 1-2, Medium 2-4, Hard 3-5). A pool too small at that level falls back to everything.
+    const [lo, hi] = opts.levels ?? [1, 5];
+    const atLevel = all.filter((q) => q.difficulty >= lo && q.difficulty <= hi);
+    const sorted = atLevel.length >= opts.perBand ? atLevel : all;
     // Random, with one guard (owner, 2026-11-27: "can we just randomize them?"): the most recently shown ~40% of the pool
     // sits out, so nothing you saw minutes ago comes back. Rows arrive oldest-shown first (never-shown first of all).
     const eligible = Math.max(opts.perBand, Math.ceil(sorted.length * 0.6));

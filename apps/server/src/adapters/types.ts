@@ -1,6 +1,6 @@
 // What the platform needs from each game (ADR 0006). A game's rules package stays pure; its adapter here is the
 // server-side glue: picking content, checking a client's raw intent, and choosing what Salty says at each stage.
-import type { Drama, ErrorCode, GameLength, GameManifest, GamePlayer, QuestionReads, Spice } from '@smartmouth/protocol';
+import type { Drama, ErrorCode, GameLength, QuestionLevel, GameManifest, GamePlayer, QuestionReads, Spice } from '@smartmouth/protocol';
 import type { Db } from '../db.ts';
 import type { Moment } from '../voice.ts';
 
@@ -14,6 +14,8 @@ export interface StartInput {
   drama: Drama;
   /** Short, Medium or Long (each game decides what that means). */
   length: GameLength;
+  /** How hard the questions should be (trivia). */
+  level: QuestionLevel;
   db: Db;
   /** Questions already asked in this room tonight. */
   exclude: ReadonlySet<number>;

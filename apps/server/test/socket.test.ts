@@ -190,3 +190,48 @@ test('a grown-up starts trivia; phones get their own questions; plays are record
     await srv.close();
   }
 });
+
+test('the TV sets up a game: pick, difficulty, Ready; phones ready up; an un-ready stops the countdown; then it starts', async () => {
+  const { loadSeeds } = await import('../src/seeds.ts');
+  const seedDir = new URL('../../../content/seed', import.meta.url);
+  const srv = await startServer({
+    port: 0, publicUrl: null, allowedOrigins: [], webDir: '.',
+    onDb: (db) => { loadSeeds(db, (seedDir.pathname.replace(/^\/([A-Za-z]:)/, '$1')), Date.now()); },
+  });
+  const port = (srv.server.address() as { port: number }).port;
+  type S = { step: string; level: string; ready: string[] } | null;
+  const setupOf = (m: Msg) => (m.t === 'view' && m.view.phase === 'lobby' ? (m.view as { setup: S }).setup : undefined);
+  try {
+    const host = client(port);
+    await host.open;
+    host.send({ t: 'host:create' });
+    const w = await host.next((m) => m.t === 'host:welcome');
+    if (w.t !== 'host:welcome') return assert.fail();
+    const a = client(port); await a.open;
+    a.send({ t: 'player:join', code: w.code, name: 'Ann', band: 'grownups', avatar: 0 });
+    await a.next((m) => m.t === 'player:welcome');
+    const b = client(port); await b.open;
+    b.send({ t: 'player:join', code: w.code, name: 'Bo', band: 'grownups', avatar: 1 });
+    await b.next((m) => m.t === 'player:welcome');
+
+    host.send({ t: 'setup:pick', gameId: 'trivia' });
+    await host.next((m) => setupOf(m)?.step === 'options');
+    host.send({ t: 'setup:level', level: 'easy' });
+    await host.next((m) => setupOf(m)?.level === 'easy');
+    host.send({ t: 'setup:ready' });
+    await a.next((m) => setupOf(m)?.step === 'waiting');
+
+    a.send({ t: 'player:ready', ready: true });
+    await host.next((m) => setupOf(m)?.ready.length === 1);
+    b.send({ t: 'player:ready', ready: true });
+    await host.next((m) => setupOf(m)?.step === 'countdown');
+    b.send({ t: 'player:ready', ready: false });
+    await host.next((m) => setupOf(m)?.step === 'waiting');
+    b.send({ t: 'player:ready', ready: true });
+    await host.next((m) => setupOf(m)?.step === 'countdown');
+    await host.next((m) => m.t === 'view' && m.view.phase === 'game', 5000);
+    for (const c of [host, a, b]) c.close();
+  } finally {
+    await srv.close();
+  }
+});
