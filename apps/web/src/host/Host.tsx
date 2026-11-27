@@ -6,6 +6,7 @@ import { useSocket, store, save } from '../socket.ts';
 import { Blob, Grin } from '../ui/art.tsx';
 import { SaltyStrip } from './SaltyStrip.tsx';
 import { TriviaHost } from '../games/trivia/TriviaHost.tsx';
+import { bed, fx } from '../games/trivia/audio.ts';
 import { SnakesHost } from '../games/snakes/SnakesHost.tsx';
 
 const KEY = 'smartmouth.host';
@@ -107,6 +108,14 @@ function Lobby({ view, onPick, problem }: { view: HostLobbyView; onPick: (id: st
     QRCode.toDataURL(view.joinUrl, { margin: 0, width: 600, color: { dark: '#14111f', light: '#fff6e6' } })
       .then(setQr).catch(() => setQr(''));
   }, [view.joinUrl]);
+
+  // Lobby music while people join, and a pop for each new player (the owner's picks, 2026-11-27).
+  useEffect(() => { bed('lobby'); }, []);
+  const joined = useRef(view.players.length);
+  useEffect(() => {
+    if (view.players.length > joined.current) fx('join', 0, 0.6);
+    joined.current = view.players.length;
+  }, [view.players.length]);
 
   // D-pad: focus starts on the first game; up/down moves between games (guide §6 TV rule 4).
   useEffect(() => { firstCard.current?.focus(); }, []);

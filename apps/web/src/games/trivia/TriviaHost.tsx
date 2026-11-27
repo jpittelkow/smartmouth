@@ -7,7 +7,8 @@ import type { TriviaHostView, TPublicQuestion } from '@smartmouth/game-trivia';
 import { Blob, PictureCard, SlotShape, Tick } from '../../ui/art.tsx';
 import { serverNow } from '../../socket.ts';
 import { SaltyStrip } from '../../host/SaltyStrip.tsx';
-import { sayClip } from '../../host/voice.ts';
+import { sayClip, useSalty } from '../../host/voice.ts';
+import { bed, duck, fx, stopMusic } from './audio.ts';
 import { buzz, tick } from '../../host/sfx.ts';
 
 export function TriviaHost({ view, send }: { view: HostGameView; send: (m: ClientMsg) => void }) {
@@ -24,6 +25,39 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
     return () => window.removeEventListener('keydown', onKey);
   }, [g.stage, send]);
 
+
+  // Sound for each stage (the owner's picks): a bed under thinking, the leaderboard and the final; a sting as each
+  // stage starts. Music ducks under Salty.
+  const { talking } = useSalty(view.salty);
+  useEffect(() => { duck(talking); }, [talking]);
+  useEffect(() => () => stopMusic(), []);
+  useEffect(() => {
+    switch (g.stage) {
+      case 'intro': bed(null); fx('start'); break;
+      case 'question': bed('think'); if (g.round > 1) fx('round'); break;
+      case 'reveal': {
+        bed(null);
+        fx('reveal');
+        const graded = g.players.filter((p) => p.right !== null);
+        const right = graded.filter((p) => p.right).length;
+        if (graded.length && right === graded.length) { fx('right', 0.9); fx('applause', 1.1, 0.55); }
+        else if (graded.length && right === 0) fx('allwrong', 0.9);
+        else fx('right', 0.9);
+        break;
+      }
+      case 'turn': fx('sparkle'); break;
+      case 'turnReveal': if (g.turn && g.turn.picked === g.turn.correct) fx('yay', 0.3); break;
+      case 'standings': bed('leaderboard'); fx('slide', 0.45, 0.6); fx('count', 0.6, 0.5); break;
+      case 'final': bed('winner'); break;
+    }
+  }, [g.stage, g.round]);
+  // A click on the TV each time someone locks in.
+  const locked = g.players.filter((p) => p.locked).length;
+  const lastLocked = useRef(0);
+  useEffect(() => {
+    if (locked > lastLocked.current) fx('lock', 0, 0.5);
+    lastLocked.current = locked;
+  }, [locked]);
 
   return (
     <>
@@ -88,8 +122,8 @@ function Countdown({ deadline }: { deadline: number }) {
     const first = lastSec.current === null;
     lastSec.current = secs;
     if (first && secs > 5) return;
-    if (secs >= 1 && secs <= 5) tick(secs);
-    else if (secs === 0 && !first) buzz();
+    if (secs >= 1 && secs <= 5) { if (!fx('tick', 0, secs <= 1 ? 0.9 : 0.7)) tick(secs); }
+    else if (secs === 0 && !first) { if (!fx('timeup')) buzz(); }
   }, [secs]);
   const frac = left / total.current;
   const r = 52;
