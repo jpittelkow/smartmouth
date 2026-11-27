@@ -12,6 +12,7 @@
   "dependencies": {
     "@smartmouth/protocol": "0.1.0",
     "@smartmouth/game-trivia": "0.1.0",
-    "ws": "8.23.0"
+    "ws": "8.23.0",
+    "@smartmouth/game-snakes": "0.1.0"
   }
 }

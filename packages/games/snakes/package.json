@@ -1,0 +1,9 @@
+{
+  "name": "@smartmouth/game-snakes",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Game two: Snake Manor, a hidden-traitor game on trivia missions (ADR 0022, 0023, 0024).",
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "@smartmouth/protocol": "0.1.0" }
+}
