@@ -10,6 +10,7 @@ import type { Db } from './db.ts';
 import { botMovesFor, holdForSpeech, pauseGame, resumeGame, deadline, drainLog, endGame, gameIntent, pruneLimits, skip, startGame, syncRoom, tickGame } from './gameRuntime.ts';
 import { cueJoin, readsFor, updateSalty } from './salty.ts';
 import type { VoiceBank } from './voice.ts';
+import type { BotMinds } from './botMinds.ts';
 
 export interface SocketOptions {
   /** The address phones use, shown on the TV. Falls back to the host page's own origin. */
@@ -21,6 +22,8 @@ export interface SocketOptions {
   db: Db;
   /** Salty's lines and recordings; null in tests that don't need him. */
   voice?: VoiceBank | null;
+  /** Bots that think with a model (Snake Manor); without it bots use the simple rules only. */
+  minds?: BotMinds | null;
   now?: () => number;
 }
 
@@ -61,6 +64,10 @@ const SPEECH_TAIL_MS = 1200;
   const timers = new Map<string, ReturnType<typeof setTimeout>>();
   /** One pending move per house bot (`code:seatId`). */
   const botTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  /** One pending line at the table per bot (`code:seatId`), and how many lines each bot has said per window. */
+  const talkTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  const talked = new Map<string, number>();
+  const minds = opts.minds ?? null;
   let stopped = false;
 
   /** After any change: record plays, re-arm the game's timer, then send everyone their view. */
@@ -89,6 +96,7 @@ const SPEECH_TAIL_MS = 1200;
       }, Math.max(0, due - t) + 5));
     }
     scheduleBots(room);
+    scheduleTalk(room);
   }
 
   /**
@@ -103,10 +111,54 @@ const SPEECH_TAIL_MS = 1200;
       botTimers.set(key, setTimeout(() => {
         botTimers.delete(key);
         if (stopped || !store.rooms.has(room.code) || !room.game || room.pausedAt !== null) return;
-        let changed = false;
-        for (const intent of botMovesFor(room, seat.id)) changed = gameIntent(room, { kind: 'player', seatId: seat.id }, intent, now()) || changed;
-        if (changed) broadcast(room); else scheduleBots(room);
+        const act = (intents: unknown[]) => {
+          let changed = false;
+          for (const intent of intents) changed = gameIntent(room, { kind: 'player', seatId: seat.id }, intent, now()) || changed;
+          return changed;
+        };
+        const kind = minds?.decision(room, seat.id) ?? null;
+        if (!minds || !kind) { if (act(botMovesFor(room, seat.id))) broadcast(room); else scheduleBots(room); return; }
+        // Thinking: hold this bot's slot until the model answers, then fill any gap with the simple rules.
+        botTimers.set(key, setTimeout(() => {}, 0));
+        void minds.think(room, seat.id, kind).then((intents) => {
+          botTimers.delete(key);
+          if (stopped || !store.rooms.has(room.code) || !room.game || room.pausedAt !== null) return;
+          const a = intents ? act(intents) : false;
+          const b = act(botMovesFor(room, seat.id));
+          if (a || b) broadcast(room); else scheduleBots(room);
+        });
       }, 900 + Math.random() * 2200));
+    }
+  }
+
+  /**
+   * Thinking bots talk at the table: during the Round Table each says a line or two a few seconds apart, reading
+   * what was said before (so they answer each other and the humans). Only with a model; the simple bots stay quiet.
+   */
+  function scheduleTalk(room: Room) {
+    if (!minds || !room.game || room.pausedAt !== null) return;
+    const bots = room.seats.filter((x) => x.bot).length;
+    for (const seat of room.seats) {
+      const key = `${room.code}:${seat.id}`;
+      if (!seat.bot || talkTimers.has(key)) continue;
+      const w = minds.talkWindow(room, seat.id, bots);
+      if (!w) continue;
+      const said = talked.get(`${key}:${w.key}`) ?? 0;
+      if (said >= w.max) continue;
+      const wait = said === 0 ? 4000 + Math.random() * 16_000 : 22_000 + Math.random() * 25_000;
+      talkTimers.set(key, setTimeout(() => {
+        if (stopped || !store.rooms.has(room.code) || !room.game || room.pausedAt !== null) { talkTimers.delete(key); return; }
+        const now_w = minds.talkWindow(room, seat.id, bots);
+        if (!now_w || now_w.key !== w.key) { talkTimers.delete(key); scheduleTalk(room); return; }
+        talked.set(`${key}:${w.key}`, said + 1);
+        void minds.think(room, seat.id, 'talk').then((intents) => {
+          talkTimers.delete(key);
+          if (stopped || !store.rooms.has(room.code) || !room.game) return;
+          let changed = false;
+          for (const intent of intents ?? []) changed = gameIntent(room, { kind: 'player', seatId: seat.id }, intent, now()) || changed;
+          if (changed) broadcast(room); else scheduleTalk(room);
+        });
+      }, wait));
     }
   }
 
@@ -365,6 +417,9 @@ const SPEECH_TAIL_MS = 1200;
       for (const code of gone) {
         clearTimeout(timers.get(code)); timers.delete(code);
         for (const [k, tm] of botTimers) if (k.startsWith(`${code}:`)) { clearTimeout(tm); botTimers.delete(k); }
+        for (const [k, tm] of talkTimers) if (k.startsWith(`${code}:`)) { clearTimeout(tm); talkTimers.delete(k); }
+        for (const k of talked.keys()) if (k.startsWith(`${code}:`)) talked.delete(k);
+        minds?.forget(code);
       }
       return gone;
     },
@@ -373,7 +428,8 @@ const SPEECH_TAIL_MS = 1200;
       stopped = true;
       for (const tm of timers.values()) clearTimeout(tm);
       for (const tm of botTimers.values()) clearTimeout(tm);
-      timers.clear(); botTimers.clear();
+      for (const tm of talkTimers.values()) clearTimeout(tm);
+      timers.clear(); botTimers.clear(); talkTimers.clear();
     },
     normalizeCode,
   };

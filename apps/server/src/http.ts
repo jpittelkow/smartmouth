@@ -15,6 +15,7 @@ import { handleGeneratorApi } from './generatorApi.ts';
 import { securityHeaders } from './headers.ts';
 import type { Generator } from './generator.ts';
 import type { VoiceRunner } from './voiceRunner.ts';
+import type { BotMinds } from './botMinds.ts';
 import type { VoiceBank } from './voice.ts';
 
 export interface ServerConfig {
@@ -33,6 +34,8 @@ export interface ServerConfig {
   onDb?: (db: Db) => void;
   /** Salty's line bank and recordings (voice.ts). */
   voice?: VoiceBank | null;
+  /** Thinking house bots (botMinds.ts); null keeps the simple rules. */
+  minds?: BotMinds | null;
   /** The question generator, made once the database is open (generator.ts). */
   makeGenerator?: (db: Db) => Generator | null;
   /** Records Salty reading new questions (voiceRunner.ts). */
@@ -211,6 +214,7 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
     trusted,
     db,
     voice: cfg.voice ?? null,
+    minds: cfg.minds ?? null,
     allowedOrigins: new Set([...(cfg.publicUrl ? [new URL(cfg.publicUrl).origin] : []), ...cfg.allowedOrigins]),
   });
   server.on('upgrade', (req, socket, head) => {

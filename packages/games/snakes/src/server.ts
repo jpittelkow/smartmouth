@@ -72,7 +72,7 @@ export function init(players: readonly GamePlayer[], settings: SnakesSettings, c
     endSize: endSizeFor(players.length), stage: 'deal', stageStart: now, stageEnds: now + DEAL_MS, round: 1,
     players: ps, order, pot: 0, daggers: 0, peeks: [], chat: [], queues: content, mission: null, vote: null,
     banished: null, night: null, breakfast: null, endgame: false, endVotes: {}, forceRecruit: false, mayRecruit: false,
-    unmasked: 0, log: [], history: [],
+    unmasked: 0, log: [], history: [], talk: [],
   };
 }
 
@@ -391,6 +391,7 @@ export function intent(s: SnakesState, playerId: string, i: SnakesIntent, now: n
     case 'offer': return answerOffer(s, playerId, i.accept);
     case 'dagger': return useDagger(s, playerId, i.kind, i.target);
     case 'endVote': return castEndVote(s, playerId, i.end, now);
+    case 'talk': return talk(s, playerId, i.text);
     default: return s;
   }
 }
@@ -490,6 +491,16 @@ function useDagger(s: SnakesState, id: string, kind: DaggerKind, target: string 
   return s;
 }
 
+/** Table talk: the living can speak during the Round Table and the last table. Public, like saying it out loud. */
+export const TALK_STAGES: ReadonlySet<Stage> = new Set(['debate', 'vote', 'voteReveal', 'endVote']);
+export const TALK_MAX = 60;
+export const canTalk = (s: SnakesState, id: string) => TALK_STAGES.has(s.stage) && s.players[id]?.status === 'alive';
+
+function talk(s: SnakesState, id: string, text: string): SnakesState {
+  if (!canTalk(s, id) || typeof text !== 'string' || !text.trim()) return s;
+  return { ...s, talk: [...s.talk, { from: id, text: text.trim(), round: s.round }].slice(-TALK_MAX) };
+}
+
 function castEndVote(s: SnakesState, id: string, end: boolean, now: number): SnakesState {
   if (s.stage !== 'endVote' || s.players[id]?.status !== 'alive' || id in s.endVotes) return s;
   const next = { ...s, endVotes: { ...s.endVotes, [id]: end === true } };
@@ -548,6 +559,7 @@ export function hostView(s: SnakesState): SnakesHostView {
       roles: s.order.map((id) => ({ id, role: s.players[id]?.role as Role })),
     } : null,
     history: s.history,
+    talk: s.talk.filter((t) => t.round === s.round),
   };
 }
 
@@ -579,7 +591,7 @@ export function playerView(s: SnakesState, id: string): SnakesPlayerView {
     players: s.order.map((x) => publicPlayer(s, x)), pot: s.pot,
   };
   if (!p) {
-    return { ...base, spectator: true, me: null, fellows: [], mission: null, vote: null, night: null, bet: null, endVote: null, final: null, history: s.history };
+    return { ...base, spectator: true, me: null, fellows: [], mission: null, vote: null, night: null, bet: null, endVote: null, final: null, history: s.history, talk: s.talk.filter((t) => t.round === s.round), canTalk: false };
   }
   const v = s.vote;
   const alive = p.status === 'alive';
@@ -600,5 +612,7 @@ export function playerView(s: SnakesState, id: string): SnakesPlayerView {
     endVote: s.stage === 'endVote' ? { mine: id in s.endVotes ? (s.endVotes[id] as boolean) : null, canVote: alive } : null,
     final: s.stage === 'final' ? { won: alive && p.role === winner(s), winner: winner(s), points: sc[id] ?? 0 } : null,
     history: s.history,
+    talk: s.talk.filter((t) => t.round === s.round),
+    canTalk: canTalk(s, id),
   };
 }

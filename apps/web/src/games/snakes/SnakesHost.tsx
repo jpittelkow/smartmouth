@@ -5,7 +5,7 @@
 // Every moment's picture, sound and caption tell one story: votes are sealed letters, the reveal opens them.
 import { useEffect, useRef, useState } from 'react';
 import type { ClientMsg, HostGameView, PublicSeat } from '@smartmouth/protocol';
-import { rules, type HistoryEvent, type SnakesHostView, type SPublicPlayer } from '@smartmouth/game-snakes';
+import { rules, type HistoryEvent, type SnakesHostView, type SPublicPlayer, type TalkLine } from '@smartmouth/game-snakes';
 import { serverNow } from '../../socket.ts';
 import { useSalty } from '../../host/voice.ts';
 import { Arms, Candle, Mark, Seal, clock, useLeft } from './arms.tsx';
@@ -123,7 +123,7 @@ export function SnakesHost({ view, send }: { view: HostGameView; send: (m: Clien
         {g.stage === 'banish' && g.banished && <Drama g={g} seat={seat} />}
         {night && <Night g={g} />}
         {g.stage === 'breakfast' && <Breakfast g={g} seat={seat} />}
-        {g.stage === 'endVote' && <EndVote g={g} />}
+        {g.stage === 'endVote' && <EndVote g={g} seat={seat} />}
         {g.stage === 'unmask' && <Unmask g={g} seat={seat} />}
         {g.stage === 'final' && <Final g={g} seat={seat} />}
       </div>
@@ -290,7 +290,25 @@ function Debate({ g, seat }: { g: SnakesHostView; seat: Seat }) {
   return (
     <div className="sm-debate">
       <div className="clock-side"><div className="sm-clock">{clock(left)}</div><p className="sm-note">until the vote</p></div>
-      <Record history={g.history} seat={seat} />
+      <div className="sm-debate-side">
+        <Record history={g.history} seat={seat} />
+        <TableTalk talk={g.talk} seat={seat} />
+      </div>
+    </div>
+  );
+}
+
+/** What players said at the table this round, typed on a phone or a bot's line: the newest few, newest last. */
+function TableTalk({ talk, seat, max = 4 }: { talk: TalkLine[]; seat: Seat; max?: number }) {
+  if (!talk.length) return null;
+  return (
+    <div className="talk" aria-live="polite">
+      <h3>At the table</h3>
+      <ul>
+        {talk.slice(-max).map((t, i) => (
+          <li key={`${talk.length - max + i}`}><Arms color={seat(t.from)?.color} size={30} /><b>{seat(t.from)?.name ?? '?'}</b><span>“{t.text}”</span></li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -321,6 +339,7 @@ function Vote({ g, seat }: { g: SnakesHostView; seat: Seat }) {
       </div>
       <p className="sm-lede">{sealed} of {v?.voters ?? 0} letters sealed · {clock(left)}</p>
       {v?.revote && <p className="sm-note">Between {v.candidates.map((id) => seat(id)?.name).join(' and ')}</p>}
+      <TableTalk talk={g.talk} seat={seat} max={2} />
     </div>
   );
 }
@@ -419,7 +438,7 @@ function Breakfast({ g, seat }: { g: SnakesHostView; seat: Seat }) {
   );
 }
 
-function EndVote({ g }: { g: SnakesHostView }) {
+function EndVote({ g, seat }: { g: SnakesHostView; seat: Seat }) {
   const { left } = useLeft(g.deadline);
   useTicking(g.deadline);
   const sealed = g.endVote?.sealed ?? 0;
@@ -430,6 +449,7 @@ function EndVote({ g }: { g: SnakesHostView }) {
       <h2 className="sm-title small">End it, or banish again?</h2>
       <div className="letters">{Array.from({ length: g.endVote?.voters ?? 0 }, (_, i) => i < sealed ? <Letter key={i} open={false} /> : <div key={i} className="letter empty" />)}</div>
       <p className="sm-lede">{sealed} of {g.endVote?.voters ?? 0} have decided · {clock(left)}</p>
+      <TableTalk talk={g.talk} seat={seat} max={2} />
     </div>
   );
 }

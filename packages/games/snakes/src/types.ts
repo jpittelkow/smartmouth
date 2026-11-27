@@ -162,7 +162,11 @@ export interface SnakesState {
   log: Array<{ questionId: number; right: boolean; ms: number | null }>;
   /** The public record: what everyone in the room has seen happen, in order. Never anything only a phone knows. */
   history: HistoryEvent[];
+  /** What players said at the table (public speech, typed on a phone or a bot's line). */
+  talk: TalkLine[];
 }
+
+export interface TalkLine { from: string; text: string; round: number }
 
 export type HistoryEvent =
   | { kind: 'mission'; round: number; right: number; asked: number; hit: boolean; overboard: boolean }
@@ -234,6 +238,8 @@ export interface SnakesHostView {
   final: null | { winner: Role; winners: string[]; pot: number; roles: Array<{ id: string; role: Role }> };
   /** What the table knows so far (for the debate, and for anyone who missed it). */
   history: HistoryEvent[];
+  /** This round's table talk. */
+  talk: TalkLine[];
 }
 
 /** The night screen: one shape for every living player (ADR 0023); only its contents differ. */
@@ -279,6 +285,9 @@ export interface SnakesPlayerView {
   endVote: null | { mine: boolean | null; canVote: boolean };
   final: null | { won: boolean; winner: Role; points: number };
   history: HistoryEvent[];
+  /** This round's table talk, and whether you can add to it now (the Round Table, while you're alive). */
+  talk: TalkLine[];
+  canTalk: boolean;
 }
 
 export type SnakesIntent =
@@ -291,4 +300,6 @@ export type SnakesIntent =
   | { type: 'offer'; accept: boolean }
   | { type: 'dagger'; kind: DaggerKind; target: string | null }
   | { type: 'endVote'; end: boolean }
+  /** Say something at the table (typed on a phone, or a bot's line). */
+  | { type: 'talk'; text: string }
   | { type: 'skip' };

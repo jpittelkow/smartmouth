@@ -115,6 +115,7 @@ function parse(raw: unknown): SnakesIntent | null {
     case 'pick': return str(x.target) ? { type: 'pick', target: x.target } : null;
     case 'lock': return { type: 'lock' };
     case 'say': return typeof x.text === 'string' ? { type: 'say', text: x.text } : null;
+    case 'talk': return typeof x.text === 'string' ? { type: 'talk', text: x.text } : null;
     case 'offer': return typeof x.accept === 'boolean' ? { type: 'offer', accept: x.accept } : null;
     case 'dagger':
       return x.kind === 'double' || x.kind === 'silence' || x.kind === 'peek'

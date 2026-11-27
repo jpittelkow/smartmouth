@@ -8,6 +8,8 @@ import { VoiceBank } from './voice.ts';
 import { openRouterChat } from './ai.ts';
 import { DEFAULT_CHECKER, DEFAULT_WRITER, Generator } from './generator.ts';
 import { VoiceRunner } from './voiceRunner.ts';
+import { BotBrain, DEFAULT_BOT_MODEL } from './botBrain.ts';
+import { BotMinds } from './botMinds.ts';
 
 const env = process.env;
 const list = (s: string | undefined) => (s ?? '').split(',').map((x) => x.trim()).filter(Boolean);
@@ -27,6 +29,7 @@ const { server } = await startServer({
   dbPath: join(dataDir, 'smartmouth.db'),
   mediaDir: join(dataDir, 'media'),
   voiceRunner,
+  minds: key && env.BOT_AI !== 'off' ? new BotMinds(new BotBrain(openRouterChat(key), env.BOT_MODEL?.trim() || DEFAULT_BOT_MODEL)) : null,
   makeGenerator: (db) => new Generator(db, {
     chat: key ? openRouterChat(key) : null,
     writerModel: env.AI_TEXT_MODEL?.trim() || DEFAULT_WRITER,

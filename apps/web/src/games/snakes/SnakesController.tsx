@@ -141,11 +141,12 @@ function Body({ g, view, seat, act }: { g: SnakesPlayerView; view: PlayerGameVie
   if (g.stage === 'missionReveal') {
     return <Message big="Look at the TV" say={g.mission?.result?.shield ? 'You earned a shield. Nobody can murder you tonight. Tell anyone, or don’t.' : 'The count is on the TV.'} />;
   }
-  if (g.stage === 'vote' && g.vote) return <VotePhone g={g} seat={seat} act={act} />;
+  if (g.stage === 'vote' && g.vote) return <><VotePhone g={g} seat={seat} act={act} />{g.vote.mine && <TalkBox g={g} seat={seat} act={act} />}</>;
   if (g.stage === 'night' && g.night) return <NightPhone night={g.night} seat={seat} act={act} youName={view.you.name} />;
   if (g.stage === 'night' && g.bet) return <BetPhone bet={g.bet} seat={seat} act={act} />;
   if (g.stage === 'endVote' && g.endVote) {
     if (!g.endVote.canVote) return <Message big="Ghost" say="The living decide this one." />;
+    if (g.endVote.mine !== null) return <><Message big={g.endVote.mine ? 'End' : 'Banish again'} say="Decided. Watch the TV." /><TalkBox g={g} seat={seat} act={act} /></>;
     return (
       <div className="sm-stack">
         <p className="kicker">Every one of you must say End</p>
@@ -154,9 +155,27 @@ function Body({ g, view, seat, act }: { g: SnakesPlayerView; view: PlayerGameVie
       </div>
     );
   }
-  if (g.stage === 'debate') return <><Message big="Talk" say="Out loud. Accuse someone. Defend yourself." /><RoleCard g={g} seat={seat} /></>;
+  if (g.stage === 'debate') return <><Message big="Talk" say="Out loud. Accuse someone. Defend yourself. Or type it for the table." /><TalkBox g={g} seat={seat} act={act} /><RoleCard g={g} seat={seat} /></>;
   if (me.status === 'ghost') return <Message big="Ghost" say={`You ${g.words.murdered}. You still answer in missions, and you bet on the Snakes at night.`} />;
   return <><Message big="Look at the TV" say="" /><RoleCard g={g} seat={seat} /></>;
+}
+
+/** Say something at the table: it shows on the TV with your name, and the house bots read it and answer. */
+function TalkBox({ g, seat, act }: { g: SnakesPlayerView; seat: Seat; act: (i: unknown) => void }) {
+  const [text, setText] = useState('');
+  if (!g.canTalk) return null;
+  const say = () => { const t = text.trim(); if (t) { act({ type: 'talk', text: t }); setText(''); } };
+  return (
+    <div className="sm-talk">
+      {g.talk.length > 0 && (
+        <ul>{g.talk.slice(-3).map((t, i) => <li key={`${g.talk.length - 3 + i}`}><b>{seat(t.from)?.name ?? '?'}</b> {t.text}</li>)}</ul>
+      )}
+      <form onSubmit={(e) => { e.preventDefault(); say(); }}>
+        <input value={text} maxLength={TEXT_MAX} placeholder="Say it to the table…" aria-label="Say something to the table" onChange={(e) => setText(e.target.value)} enterKeyHint="send" />
+        <button type="submit" className="sm-btn" disabled={!text.trim()}>Say</button>
+      </form>
+    </div>
+  );
 }
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
