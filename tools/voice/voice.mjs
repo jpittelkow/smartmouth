@@ -157,7 +157,15 @@ async function bank() {
   const manifest = { voice: v.spec, model: v.model, made: new Date().toISOString(), lines: {}, questions: {} };
 
   const jobs = [];
-  for (const l of lines) jobs.push({ text: l.text, style: STYLE, put: (f) => { manifest.lines[l.id] = f; } });
+  // Little moments get the warm kids' direction. For directed models, tags like [whispers] become part of the
+  // direction (they're stripped from the text so they aren't read out).
+  const KID_MOMENTS = new Set(['turn', 'littleRight', 'littleWrong']);
+  for (const l of lines) {
+    const base = KID_MOMENTS.has(l.moment) ? KIDS_STYLE : STYLE;
+    const tags = [...l.text.matchAll(/\[([^\]]+)\]/g)].map((m) => m[1]);
+    const style = v.directed && tags.length ? `${base} Delivery cues for this line: ${tags.join(', ')}.` : base;
+    jobs.push({ text: l.text, style, put: (f) => { manifest.lines[l.id] = f; } });
+  }
   for (const q of questions) {
     const little = Number(q.age_min) === 0;
     const style = little ? KIDS_STYLE : STYLE;
