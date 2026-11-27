@@ -10,8 +10,8 @@ export const SM_MOMENTS: readonly Moment[] = [
   'sm-deal', 'sm-mission', 'sm-overboard', 'sm-target-hit', 'sm-target-miss', 'sm-table', 'sm-vote', 'sm-revote', 'sm-seals',
   'sm-no-votes', 'sm-reveal-setup', 'sm-reveal-snake', 'sm-reveal-guest', 'sm-night', 'sm-murder', 'sm-saved', 'sm-quiet',
   'sm-recruited', 'sm-morning', 'sm-final-vote', 'sm-unmask', 'sm-guests-win', 'sm-snakes-win',
-  // The first time each stage comes up, Salty explains it instead.
-  'sm-how-mission', 'sm-how-table', 'sm-how-vote', 'sm-how-night',
+  // Rules cards (ADR 0025): the first time the table meets each thing, Salty explains it before anyone plays.
+  ...rules.BRIEFS.map((b) => `sm-brief-${b}`),
 ];
 
 /** Three missions of up to eight questions each, with spares for spice changes. */
@@ -133,18 +133,19 @@ export function momentFor(s: SnakesState): Moment | null {
   const host = rules.hostView(s);
   switch (s.stage) {
     case 'deal': return 'sm-deal';
+    case 'briefing': return s.brief ? `sm-brief-${s.brief}` : null;
     case 'mission': {
       const m = host.mission;
       if (!m) return 'sm-mission';
       if (m.step === 'tally') return m.overboardSaid ? 'sm-overboard' : null;
-      return m.index === 0 ? (s.round === 1 ? 'sm-how-mission' : 'sm-mission') : null;
+      return m.index === 0 ? 'sm-mission' : null;
     }
     case 'missionReveal': return host.mission?.result?.hit ? 'sm-target-hit' : 'sm-target-miss';
-    case 'debate': return s.round === 1 && !s.endgame ? 'sm-how-table' : 'sm-table';
-    case 'vote': return host.vote?.revote ? 'sm-revote' : s.round === 1 && !s.endgame ? 'sm-how-vote' : 'sm-vote';
+    case 'debate': return 'sm-table';
+    case 'vote': return host.vote?.revote ? 'sm-revote' : 'sm-vote';
     case 'voteReveal': return host.vote?.reveal?.length ? 'sm-seals' : 'sm-no-votes';
     case 'banish': return 'sm-reveal-setup';
-    case 'night': return s.night?.number === 1 ? 'sm-how-night' : 'sm-night';
+    case 'night': return 'sm-night';
     case 'breakfast': {
       const b = host.breakfast;
       if (!b) return 'sm-morning';

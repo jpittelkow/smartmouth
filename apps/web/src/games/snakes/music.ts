@@ -2,6 +2,7 @@
 // crossfading between stages, and ducked about 8 dB while Salty talks. The server lists the files at /api/sounds
 // (cue -> URL); a cue with no file just stays silent, and the synthesized sounds in sound.ts cover the rest.
 import type { SnakesHostView } from '@smartmouth/game-snakes';
+import { leadStage } from './briefs.ts';
 
 let sounds: Record<string, string> = {};
 let loaded: Promise<Record<string, string>> | null = null;
@@ -19,7 +20,8 @@ export const hasSound = (cue: string) => !!sounds[cue];
 
 /** The bed for each stage. The banishment has none: its silence is the point (ADR 0024). */
 export function bedFor(g: SnakesHostView): string | null {
-  switch (g.stage) {
+  // A rules card plays the bed of the stage it explains (ADR 0025).
+  switch (leadStage(g)) {
     case 'deal': return 'theme';
     case 'mission': case 'missionReveal': return 'mission';
     case 'debate': case 'vote': case 'endVote': return 'table';

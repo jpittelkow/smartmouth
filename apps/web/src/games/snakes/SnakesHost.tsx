@@ -12,6 +12,7 @@ import { Arms, Candle, Mark, Seal, clock, useLeft } from './arms.tsx';
 import { Drama } from './drama.tsx';
 import { SFX, captionSound, useCues, useSoundCaption } from './sound.ts';
 import { bedFor, duck, loadSounds, playBed, startLoop, stopLoop, stopMusic } from './music.ts';
+import { BRIEFS, ROMAN, leadStage } from './briefs.ts';
 import './fonts.ts';
 import './snakes.css';
 
@@ -35,7 +36,7 @@ function useTicking(deadline: number | null) {
 }
 
 const STAGE_TITLE: Record<SnakesHostView['stage'], string> = {
-  deal: 'Snake Manor', mission: 'The Mission', missionReveal: 'The Mission', debate: 'The Round Table', vote: 'The Round Table',
+  deal: 'Snake Manor', briefing: 'How it works', mission: 'The Mission', missionReveal: 'The Mission', debate: 'The Round Table', vote: 'The Round Table',
   voteReveal: 'The Round Table', banish: 'The Round Table', night: 'Night', breakfast: 'Breakfast', endVote: 'The Last Table',
   unmask: 'The Unmasking', final: 'The End',
 };
@@ -44,7 +45,8 @@ const STAGE_TITLE: Record<SnakesHostView['stage'], string> = {
 function guide(g: SnakesHostView): { now: string; next: string } {
   const alive = g.players.filter((p) => p.status === 'alive').length;
   switch (g.stage) {
-    case 'deal': return { now: 'Look at your phone and hold the card to see your role. Tell no one.', next: 'Next: the first mission' };
+    case 'deal': return { now: 'Look at your phone and hold the card to see your role. Tell no one.', next: 'Next: how the first mission works' };
+    case 'briefing': return { now: `Listen to Salty: how ${g.brief ? BRIEFS[g.brief].title.replace(/^The /, 'the ') : 'this'} works.`, next: 'It starts when he’s done. Already know it? Press OK.' };
     case 'mission': return g.mission?.step === 'tally'
       ? { now: 'The count for that question. Only the total, never who.', next: `Next: question ${(g.mission.index ?? 0) + 2} of ${g.mission.count}` }
       : { now: 'Answer on your phone. Every right answer adds crowns to the pot.', next: `Hit ${g.mission?.target ?? '?'} right to bank the bonus. Miss it and the Snakes get a Dagger.` };
@@ -90,7 +92,7 @@ export function SnakesHost({ view, send }: { view: HostGameView; send: (m: Clien
 
   const night = g.stage === 'night';
   const gd = guide(g);
-  const inLoop = TRACK.some((t) => t.stages.includes(g.stage));
+  const inLoop = TRACK.some((t) => t.stages.includes(leadStage(g)));
   return (
     <div className={`sm-tv stage-${g.stage}`}>
       {!night && (
@@ -108,13 +110,14 @@ export function SnakesHost({ view, send }: { view: HostGameView; send: (m: Clien
         <div className="say"><span className="now">{gd.now}</span>{gd.next && <span className="next">{gd.next}</span>}</div>
         {inLoop && !night && (
           <ol className="track" aria-label="Where we are in the round">
-            {TRACK.map((t) => <li key={t.label} className={t.stages.includes(g.stage) ? 'on' : ''}>{t.label}</li>)}
+            {TRACK.map((t) => <li key={t.label} className={t.stages.includes(leadStage(g)) ? 'on' : ''}>{t.label}</li>)}
           </ol>
         )}
       </div>
 
       <div className="sm-main">
         {g.stage === 'deal' && <Deal g={g} />}
+        {g.stage === 'briefing' && g.brief && <Briefing g={g} />}
         {g.stage === 'mission' && <Mission g={g} seat={seat} />}
         {g.stage === 'missionReveal' && <MissionReveal g={g} />}
         {g.stage === 'debate' && <Debate g={g} seat={seat} />}
@@ -197,6 +200,23 @@ function Deal({ g }: { g: SnakesHostView }) {
         {steps.map((s, i) => (
           <div key={s.h} className={`vellum how-card${i < shown ? ' on' : ''}`}><span className="k">{i + 1}</span><h3>{s.h}</h3><p>{s.p}</p></div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+/** A rules card (ADR 0025): no clock runs while Salty explains; the steps come in one at a time as he talks. */
+function Briefing({ g }: { g: SnakesHostView }) {
+  const b = BRIEFS[g.brief!];
+  useCues(`brief:${g.stageStart}`, () => [{ at: g.stageStart + 150, run: () => { SFX.unfold(); captionSound('[a page unfolds]'); } }]);
+  return (
+    <div className="sm-brief">
+      <div className="vellum brief-card" key={g.brief}>
+        <p className="kicker">How it works</p>
+        <h2>{b.title}</h2>
+        <ol>{b.steps.map((t, i) => <li key={i} style={{ animationDelay: `${0.6 + i * 1.6}s` }}><span className="n">{ROMAN[i]}</span><span>{t}</span></li>)}</ol>
+        <p className="stakes" style={{ animationDelay: '5.4s' }}>{b.stakes}</p>
+        <p className="note" style={{ animationDelay: '6.6s' }}>{b.note}</p>
       </div>
     </div>
   );

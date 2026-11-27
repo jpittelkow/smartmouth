@@ -28,7 +28,7 @@ The screens already say what to do now and next (ADR 0024, design guide §8), bu
 - **No clock runs during a briefing.** The mission and its question timer start when the briefing ends, so nobody answers while Salty talks. The briefing lasts at least `BRIEF_MS` (12 s) and is held until Salty finishes, like a reveal stage. A grown-up can skip it with "Got it" (the phone's Next).
 - **The TV shows a rules card,** a vellum card in the manor style with:
   - a title;
-  - three numbered steps, each with an icon;
+  - three numbered steps (I, II, III);
   - one "how you win / how you lose" line;
   - a small worked example (e.g. pairs: "Both right: +2. One right: nothing.").
 

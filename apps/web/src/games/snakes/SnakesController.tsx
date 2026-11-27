@@ -6,6 +6,7 @@ import type { ClientMsg, PlayerGameView, PublicSeat } from '@smartmouth/protocol
 import { TEXT_MAX } from '@smartmouth/protocol';
 import type { NightScreen, SnakesPlayerView } from '@smartmouth/game-snakes';
 import { Arms, Mark, clock, useLeft } from './arms.tsx';
+import { BRIEFS, ROMAN } from './briefs.ts';
 import './fonts.ts';
 import './snakes.css';
 
@@ -66,7 +67,8 @@ export function phoneGuide(g: SnakesPlayerView, seat: Seat, left: number): { tit
   const m = g.mission;
   const secs = (ms: number) => `${Math.max(0, Math.ceil(ms / 1000))} s`;
   switch (g.stage) {
-    case 'deal': return { title: 'Your secret role', body: 'Hold the card below to see it. Keep it to yourself. The first mission starts in a moment.' };
+    case 'deal': return { title: 'Your secret role', body: 'Hold the card below to see it. Keep it to yourself. Salty explains the first mission next.' };
+    case 'briefing': return { title: 'Listen to Salty', body: `How ${g.brief ? BRIEFS[g.brief].title.replace(/^The /, 'the ') : 'this'} works. It starts when he’s done.` };
     case 'mission':
       if (m?.step === 'tally') return { title: 'Look at the TV', body: 'The count for that question: the total only, never who.' };
       if (m?.question) return { title: ghost ? 'Answer (you still count, Ghost)' : 'Answer the question', body: `Tap your answer. Right answers add crowns to the pot. ${secs(left)} left.` };
@@ -97,7 +99,7 @@ function Guide({ g, seat }: { g: SnakesPlayerView; seat: Seat }) {
 }
 
 const stageLabel = (g: SnakesPlayerView) => ({
-  deal: 'Your role', mission: 'Mission', missionReveal: 'Mission', debate: 'Round Table', vote: 'Round Table',
+  deal: 'Your role', briefing: 'How it works', mission: 'Mission', missionReveal: 'Mission', debate: 'Round Table', vote: 'Round Table',
   voteReveal: 'Round Table', banish: 'Round Table', night: 'Night', breakfast: 'Breakfast', endVote: 'The last table',
   unmask: 'Unmasking', final: 'The end',
 }[g.stage]);
@@ -137,6 +139,7 @@ function Body({ g, view, seat, act }: { g: SnakesPlayerView; view: PlayerGameVie
   if (me.status === 'left') return <Message big="Gone" say="You left the manor." />;
 
   if (g.stage === 'deal') return <RoleCard g={g} seat={seat} open />;
+  if (g.stage === 'briefing' && g.brief) return <><BriefPhone g={g} /><RoleCard g={g} seat={seat} /></>;
   if (g.stage === 'mission' && g.mission) return <MissionPhone g={g} act={act} />;
   if (g.stage === 'missionReveal') {
     return <Message big="Look at the TV" say={g.mission?.result?.shield ? 'You earned a shield. Nobody can murder you tonight. Tell anyone, or don’t.' : 'The count is on the TV.'} />;
@@ -174,6 +177,20 @@ function TalkBox({ g, seat, act }: { g: SnakesPlayerView; seat: Seat; act: (i: u
         <input value={text} maxLength={TEXT_MAX} placeholder="Say it to the table…" aria-label="Say something to the table" onChange={(e) => setText(e.target.value)} enterKeyHint="send" />
         <button type="submit" className="sm-btn" disabled={!text.trim()}>Say</button>
       </form>
+    </div>
+  );
+}
+
+/** The rules card's words on the phone, to follow along with Salty. Nothing to tap. */
+function BriefPhone({ g }: { g: SnakesPlayerView }) {
+  const b = BRIEFS[g.brief!];
+  return (
+    <div className="sm-brief-phone">
+      <p className="kicker">How it works</p>
+      <h2>{b.title}</h2>
+      <ol>{b.steps.map((t, i) => <li key={i}><span className="n">{ROMAN[i]}</span><span>{t}</span></li>)}</ol>
+      <p className="stakes">{b.stakes}</p>
+      <p className="note">{b.note}</p>
     </div>
   );
 }
@@ -364,7 +381,7 @@ function Admin({ g, send, paused }: { g: SnakesPlayerView; send: Send; paused: b
   return (
     <div className="sm-admin">
       {g.stage !== 'final' && <button onClick={() => send({ t: 'admin:pause', paused: !paused })}>{paused ? 'Resume' : 'Pause'}</button>}
-      {g.stage !== 'final' && !paused && <button onClick={() => send({ t: 'admin:next' })}>{g.stage === 'debate' ? 'Start the vote' : 'Skip ahead'}</button>}
+      {g.stage !== 'final' && !paused && <button onClick={() => send({ t: 'admin:next' })}>{g.stage === 'debate' ? 'Start the vote' : g.stage === 'briefing' ? 'Got it, start' : 'Skip ahead'}</button>}
       <EndButton send={send} final={g.stage === 'final'} />
     </div>
   );

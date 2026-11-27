@@ -17,6 +17,8 @@ export const TARGET_BONUS = 500;
 export const TARGET_SHARE = 0.75;
 
 const FORMATS: MissionFormat[] = ['everyone', 'chain', 'pairs'];
+/** This round's mission format: everyone, then the chain, then pairs, and round again. */
+export const formatFor = (round: number): MissionFormat => FORMATS.at((round - 1) % FORMATS.length) as MissionFormat;
 
 /** Seconds to answer: younger bands get longer (as in trivia). */
 export function answerMs(bands: Band[]): number {
@@ -45,7 +47,7 @@ export function startMission(s0: SnakesState, now: number): SnakesState {
     const p = s.players[id];
     if (p) s = { ...s, players: { ...s.players, [id]: { ...p, missionRight: 0 } } };
   }
-  const format = FORMATS.at((s.round - 1) % FORMATS.length) as MissionFormat;
+  const format = formatFor(s.round);
   const who = answerers(s);
   let rng = s.rng;
   let order: string[];

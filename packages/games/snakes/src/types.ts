@@ -6,8 +6,11 @@ export type Role = 'guest' | 'snake';
 /** alive: in the game · ghost: murdered, plays on for side points · banished: voted out · left: left the room. */
 export type Status = 'alive' | 'ghost' | 'banished' | 'left';
 
+/** A rules card Salty explains before the table first meets something (ADR 0025). */
+export type BriefId = 'mission-everyone' | 'mission-chain' | 'mission-pairs' | 'table' | 'night' | 'endgame';
+
 export type Stage =
-  | 'deal' | 'mission' | 'missionReveal' | 'debate' | 'vote' | 'voteReveal' | 'banish'
+  | 'deal' | 'briefing' | 'mission' | 'missionReveal' | 'debate' | 'vote' | 'voteReveal' | 'banish'
   | 'night' | 'breakfast' | 'endVote' | 'unmask' | 'final';
 
 export type DaggerKind = 'double' | 'silence' | 'peek';
@@ -153,6 +156,9 @@ export interface SnakesState {
   breakfast: BreakfastState | null;
   /** True while the endgame loop runs (End or Banish again). */
   endgame: boolean;
+  /** The rules card on now (stage `briefing`), and the ones already explained this game (ADR 0025). */
+  brief: BriefId | null;
+  briefed: BriefId[];
   endVotes: Record<string, boolean>;
   /** Salty must recruit a Snake at the next night (the last Snake was banished with 5+ left). */
   forceRecruit: boolean;
@@ -213,6 +219,8 @@ export interface SMissionPublic {
 
 export interface SnakesHostView {
   stage: Stage;
+  /** The rules card on now (stage `briefing`). */
+  brief: BriefId | null;
   round: number;
   deadline: number | null;
   stageStart: number;
@@ -256,6 +264,7 @@ export interface NightScreen {
 
 export interface SnakesPlayerView {
   stage: Stage;
+  brief: BriefId | null;
   round: number;
   deadline: number | null;
   words: Words;

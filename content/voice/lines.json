@@ -1364,102 +1364,6 @@
    "text": "The Snakes win. They took the whole damn pot. I'm weirdly proud. Fuck."
   },
   {
-   "id": "sm-how-mission-m1",
-   "moment": "sm-how-mission",
-   "spice": "mild",
-   "text": "First, a mission! Answer on your phone. Right answers fill the pot. Some sneaky someone might miss on purpose."
-  },
-  {
-   "id": "sm-how-mission-s1",
-   "moment": "sm-how-mission",
-   "spice": "spicy",
-   "text": "A mission! Answer on your phone. Right answers fill the pot. A Snake might miss on purpose. Watch for it."
-  },
-  {
-   "id": "sm-how-mission-h1",
-   "moment": "sm-how-mission",
-   "spice": "hot",
-   "text": "Mission rules: answer on your phone, fill the pot. Miss the target and the Snakes get a Dagger. Damn."
-  },
-  {
-   "id": "sm-how-mission-f1",
-   "moment": "sm-how-mission",
-   "spice": "filthy",
-   "text": "Mission rules: answer, fill the pot. Miss the target and the Snakes get a Dagger. Don't screw it up."
-  },
-  {
-   "id": "sm-how-table-m1",
-   "moment": "sm-how-table",
-   "spice": "mild",
-   "text": "The Round Table! Talk out loud. Who seems sneaky? Then you'll vote on your phones."
-  },
-  {
-   "id": "sm-how-table-s1",
-   "moment": "sm-how-table",
-   "spice": "spicy",
-   "text": "The Round Table. Talk it out, out loud. Who sank that mission? Then everyone votes, in secret."
-  },
-  {
-   "id": "sm-how-table-h1",
-   "moment": "sm-how-table",
-   "spice": "hot",
-   "text": "Round Table rules: argue out loud, then vote in secret. Whoever gets the most is out. Hell of a system."
-  },
-  {
-   "id": "sm-how-table-f1",
-   "moment": "sm-how-table",
-   "spice": "filthy",
-   "text": "Round Table rules: argue, accuse, then vote in secret. Most votes gets thrown the hell out."
-  },
-  {
-   "id": "sm-how-vote-m1",
-   "moment": "sm-how-vote",
-   "spice": "mild",
-   "text": "Pick a name on your phone and seal it. Your vote is a secret letter until it's opened."
-  },
-  {
-   "id": "sm-how-vote-s1",
-   "moment": "sm-how-vote",
-   "spice": "spicy",
-   "text": "Pick a name and seal it. Each vote is a sealed letter. We open them one at a time. Dramatically."
-  },
-  {
-   "id": "sm-how-vote-h1",
-   "moment": "sm-how-vote",
-   "spice": "hot",
-   "text": "Seal your vote. Each one's a letter. We open them one by one, and nobody can take it back. Damn right."
-  },
-  {
-   "id": "sm-how-vote-f1",
-   "moment": "sm-how-vote",
-   "spice": "filthy",
-   "text": "Seal your vote. Each one's a letter, opened one by one. No take-backs. Holy shit, I love this."
-  },
-  {
-   "id": "sm-how-night-m1",
-   "moment": "sm-how-night",
-   "spice": "mild",
-   "text": "[whispers] Night time. Everyone's phone looks the same. Write, pick a name, then lock. Shh."
-  },
-  {
-   "id": "sm-how-night-s1",
-   "moment": "sm-how-night",
-   "spice": "spicy",
-   "text": "[whispers] Night. Every phone looks the same, so nobody can peek. Write, pick, lock. And hush."
-  },
-  {
-   "id": "sm-how-night-h1",
-   "moment": "sm-how-night",
-   "spice": "hot",
-   "text": "[whispers] Night. Every phone looks identical. Snakes pick a victim. Everyone else, look busy. Damn."
-  },
-  {
-   "id": "sm-how-night-f1",
-   "moment": "sm-how-night",
-   "spice": "filthy",
-   "text": "[whispers] Night. Every phone looks the same. The Snakes pick someone. Everyone else, act natural. Shit."
-  },
-  {
    "id": "lobbyempty-m1",
    "moment": "lobbyEmpty",
    "spice": "mild",
@@ -1536,6 +1440,150 @@
    "moment": "lobbyWaiting",
    "spice": "filthy",
    "text": "I've got a drink, you've got phones. What the hell are we waiting for? Press start!"
+  },
+  {
+   "id": "sm-brief-mission-everyone-m1",
+   "moment": "sm-brief-mission-everyone",
+   "spice": "mild",
+   "text": "Your first mission! A question lands on every phone, so answer it quick. Each right answer drops crowns in the pot, and if we hit the target, a bonus. Miss it, and the Snakes earn a Dagger. Oh, and a sneaky Snake can sink one right answer. Watch who's oddly wrong."
+  },
+  {
+   "id": "sm-brief-mission-everyone-s1",
+   "moment": "sm-brief-mission-everyone",
+   "spice": "spicy",
+   "text": "Mission one, my darlings. Everyone gets a question on their phone. Right answers fill the pot, and hitting the target pays a bonus. Miss it, and the Snakes get a Dagger. The best of you earns a secret shield. And a Snake can quietly sink one right answer. Watch the faces."
+  },
+  {
+   "id": "sm-brief-mission-everyone-h1",
+   "moment": "sm-brief-mission-everyone",
+   "spice": "hot",
+   "text": "Mission one. A question hits every phone at once. Right answers fill the pot; hit the target for a bonus. Miss it and the Snakes get a Dagger to play with. Your top scorer gets a secret shield. And yes, a Snake can sink one of your right answers. Who looked too surprised?"
+  },
+  {
+   "id": "sm-brief-mission-everyone-f1",
+   "moment": "sm-brief-mission-everyone",
+   "spice": "filthy",
+   "text": "Mission one, you lovely suspects. Everyone answers on their phone. Right answers fill the damn pot, hit the target for a bonus. Miss it and the Snakes get a Dagger. Top scorer gets a secret shield. And a Snake can sink one right answer. So who's faking stupid?"
+  },
+  {
+   "id": "sm-brief-mission-chain-m1",
+   "moment": "sm-brief-mission-chain",
+   "spice": "mild",
+   "text": "This mission is the chain. One of you at a time, in turn, and the TV says whose go it is. Every right answer in a row pays more than the last. One wrong answer and the chain snaps back to the start. No pressure. Well, some pressure."
+  },
+  {
+   "id": "sm-brief-mission-chain-s1",
+   "moment": "sm-brief-mission-chain",
+   "spice": "spicy",
+   "text": "Tonight's mission is the chain. One player at a time, the TV shows who. A run of right answers pays more and more. One wrong answer snaps the chain right back to the start. So if someone fumbles an easy one, remember who."
+  },
+  {
+   "id": "sm-brief-mission-chain-h1",
+   "moment": "sm-brief-mission-chain",
+   "spice": "hot",
+   "text": "The chain. One at a time, the TV calls your name. Right answers in a row pay bigger and bigger. One wrong answer and the whole chain snaps. If a Snake wanted to hurt you, this is where they'd do it. Just saying."
+  },
+  {
+   "id": "sm-brief-mission-chain-f1",
+   "moment": "sm-brief-mission-chain",
+   "spice": "filthy",
+   "text": "The chain, darlings. One at a time, the TV calls your name. Each right answer in a row pays more. One wrong answer and the chain snaps like a cheap necklace. If somebody blows an easy one, ask why, damn it."
+  },
+  {
+   "id": "sm-brief-mission-pairs-m1",
+   "moment": "sm-brief-mission-pairs",
+   "spice": "mild",
+   "text": "Now, pairs! Your partner's name is on your phone and on the TV. You both get the same question. A pair only scores if both of you are right. One right and one wrong? Nothing at all. So if your partner flubs an easy one, ask yourself why."
+  },
+  {
+   "id": "sm-brief-mission-pairs-s1",
+   "moment": "sm-brief-mission-pairs",
+   "spice": "spicy",
+   "text": "Pairs, this time. Your partner is on your phone and on the TV. Same question, both of you. Both right, you score. One wrong, you get nothing. A Snake in a pair can drag their partner down with them. Choose your suspicions wisely."
+  },
+  {
+   "id": "sm-brief-mission-pairs-h1",
+   "moment": "sm-brief-mission-pairs",
+   "spice": "hot",
+   "text": "Pairs. Look at your phone for your partner. Same question for both of you. Both right, the pot grows. One wrong, zero. A Snake can sink a pair with one sloppy tap. Partner messed up? Interesting. Very interesting."
+  },
+  {
+   "id": "sm-brief-mission-pairs-f1",
+   "moment": "sm-brief-mission-pairs",
+   "spice": "filthy",
+   "text": "Pairs. Your partner's on your phone. Same question, both of you. Both right, you score. One of you screws it up, you get nothing. A Snake can sink a pair with one sloppy tap, so keep an eye on your so-called partner."
+  },
+  {
+   "id": "sm-brief-table-m1",
+   "moment": "sm-brief-table",
+   "spice": "mild",
+   "text": "Now, the Round Table. Talk it out, out loud: who sank that mission? Who's fibbing? You can type on your phone too. Then everyone votes in secret, and each vote is sealed in a letter. I open them one at a time. Whoever gets the most leaves the manor, and shows us what they really were."
+  },
+  {
+   "id": "sm-brief-table-s1",
+   "moment": "sm-brief-table",
+   "spice": "spicy",
+   "text": "Welcome to the Round Table. Argue out loud, or type it on your phone: who sank that mission, who's lying? Then a secret vote, each one sealed in a letter. I'll open them one by one, slowly. The most votes leaves the manor and shows us their true colors."
+  },
+  {
+   "id": "sm-brief-table-h1",
+   "moment": "sm-brief-table",
+   "spice": "hot",
+   "text": "The Round Table. Accuse someone. Defend yourself. Out loud, or type it on your phone. Then a secret vote, each sealed in a letter, and I open them one at a time. Most votes gets shown the door, and we find out if you got a Snake, or just got it wrong."
+  },
+  {
+   "id": "sm-brief-table-f1",
+   "moment": "sm-brief-table",
+   "spice": "filthy",
+   "text": "The Round Table. Point fingers, out loud or on your phone. Who sank it? Who's full of it? Then a secret vote, sealed in a letter. I open them one by one. Most votes is out, and then we see if you caught a Snake or just screwed over a Guest."
+  },
+  {
+   "id": "sm-brief-night-m1",
+   "moment": "sm-brief-night",
+   "spice": "mild",
+   "text": "[whispers] Night falls on the manor. The TV goes dark, and every phone looks exactly the same, so peeking won't help. Snakes, pick a Guest to vanish. Guests, write a note about who you suspect. Ghosts, place your bet. Then lock it in. At breakfast, we'll see who's gone."
+  },
+  {
+   "id": "sm-brief-night-s1",
+   "moment": "sm-brief-night",
+   "spice": "spicy",
+   "text": "[whispers] Night. The TV goes dark, and every phone looks exactly alike, so no peeking. Snakes choose a Guest to vanish. Guests write a note on who they suspect. Ghosts place their bets. Lock it in and keep your face still. Breakfast will tell."
+  },
+  {
+   "id": "sm-brief-night-h1",
+   "moment": "sm-brief-night",
+   "spice": "hot",
+   "text": "[whispers] Night. Lights out on the TV, and every phone looks the same, so peeking gets you nothing. Snakes, pick a Guest to murder. Guests, write down who you suspect. Ghosts, place your bets. Lock it in. Someone won't make it to breakfast."
+  },
+  {
+   "id": "sm-brief-night-f1",
+   "moment": "sm-brief-night",
+   "spice": "filthy",
+   "text": "[whispers] Night, you schemers. The TV goes dark and every phone looks the same, so don't bother peeking. Snakes, pick a Guest to murder. Guests, write who you suspect. Ghosts, bet. Lock it in, shut up, and pray you're at breakfast."
+  },
+  {
+   "id": "sm-brief-endgame-m1",
+   "moment": "sm-brief-endgame",
+   "spice": "mild",
+   "text": "The final table! You can end the game right now, or banish one more. It only ends if every single one of you picks End. If even one says no, back to the Round Table we go. And when it ends, the masks come off."
+  },
+  {
+   "id": "sm-brief-endgame-s1",
+   "moment": "sm-brief-endgame",
+   "spice": "spicy",
+   "text": "The last table. End the game now, or banish one more? It only ends if every one of you picks End. One holdout, and we're back at the Round Table. When it ends, the masks come off, and everyone learns who was who."
+  },
+  {
+   "id": "sm-brief-endgame-h1",
+   "moment": "sm-brief-endgame",
+   "spice": "hot",
+   "text": "Final table. End it now, or throw one more out? Every one of you must pick End, or we go back to the Round Table. When it ends, the masks come off. Still a Snake among you? Then they win. Choose carefully."
+  },
+  {
+   "id": "sm-brief-endgame-f1",
+   "moment": "sm-brief-endgame",
+   "spice": "filthy",
+   "text": "Final table, you paranoid lot. End it now, or toss one more? Everyone has to pick End or it's back to the damn Round Table. When it ends, masks off. If a Snake's still sitting there, they win. So think, for once."
   }
  ]
 }

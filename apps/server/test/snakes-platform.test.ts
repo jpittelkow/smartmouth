@@ -76,7 +76,8 @@ const q = (correct = 1): MQuestion => ({
 const start = (n: number, seed = 3) => rules.init(
   Array.from({ length: n }, (_, i) => ({ id: `p${i + 1}`, band: 'grownups' as Band })),
   { spice: 'hot', seed, drama: 'full' }, { grownups: Array.from({ length: 60 }, () => q()) }, 0);
-const toMission = (s: SnakesState) => rules.tick(s, s.stageEnds ?? 0);
+/** Past the deal and the mission's rules card (ADR 0025), to the first question. */
+const toMission = (s0: SnakesState) => { let s = s0; for (let i = 0; i < 4 && s.stage !== 'mission'; i++) s = rules.tick(s, s.stageEnds ?? 0); return s; };
 /** Everyone answers this step: right if `right(id)`. */
 function answerAll(s0: SnakesState, right: (id: string) => boolean): SnakesState {
   let s = s0;
@@ -250,4 +251,47 @@ test('pause: intents are refused while paused, and resuming moves every clock fo
   assert.equal((after.stageEnds ?? 0) - (before.stageEnds ?? 0), 30_000, 'the deal ends 30 s later: no time lost');
   assert.equal(after.stageStart - before.stageStart, 30_000);
   db.close();
+});
+
+// ---------- briefings (ADR 0025) ----------
+
+test('the first mission waits behind its rules card: no question and no clock but the card’s', () => {
+  let s = start(6);
+  s = rules.tick(s, s.stageEnds ?? 0);
+  assert.equal(s.stage, 'briefing');
+  assert.equal(s.brief, 'mission-everyone');
+  assert.equal(s.mission, null, 'no question is asked during the card');
+  assert.equal(rules.hostView(s).brief, 'mission-everyone');
+  assert.equal(momentFor(s), 'sm-brief-mission-everyone');
+  const held = rules.holdStage(s, (s.stageEnds ?? 0) + 9000);
+  assert.equal(held.stageEnds, (s.stageEnds ?? 0) + 9000, 'the card waits for Salty to finish');
+  const m = rules.tick(held, held.stageEnds ?? 0);
+  assert.equal(m.stage, 'mission');
+  assert.equal(m.stageStart, held.stageEnds, 'the mission starts when the card ends');
+  assert.deepEqual(m.briefed, ['mission-everyone']);
+});
+
+test('each rules card shows once per game, before the thing it explains', async () => {
+  const { botMoves } = await import('../src/adapters/snakes.ts');
+  for (const n of [5, 7, 10]) {
+    let x = n * 104729;
+    const rand = () => { x = (Math.imul(x, 1664525) + 1013904223) >>> 0; return x / 4294967296; };
+    let s = start(n, n + 2);
+    let t = 0;
+    const seen: Array<{ brief: string; next: string }> = [];
+    for (let i = 0; i < 4000 && !rules.isOver(s); i++) {
+      for (const id of s.order) for (const intent of botMoves(s, id, rand)) s = rules.intent(s, id, intent as never, t);
+      if (rules.isOver(s)) break;
+      t = Math.max(t, rules.nextDeadline(s) ?? t);
+      const was = s;
+      s = rules.tick(s, t);
+      if (was.stage === 'briefing' && s.stage !== 'briefing') seen.push({ brief: was.brief!, next: s.stage });
+    }
+    assert.equal(s.stage, 'final', `${n} players finished`);
+    const ids = seen.map((x) => x.brief);
+    assert.equal(new Set(ids).size, ids.length, `no card twice (${ids.join(', ')})`);
+    assert.ok(ids.includes('mission-everyone') && ids.includes('table'), 'the first mission and table are always explained');
+    const leads: Record<string, string> = { 'mission-everyone': 'mission', 'mission-chain': 'mission', 'mission-pairs': 'mission', table: 'debate', night: 'night', endgame: 'endVote' };
+    for (const x of seen) assert.equal(x.next, leads[x.brief], `${x.brief} leads into ${x.next}`);
+  }
 });

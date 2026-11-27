@@ -6,13 +6,17 @@
 // the living vote: End, or Banish again.
 import { bandRank, type Band, type GamePlayer, type Spice } from '@smartmouth/protocol';
 import * as R from './rng.ts';
-import { missionIntent, missionTick, startMission, missionPublic, missionForPlayer, MISSION_REVEAL_MS } from './mission.ts';
+import { missionIntent, missionTick, startMission as runMission, missionPublic, missionForPlayer, formatFor, MISSION_REVEAL_MS } from './mission.ts';
 import type {
   BreakfastState, DaggerKind, NightScreen, Role, SPlayer, SPublicPlayer, SnakesContent, SnakesHostView, SnakesIntent,
   SnakesPlayerView, SnakesSettings, SnakesState, Stage, Words,
+  BriefId,
 } from './types.ts';
 
 export const DEAL_MS = 15_000;
+/** A rules card stays up at least this long, and until Salty finishes explaining (ADR 0025). */
+export const BRIEF_MS = 12_000;
+export const BRIEFS: readonly BriefId[] = ['mission-everyone', 'mission-chain', 'mission-pairs', 'table', 'night', 'endgame'];
 export const DEBATE_MS = 180_000;
 export const VOTE_MS = 45_000;
 export const REVEAL_PER_VOTE_MS = 2_500;
@@ -72,7 +76,7 @@ export function init(players: readonly GamePlayer[], settings: SnakesSettings, c
     endSize: endSizeFor(players.length), stage: 'deal', stageStart: now, stageEnds: now + DEAL_MS, round: 1,
     players: ps, order, pot: 0, daggers: 0, peeks: [], chat: [], queues: content, mission: null, vote: null,
     banished: null, night: null, breakfast: null, endgame: false, endVotes: {}, forceRecruit: false, mayRecruit: false,
-    unmasked: 0, log: [], history: [], talk: [],
+    unmasked: 0, log: [], history: [], talk: [], brief: null, briefed: [],
   };
 }
 
@@ -116,7 +120,7 @@ export function nextDeadline(s: SnakesState): number | null {
 }
 
 /** Reveal stages wait for Salty to finish talking. The debate, vote and night clocks never move (ADR 0023). */
-const HOLDABLE: ReadonlySet<Stage> = new Set(['deal', 'missionReveal', 'voteReveal', 'banish', 'breakfast', 'unmask']);
+const HOLDABLE: ReadonlySet<Stage> = new Set(['deal', 'briefing', 'missionReveal', 'voteReveal', 'banish', 'breakfast', 'unmask']);
 export function holdStage(s: SnakesState, until: number): SnakesState {
   if (!HOLDABLE.has(s.stage) || s.stageEnds === null || s.stageEnds >= until) return s;
   return { ...s, stageEnds: until };
@@ -147,6 +151,7 @@ export function tick(s: SnakesState, now: number): SnakesState {
 function advance(s: SnakesState, now: number): SnakesState {
   switch (s.stage) {
     case 'deal': return startMission(s, now);
+    case 'briefing': return afterBrief(s, now);
     case 'missionReveal': return startDebate(s, now);
     case 'debate': return startVote(s, living(s), false, now);
     case 'vote': return closeVote(s, now);
@@ -167,12 +172,38 @@ function advance(s: SnakesState, now: number): SnakesState {
   }
 }
 
+// ---------- briefings (ADR 0025) ----------
+
+/**
+ * Before the table first meets something, a rules card: the `briefing` stage, no clock but its own. When it ends,
+ * the stage it was explaining starts fresh, so no question timer runs while Salty talks.
+ */
+function briefFirst(s: SnakesState, id: BriefId, now: number, go: (s: SnakesState) => SnakesState): SnakesState {
+  if (s.briefed.includes(id)) return go(s);
+  return to({ ...s, brief: id }, 'briefing', now, BRIEF_MS);
+}
+
+function afterBrief(s0: SnakesState, now: number): SnakesState {
+  const id = s0.brief;
+  const s = { ...s0, brief: null, briefed: id ? [...s0.briefed, id] : s0.briefed };
+  switch (id) {
+    case 'table': return startDebate(s, now);
+    case 'night': return startNight(s, now);
+    case 'endgame': return startEndVote(s, now);
+    default: return startMission(s, now);
+  }
+}
+
+function startMission(s: SnakesState, now: number): SnakesState {
+  return briefFirst(s, `mission-${formatFor(s.round)}`, now, (x) => runMission(x, now));
+}
+
 function afterMission(s: SnakesState, now: number): SnakesState {
   return to(s, 'missionReveal', now, staged(s, MISSION_REVEAL_MS));
 }
 
-function startDebate(s: SnakesState, now: number): SnakesState {
-  return to({ ...s, vote: null, banished: null }, 'debate', now, DEBATE_MS);
+function startDebate(s0: SnakesState, now: number): SnakesState {
+  return briefFirst(s0, 'table', now, (s) => to({ ...s, vote: null, banished: null }, 'debate', now, DEBATE_MS));
 }
 
 function startVote(s: SnakesState, candidates: string[], revote: boolean, now: number): SnakesState {
@@ -233,8 +264,9 @@ function afterTable(s0: SnakesState, now: number): SnakesState {
   return startNight(s, now);
 }
 
-function startNight(s0: SnakesState, now: number): SnakesState {
-  let s = s0;
+function startNight(s1: SnakesState, now: number): SnakesState {
+  if (!s1.briefed.includes('night')) return briefFirst(s1, 'night', now, (x) => x);
+  let s = s1;
   const number = s.round;
   let recruit: 'none' | 'offer' | 'forced' = s.forceRecruit ? 'forced' : s.mayRecruit && recruitable(s).length > 0 ? 'offer' : 'none';
   let offer: { to: string; answer: boolean | null } | null = null;
@@ -334,7 +366,9 @@ function afterBreakfast(s: SnakesState, now: number): SnakesState {
   return startMission(s, now);
 }
 
-function startEndVote(s: SnakesState, now: number): SnakesState {
+function startEndVote(s0: SnakesState, now: number): SnakesState {
+  if (!s0.briefed.includes('endgame')) return briefFirst(s0, 'endgame', now, (x) => x);
+  const s = s0;
   return to({ ...s, endVotes: {} }, 'endVote', now, ENDVOTE_MS);
 }
 
@@ -540,7 +574,7 @@ export function hostView(s: SnakesState): SnakesHostView {
   const v = s.vote;
   const alive = living(s);
   return {
-    stage: s.stage, round: s.round, deadline: nextDeadline(s), stageStart: s.stageStart, drama: s.drama, words: words(s.spice),
+    stage: s.stage, brief: s.brief, round: s.round, deadline: nextDeadline(s), stageStart: s.stageStart, drama: s.drama, words: words(s.spice),
     players: s.order.map((id) => publicPlayer(s, id)), pot: s.pot, endSize: s.endSize,
     mission: s.mission ? missionPublic(s) : null,
     vote: v && (s.stage === 'vote' || s.stage === 'voteReveal' || s.stage === 'banish') ? {
@@ -587,7 +621,7 @@ function nightScreen(s: SnakesState, id: string): NightScreen {
 export function playerView(s: SnakesState, id: string): SnakesPlayerView {
   const p = s.players[id];
   const base = {
-    stage: s.stage, round: s.round, deadline: nextDeadline(s), words: words(s.spice),
+    stage: s.stage, brief: s.brief, round: s.round, deadline: nextDeadline(s), words: words(s.spice),
     players: s.order.map((x) => publicPlayer(s, x)), pot: s.pot,
   };
   if (!p) {
