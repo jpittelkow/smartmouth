@@ -382,3 +382,23 @@ button, input { font: inherit; color: inherit; }
 .tv-game.crowded .timer { width: 140px; height: 140px; top: 4px; }
 .tv-game.crowded .timer span { font-size: 70px; }
 .tv-game.crowded .standings .st-row svg { width: 40px; height: 40px; }
+
+/* ---------- Setting up a game on the TV (owner, 2026-11-27) ---------- */
+.games.setup { align-content: center; gap: 18px; }
+.games.setup h2 { color: var(--paper); font-size: 44px; }
+.setup-label { font-size: 30px; color: var(--muted); }
+.setup-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.setup-btn { font-size: 30px; font-weight: 800; padding: 16px 10px; border-radius: 20px; }
+.setup-btn[aria-pressed='true'] { background: var(--spot); color: var(--ink); }
+.setup-ready { font-size: 44px; font-weight: 800; padding: 20px; border-radius: 24px; background: var(--zap); color: var(--ink); }
+.setup-back { font-size: 28px; padding: 12px; border-radius: 18px; }
+.games.setup button:focus-visible, .games.setup button.focused { box-shadow: 0 0 0 6px var(--spot), var(--shadow-tv); transform: scale(1.03); }
+.setup-wait { font-size: 40px; font-weight: 800; }
+.setup-count-line { font-size: 34px; color: var(--muted); }
+.setup-count-line b { color: var(--zap); font-size: 48px; }
+.setup-count { font-size: 200px; line-height: 1; color: var(--spot); text-align: center; animation: wipe-pop 1s var(--pop) both; }
+.tile .tile-badge { position: absolute; top: -12px; right: -8px; }
+/* The phone's Ready */
+.ready-box { display: grid; gap: 10px; justify-items: center; width: 100%; }
+.ready-btn { min-height: 96px; font-size: 32px; background: var(--zap); color: var(--ink); }
+.ready-btn.is-ready { background: var(--stage-2); color: var(--paper); }
