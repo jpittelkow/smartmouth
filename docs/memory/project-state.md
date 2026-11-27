@@ -11,7 +11,7 @@ waiting on the owner.
   (`docs/design/mockups/index.html`, also published as a private artifact, linked in the journal).
 - **Server** (`apps/server`): rooms in memory, 4-letter codes, join/resume with tokens, admin = first grown-up,
   kick, the spice cap from the youngest band, an origin check, rate limits, an idle-room sweep, and the built web app served from
-  `/`. 10 tests (rules + real sockets). No database, AI or voice code yet.
+  `/`, the admin password, and the question library API. 27 tests. No AI or voice code yet.
 - **Web** (`apps/web`): `/host` TV lobby (code, QR, players, spice chip, game picker with D-pad focus, a caption
   strip with placeholder text lines), `/play` (join with age pictures, blob picker, waiting screen, grown-up spice
   controls, leave), and `/admin`: password sign-in, then the **question library** (search, filters for every grade, editor,
