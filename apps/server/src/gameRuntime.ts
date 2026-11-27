@@ -1,7 +1,7 @@
 // Runs a room's game (ADR 0006) through that game's adapter: starts it, passes intents to the rules, keeps the
 // player list and spice level in step with the room, records plays, and ends it. Timers live in ws.ts.
 import { randomInt } from 'node:crypto';
-import { TEXT_MAX, isBand, effectiveSpice, type GamePlayer } from '@smartmouth/protocol';
+import { BANDS, TEXT_MAX, isBand, effectiveSpice, type GamePlayer } from '@smartmouth/protocol';
 import type { Db } from './db.ts';
 import { recordPlay } from './questions.ts';
 import { spiceState, type Room } from './rooms.ts';
@@ -25,8 +25,10 @@ export function startGame(room: Room, gameId: string, db: Db, now: number, seed:
   if (room.seats.length > manifest.maxPlayers) {
     return { ok: false, code: 'not-ready', message: `${manifest.name} takes at most ${manifest.maxPlayers} players.` };
   }
-  if (room.seats.some((s) => !manifest.bands.includes(s.band))) {
-    return { ok: false, code: 'not-ready', message: `${manifest.name} isn't for every age in the room yet.` };
+  const outside = BANDS.filter((b) => !manifest.bands.includes(b.id) && room.seats.some((s) => s.band === b.id));
+  if (outside.length) {
+    const who = outside.map((b) => `${b.label} (${b.ages})`).join(' and ');
+    return { ok: false, code: 'not-ready', message: `${manifest.name} isn't for ${who} players. Pick another game, or play without them.` };
   }
   const adapter = adapterFor(manifest.id);
   const r = adapter.start({ players: players(room), spice: spiceState(room).effective, seed, drama: room.drama, db, exclude: room.asked, now });
