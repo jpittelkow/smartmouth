@@ -25,6 +25,25 @@ _Last updated: 2026-11-26_
 - The TV banner spells the name as vector paths (vector drawables can't hold text), so it needs redrawing on a rename.
 - A WebView `<video>` with no poster shows a grey play button unless `getDefaultVideoPoster` is overridden. That's already done.
 
+## Deploy and server (2026-11-26)
+- This Windows checkout holds CRLF copies of some files, which bash on the server rejects (`pipefail: invalid option`).
+  `deploy.sh` reads the stack files with `git show HEAD:...`, which are always LF.
+- The tunnel's traffic reaches the container from `172.24.0.1` (the gateway of the `smartmouth_default` network). If that
+  network is ever recreated with another subnet, update `TRUSTED_PROXIES` in the server `.env`.
+- Restarting the container (a deploy) kills any `docker exec` voice run inside it. Don't deploy while `voice.mjs` is running.
+- Test games played against the live server count in the question stats. Wipe them after testing (journal 2026-11-26 has the
+  one-liner).
+
+## Voice (2026-11-26)
+- OpenRouter lists speech models at `/api/v1/audio/speech/models/<id>`, not in `/api/v1/models`. `openai/gpt-4o-mini-tts` isn't
+  there.
+- Gemini TTS returns only wav or pcm (about 48 KB a second). ElevenLabs stock voices retire on 2026-12-31. Fish Audio S2.1 Pro works with no
+  voice given and takes `instructions`.
+- One request at a time: the shared key's in-flight budget gives 402s for parallel calls (found by Crayon Box).
+
+## Office Chromecast
+- GlanceTV's screensaver stays over a newly launched app until a key wakes the device (`input keyevent KEYCODE_WAKEUP`).
+
 ## Tooling
 - Playwright isn't installed in this repo yet. The 2026-11-26 browser check borrowed it from `code/kidsapp/node_modules`
   with `NODE_PATH`.
