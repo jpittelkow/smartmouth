@@ -28,6 +28,7 @@ test('every response carries the security headers; /media pages are sandboxed', 
     const page = await fetch(`${base}/media/voice/index.html`);
     assert.equal(page.status, 200);
     assert.match(page.headers.get('content-security-policy') ?? '', /sandbox allow-scripts/);
+    assert.equal(page.headers.get('cross-origin-resource-policy'), null, 'sandboxed pages must still load their recordings');
     const https = await fetch(`${base}/play`, { headers: { 'x-forwarded-proto': 'https' } });
     assert.match(https.headers.get('strict-transport-security') ?? '', /max-age=\d+/);
   } finally {

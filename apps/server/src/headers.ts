@@ -33,15 +33,18 @@ const MEDIA_CSP = [
 ].join('; ');
 
 export function securityHeaders(pathname: string, https: boolean): Record<string, string> {
+  const media = pathname.startsWith('/media/');
   const h: Record<string, string> = {
-    'content-security-policy': pathname.startsWith('/media/') ? MEDIA_CSP : PAGE_CSP,
+    'content-security-policy': media ? MEDIA_CSP : PAGE_CSP,
     'x-content-type-options': 'nosniff',
     'x-frame-options': 'DENY',
     'referrer-policy': 'no-referrer',
     'permissions-policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()',
     'cross-origin-opener-policy': 'same-origin',
-    'cross-origin-resource-policy': 'same-origin',
   };
+  // Not on /media: a sandboxed audition page has an opaque origin, so same-origin CORP would block its own recordings
+  // (found live 2026-11-27). The recordings are public anyway.
+  if (!media) h['cross-origin-resource-policy'] = 'same-origin';
   // Only over HTTPS (through Cloudflare); a plain-HTTP visit on the home network must not be told to upgrade.
   if (https) h['strict-transport-security'] = 'max-age=31536000';
   return h;
