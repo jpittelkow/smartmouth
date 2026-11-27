@@ -50,4 +50,4 @@ of Salty's voice. All ADRs except 0021 are **Proposed** (the owner will review t
 ## Logged for later (owner, 2026-11-27)
 - **Drunk mode:** a level above Filthy (adults only). The longer the game goes, the more Salty's speech slurs, the more
   annoyed and belligerent she gets, with drinking sounds between lines (sips, a hiccup, a bottle); near the end she's
-  almost incomprehensible, and dirtier as she goes. Details and what it needs: `future.drunk` in `content/voice/brief.json`.
+  almost incomprehensible, and dirtier as she goes. Details and what it needs: `future.drunk` in `content/voice/brief.json`. **Draft script written 2026-11-27:** `docs/design/drunk-salty-script.md` (4 stages, ~90 lines, not reviewed or voiced).

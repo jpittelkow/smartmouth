@@ -279,6 +279,6 @@
   "otherGames": "Snake Manor's moments (sm-*) are owned by that game's work; add them here with the same fields when they are ready to generate. Until then coverage.mjs lists them without a target.",
   "future": {
     "//": "Ideas logged for later; not built.",
-    "drunk": "Owner, 2026-11-27: a 'drunk' level above Filthy. The longer the game goes, the more Salty's speech slurs, the more annoyed and belligerent she gets, with drinking sounds (sips, a hiccup, a bottle) between lines; by the end she's almost incomprehensible, and dirtier as she goes. Needs: a spice level above filthy (adults only), lines written per stage of drunkenness, a direction per stage for the recorder, and sound effects."
+    "drunk": "Owner, 2026-11-27: a 'drunk' level above Filthy. The longer the game goes, the more Salty's speech slurs, the more annoyed and belligerent she gets, with drinking sounds (sips, a hiccup, a bottle) between lines; by the end she's almost incomprehensible, and dirtier as she goes. Needs: a spice level above filthy (adults only), lines written per stage of drunkenness, a direction per stage for the recorder, and sound effects. Draft script (stages, directions, sound cues, lines): docs/design/drunk-salty-script.md (2026-11-27)."
   }
 }
