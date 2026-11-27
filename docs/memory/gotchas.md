@@ -48,6 +48,8 @@ _Last updated: 2026-11-26_
 - One request at a time: the shared key's in-flight budget gives 402s for parallel calls (found by Crayon Box).
 - Lyria 3 music on OpenRouter returns audio only with `"modalities": ["text", "audio"]` and `"stream": true` (base64 mp3 in
   `choices[0].delta.audio.data`). Without them it still charges $0.04 and returns just `<instrumental>` (2026-11-27, `tools/sounds/README.md`).
+- Cloudflare keeps `/media` files for a year, response headers included. After a header change, old copies still carry
+  the old headers (a cached CORP header stopped the sound audition playing, 2026-11-27): link to `?v=<stamp>` or purge.
 
 ## Office Chromecast
 - GlanceTV's screensaver stays over a newly launched app until a key wakes the device (`input keyevent KEYCODE_WAKEUP`).

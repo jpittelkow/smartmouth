@@ -19,6 +19,11 @@ const OUT = join(DATA, 'media', 'sounds', 'audition');
 const MAX_USD = Number(process.env.MAX_USD || 1.5);
 const TAKES = Number(process.env.TAKES || 2);
 const MODEL = 'google/lyria-3-clip-preview';
+/**
+ * Added to each clip's link. Cloudflare keeps /media files for a year, headers included, so a page written after a
+ * header change must ask for fresh copies (found 2026-11-27: a cached copy with the old CORP header wouldn't play).
+ */
+const STAMP = Date.now().toString(36);
 
 /** Each cue: where it plays in the game, the synthesized sound it would replace, and the prompt. */
 const MUSIC = [
@@ -104,7 +109,7 @@ function rows(list, kind) {
     const takes = Array.from({ length: TAKES }, (_, i) => i + 1).map((t) => {
       const f = `${c.id}-${t}.mp3`;
       return existsSync(join(OUT, f))
-        ? `<td><audio controls preload="none" src="${f}"></audio><label><input type="radio" name="${c.id}" value="take ${t}"> Take ${t}</label></td>`
+        ? `<td><audio controls preload="none" src="${f}?v=${STAMP}"></audio><label><input type="radio" name="${c.id}" value="take ${t}"> Take ${t}</label></td>`
         : '<td class="none">not made</td>';
     }).join('');
     const synth = c.synth
