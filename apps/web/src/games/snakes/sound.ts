@@ -157,18 +157,19 @@ export const SFX = {
     }
     burst(0.08, 'highpass', 2000, 0.3, delay);
   },
-  hiss() { burst(2.2, 'highpass', 4200, 0.3, 0.15); },
+  hiss() { if (!playClip('hiss', 0.15, 0.85, { maxSec: 3 })) burst(2.2, 'highpass', 4200, 0.3, 0.15); },
   snuff() {
     if (playClip('candles', 0, 0.45, { maxSec: 1 })) return;
     burst(0.15, 'lowpass', 900, 0.12);
   },
-  lute(step: number) { tone(step === 0 ? 196 : 233.1, 'triangle', 0.18, 0.005, 1.8); },
+  /** The sad lute. The recording holds both notes, so it plays once, on the first. */
+  lute(step: number) { if (hasSound('lute')) { if (step === 0) playClip('lute', 0, 0.7, { maxSec: 3 }); return; } tone(step === 0 ? 196 : 233.1, 'triangle', 0.18, 0.005, 1.8); },
   /** A vote letter torn open (the reveal). */
   envelope() { if (!playClip('envelope', 0, 0.85, { maxSec: 2.5 })) burst(0.5, 'bandpass', 2600, 0.14); },
   /** The letter unfolding to show the name. */
   unfold() { if (!playClip('unfold', 0, 0.75, { maxSec: 2 })) burst(0.35, 'highpass', 3000, 0.08); },
   /** A sealed letter laid on the table (a vote cast): the paper sound, short and quiet. */
-  letterIn() { if (!playClip('unfold', 0, 0.35, { maxSec: 0.6 })) burst(0.15, 'bandpass', 2400, 0.08); },
+  letterIn() { if (!playClip('letter', 0, 0.6, { maxSec: 1.2 }) && !playClip('unfold', 0, 0.35, { maxSec: 0.6 })) burst(0.15, 'bandpass', 2400, 0.08); },
   /** A blade drawn: the Snakes earned a Dagger. */
   dagger() { if (!playClip('dagger', 0, 0.8, { maxSec: 2 })) { tone(1800, 'sawtooth', 0.04, 0.2, 0.5); burst(0.6, 'highpass', 5000, 0.12); } },
   /** A metal clang: a shield given. */
@@ -186,7 +187,7 @@ export const SFX = {
   /** A bright little flourish: a mission's target hit. */
   flourish() { [523.3, 659.3, 784, 1046.5].forEach((hz, i) => tone(hz, 'triangle', 0.15, 0.005, 0.5, i * 0.09)); },
   /** A cracked, off-key fanfare: a target missed. */
-  crackedFanfare() { [392, 370, 311.1].forEach((hz, i) => { tone(hz, 'sawtooth', 0.08, 0.02, 0.5, i * 0.22); tone(hz * 1.03, 'sawtooth', 0.05, 0.02, 0.5, i * 0.22); }); },
+  crackedFanfare() { if (playClip('misfanfare', 0, 0.75, { maxSec: 4 })) return; [392, 370, 311.1].forEach((hz, i) => { tone(hz, 'sawtooth', 0.08, 0.02, 0.5, i * 0.22); tone(hz * 1.03, 'sawtooth', 0.05, 0.02, 0.5, i * 0.22); }); },
   /** Birdsong for the morning. */
   birds() { if (playClip('birds', 0, 0.5, { maxSec: 6 })) return; for (let i = 0; i < 5; i++) tone(2400 + Math.random() * 1400, 'sine', 0.05, 0.01, 0.12, i * 0.21 + Math.random() * 0.05); },
   /** The manor staff gasp: the empty chair. */
