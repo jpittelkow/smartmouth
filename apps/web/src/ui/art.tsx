@@ -88,11 +88,12 @@ export function Tick({ size = 40 }: { size?: number }) {
 }
 
 /** A picture answer: the picture when there is one, else a big word card (until pictures are made, ADR 0011). */
-export function PictureCard({ text, image, index }: { text: string; image: string | null; index: number }) {
+export function PictureCard({ text, image, index, credit }: { text: string; image: string | null; index: number; credit?: string }) {
   const tints = ['#fff1b8', '#ffd6e0', '#c9f5ea', '#d3e6ff'];
   return (
     <span className="pic-card" style={{ background: tints[index % tints.length] }}>
       {image ? <img src={image} alt={text} /> : <span className="pic-word">{text}</span>}
+      {image && credit && <small className="pic-credit">{credit}</small>}
     </span>
   );
 }

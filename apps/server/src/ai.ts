@@ -1,7 +1,8 @@
 // OpenRouter chat for the server's AI jobs (ADR 0011). One key, OPENROUTER_API_KEY, held by the server only.
 // Calls ask OpenRouter to report each call's cost, so a job can stop at its budget.
 
-export interface ChatMessage { role: 'system' | 'user' | 'assistant'; content: string }
+export type ChatPart = { type: 'text'; text: string } | { type: 'image_url'; image_url: { url: string } };
+export interface ChatMessage { role: 'system' | 'user' | 'assistant'; content: string | ChatPart[] }
 
 export interface ChatResult {
   text: string;

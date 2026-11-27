@@ -43,7 +43,7 @@ export function TriviaController({ view, send }: { view: PlayerGameView; send: (
         <div className="kid-mode">
           {t.question.answers.map((a, i) => (
             <button key={i} className="press kid-pic" onClick={() => answer(i)} aria-label={a.text}>
-              <PictureCard text={a.text} image={a.image} index={i} />
+              <PictureCard text={a.text} image={a.image} index={i} credit={a.credit} />
             </button>
           ))}
         </div>

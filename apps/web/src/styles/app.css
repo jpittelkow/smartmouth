@@ -402,3 +402,30 @@ button, input { font: inherit; color: inherit; }
 .ready-box { display: grid; gap: 10px; justify-items: center; width: 100%; }
 .ready-btn { min-height: 96px; font-size: 32px; background: var(--zap); color: var(--ink); }
 .ready-btn.is-ready { background: var(--stage-2); color: var(--paper); }
+
+/* ---------- Pictures (owner, 2026-11-27) ---------- */
+/* The question's picture sits left of the question (the countdown owns the top-right); reveal pictures take its place. */
+.q-row { display: grid; grid-template-columns: 440px minmax(0, 1fr); gap: 32px; align-items: center; max-width: calc(100% - 200px); }
+.q-row .q-text { max-width: none; }
+.q-pic { position: relative; margin: 0; width: 440px; aspect-ratio: 16 / 9; border-radius: 22px; overflow: hidden; border: var(--outline); box-shadow: var(--shadow-tv); background: var(--ink); }
+.q-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 600ms ease; }
+.q-pic img.on { opacity: 1; }
+.q-pic figcaption, .pic-credit {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 4px 10px; font-size: 15px; line-height: 1.2; color: var(--paper);
+  background: linear-gradient(transparent, rgba(20, 17, 31, .85)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pic-card { position: relative; }
+.pic-card img { object-fit: cover; }
+.tv-game.crowded .q-row { grid-template-columns: 320px minmax(0, 1fr); gap: 24px; }
+.tv-game.crowded .q-pic { width: 320px; }
+
+/* The board fits itself (QuestionBoard sets --fit from 1 down to .6 until it fits the game area). */
+.board { --fit: 1; }
+.board .q-text { font-size: calc(64px * var(--fit)); }
+.board .answer { font-size: calc(42px * var(--fit)); min-height: calc(96px * var(--fit)); padding: calc(14px * var(--fit)) 26px; }
+.board .answer svg { width: calc(64px * var(--fit)); height: calc(64px * var(--fit)); }
+.board .answers { gap: calc(20px * var(--fit)); }
+.board .q-row { grid-template-columns: calc(440px * var(--fit)) minmax(0, 1fr); }
+.board .q-pic { width: calc(440px * var(--fit)); }
+.tv-game.crowded .board .q-text { font-size: calc(52px * var(--fit)); }
+.tv-game.crowded .board .answer { font-size: calc(36px * var(--fit)); min-height: calc(76px * var(--fit)); }

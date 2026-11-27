@@ -1,6 +1,6 @@
 // Trivia on the TV (design guide §6 TV, ADR 0009). Drawn inside the 1920×1080 stage. The remote drives it:
 // OK moves past a reveal, left/right/OK play a Little's turn, and Back opens the menu (handled in Host.tsx).
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { ClientMsg, HostGameView, PublicSeat } from '@smartmouth/protocol';
 import { BANDS, SPICE_LABEL } from '@smartmouth/protocol';
 import type { TriviaHostView, TPublicQuestion } from '@smartmouth/game-trivia';
@@ -187,15 +187,55 @@ function Countdown({ deadline, opensAt }: { deadline: number; opensAt: number })
   );
 }
 
-function QuestionBoard({ g, q }: { g: TriviaHostView; q: TPublicQuestion }) {
+/** One picture, or a few that take turns, each with its credit (CC BY photos require it). */
+function Pictures({ images }: { images: Array<{ url: string; alt: string; credit: string }> }) {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    setI(0);
+    if (images.length < 2) return;
+    const t = setInterval(() => setI((n) => (n + 1) % images.length), 3200);
+    return () => clearInterval(t);
+  }, [images]);
   return (
-    <div className={`board${g.stage === 'suspense' ? ' suspense' : ''}`}>
+    <figure className="q-pic">
+      {images.map((im, n) => <img key={im.url} src={im.url} alt={im.alt} className={n === i ? 'on' : ''} />)}
+      {images[i]?.credit && <figcaption>{images[i]!.credit}</figcaption>}
+    </figure>
+  );
+}
+
+function QuestionBoard({ g, q }: { g: TriviaHostView; q: TPublicQuestion }) {
+  // Fit to the space (owner's TV, 2026-11-27: a three-line question pushed the answers under Salty's caption): if the
+  // board is taller than the game area, everything on it shrinks a step at a time, down to 60 %.
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const board = ref.current;
+    const area = board?.parentElement;
+    if (!board || !area) return;
+    let fit = 1;
+    board.style.setProperty('--fit', '1');
+    while (board.scrollHeight > area.clientHeight && fit > 0.6) {
+      fit = Math.round((fit - 0.05) * 100) / 100;
+      board.style.setProperty('--fit', String(fit));
+    }
+  }, [q.prompt, q.answers.length, g.stage, g.revealImages.length, !!q.image]);
+  return (
+    <div ref={ref} className={`board${g.stage === 'suspense' ? ' suspense' : ''}`}>
       <div className="board-head">
         <span className="cat-chip">{q.category}</span>
         {g.splitBands && <span className="split-chip">Everyone's got their own question on their phone</span>}
         {g.stage === 'question' && g.deadline && <Countdown deadline={g.deadline} opensAt={g.opensAt ?? 0} />}
       </div>
-      <div className="q-text display">{q.prompt}</div>
+      {/* The question's picture, then the reveal's pictures once the answer is out (owner, 2026-11-27). */}
+      {(() => {
+        const pics = g.stage === 'reveal' && g.revealImages.length ? g.revealImages : q.image ? [q.image] : [];
+        return pics.length ? (
+          <div className="q-row">
+            <Pictures key={g.stage === 'reveal' ? 'reveal' : 'question'} images={pics} />
+            <div className="q-text display">{q.prompt}</div>
+          </div>
+        ) : <div className="q-text display">{q.prompt}</div>;
+      })()}
       <div className={`answers n${q.answers.length}`}>
         {q.answers.map((a, i) => (
           <div key={i} className={`answer${g.correct === null ? '' : i === g.correct ? ' correct' : ' dim'}`}>
@@ -250,7 +290,7 @@ function Turn({ g, who, send, answerClips }: {
           const state = t.correct === null ? (g.stage === 'turn' && i === focus ? ' focused' : '') : i === t.correct ? ' correct' : ' dim';
           return (
             <button key={i} className={`pic${state}`} tabIndex={-1} onClick={() => send({ t: 'game:intent', intent: { type: 'answerFor', playerId: t.playerId, choice: i } })}>
-              <PictureCard text={a.text} image={a.image} index={i} />
+              <PictureCard text={a.text} image={a.image} index={i} credit={a.credit} />
               <span className="pic-label">{a.text}</span>
             </button>
           );
