@@ -106,3 +106,19 @@ test('a question counts as asked the moment it shows, so a game ended early star
   assert.notEqual(firstQuestion(b, 60_000), q1, 'the next game does not open with the same question');
   db.close();
 });
+
+test('the grown-up’s game length sets how many questions trivia asks: 10, 30 or 50', async () => {
+  const { loadSeeds } = await import('../src/seeds.ts');
+  const { fileURLToPath } = await import('node:url');
+  const db = openDb(':memory:');
+  loadSeeds(db, fileURLToPath(new URL('../../../content/seed', import.meta.url)), 0);
+  const store = new RoomStore();
+  for (const [length, n] of [['short', 10], ['medium', 30], ['long', 50]] as const) {
+    const room = store.create(0);
+    store.join(room, { name: 'One', band: 'grownups', avatar: 0 }, 0);
+    room.length = length;
+    assert.ok(startGame(room, 'trivia', db, 1000).ok);
+    assert.equal((room.game!.state as { rounds: number }).rounds, n, length);
+  }
+  db.close();
+});

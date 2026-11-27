@@ -1,7 +1,7 @@
 // The phone controller (design guide §6 Phone). Join in one screen, then "look at the TV".
 import { useState } from 'react';
 import {
-  AVATAR_COUNT, BANDS, DRAMAS, MAX_PLAYERS, NAME_MAX, PLAYER_COLORS, SPICES, SPICE_LABEL, VOICES, VOICE_LABEL, spiceAllows, type Drama, type VoiceId,
+  AVATAR_COUNT, BANDS, DRAMAS, LENGTHS, LENGTH_LABEL, LENGTH_QUESTIONS, type GameLength, MAX_PLAYERS, NAME_MAX, PLAYER_COLORS, SPICES, SPICE_LABEL, VOICES, VOICE_LABEL, spiceAllows, type Drama, type VoiceId,
   type Band, type PlayerView, type ServerMsg, type Spice,
 } from '@smartmouth/protocol';
 import { useSocket, store, save } from '../socket.ts';
@@ -128,7 +128,7 @@ function Waiting({ view, send, online, onLeave }: {
         <>
           <button className="press big-btn" onClick={() => setSheet((s) => !s)}>{sheet ? 'Close grown-up controls' : 'Grown-up controls'}</button>
           {sheet && <AdminSheet view={view} onSpice={(s) => send({ t: 'admin:spice', spice: s })} onVoice={(v) => send({ t: 'admin:voice', voice: v })}
-            onDrama={(d) => send({ t: 'admin:drama', drama: d })} onBots={(add) => send({ t: 'admin:bots', add })} />}
+            onDrama={(d) => send({ t: 'admin:drama', drama: d })} onLength={(n) => send({ t: 'admin:length', length: n })} onBots={(add) => send({ t: 'admin:bots', add })} />}
         </>
       )}
       <button className="press" style={{ padding: 12 }} onClick={onLeave}>Leave the game</button>
@@ -136,8 +136,8 @@ function Waiting({ view, send, online, onLeave }: {
   );
 }
 
-function AdminSheet({ view, onSpice, onVoice, onDrama, onBots }: {
-  view: PlayerView; onSpice: (s: Spice) => void; onVoice: (v: VoiceId) => void; onDrama: (d: Drama) => void; onBots: (add: boolean) => void;
+function AdminSheet({ view, onSpice, onVoice, onDrama, onLength, onBots }: {
+  view: PlayerView; onSpice: (s: Spice) => void; onVoice: (v: VoiceId) => void; onDrama: (d: Drama) => void; onLength: (n: GameLength) => void; onBots: (add: boolean) => void;
 }) {
   return (
     <div className="sheet">
@@ -153,6 +153,13 @@ function AdminSheet({ view, onSpice, onVoice, onDrama, onBots }: {
           ? 'Grown-ups only, so anything goes. Filthy means real swearing.'
           : `Capped at ${SPICE_LABEL[view.spice.cap]} because of the youngest player in the room.`}
       </div>
+      <h2>Game length</h2>
+      <div className="spice-row">
+        {LENGTHS.map((n) => (
+          <button key={n} className="press" aria-pressed={view.length === n} onClick={() => onLength(n)}>{LENGTH_LABEL[n]} · {LENGTH_QUESTIONS[n]}</button>
+        ))}
+      </div>
+      <div className="muted">Questions in the next trivia game.</div>
       <h2>Drama</h2>
       <div className="spice-row">
         {DRAMAS.map((d) => (

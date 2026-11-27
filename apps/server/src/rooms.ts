@@ -1,7 +1,7 @@
 // Rooms live in memory only (ADR 0004, 0005, 0016). Everything here is pure apart from token/code generation:
 // the socket layer (ws.ts) calls these and sends the views.
 import {
-  AVATAR_COUNT, MAX_PLAYERS, type Drama, type VoiceId, NAME_MAX, PLAYER_COLORS, effectiveSpice, spiceCap,
+  AVATAR_COUNT, MAX_PLAYERS, type Drama, type GameLength, type VoiceId, NAME_MAX, PLAYER_COLORS, effectiveSpice, spiceCap,
   type Band, type ErrorCode, type GameManifest, type HostGameView, type HostLobbyView, type PlayerGameView,
   type PlayerLobbyView, type PublicSeat, type Spice, type SpiceState,
 } from '@smartmouth/protocol';
@@ -34,6 +34,8 @@ export interface Room {
   voice: VoiceId;
   /** Full drama or Quick for staged reveals (ADR 0024). */
   drama: Drama;
+  /** How long the next game runs (owner, 2026-11-27). */
+  length: GameLength;
   /** When a grown-up paused the game (every clock stops), or null. */
   pausedAt: number | null;
   notice: string | null;
@@ -78,7 +80,7 @@ export class RoomStore {
   create(now: number): Room {
     const code = makeCode((c) => this.rooms.has(c));
     const room: Room = {
-      code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy', voice: 'female', drama: 'full', pausedAt: null,
+      code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy', voice: 'female', drama: 'full', length: 'short', pausedAt: null,
       notice: null, lastActive: now, nextSeat: 1, game: null, asked: new Set(), salty: newSalty(),
     };
     this.rooms.set(code, room);
@@ -181,13 +183,13 @@ export function hostView(
   if (room.game) {
     return {
       role: 'host', phase: 'game', gameId: room.game.id, code: room.code, joinUrl,
-      players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama, paused: room.pausedAt !== null, game: adapterFor(room.game.id).hostView(room.game.state),
+      players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama, length: room.length, paused: room.pausedAt !== null, game: adapterFor(room.game.id).hostView(room.game.state),
       salty: room.salty.cue, reads,
     };
   }
   return {
     role: 'host', phase: 'lobby', code: room.code, joinUrl,
-    players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama, games,
+    players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama, length: room.length, games,
     notice: room.notice, salty: room.salty.cue,
   };
 }
@@ -196,12 +198,12 @@ export function playerView(room: Room, seat: Seat, games: GameManifest[]): Playe
   if (room.game) {
     return {
       role: 'player', phase: 'game', gameId: room.game.id, code: room.code, you: publicSeat(room, seat),
-      playerCount: room.seats.length, players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama, paused: room.pausedAt !== null,
+      playerCount: room.seats.length, players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama, length: room.length, paused: room.pausedAt !== null,
       game: adapterFor(room.game.id).playerView(room.game.state, seat.id),
     };
   }
   return {
     role: 'player', phase: 'lobby', code: room.code, you: publicSeat(room, seat),
-    playerCount: room.seats.length, spice: spiceState(room), voice: room.voice, drama: room.drama, games, notice: room.notice,
+    playerCount: room.seats.length, spice: spiceState(room), voice: room.voice, drama: room.drama, length: room.length, games, notice: room.notice,
   };
 }

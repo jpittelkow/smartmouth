@@ -1,7 +1,7 @@
 // The live socket: turns client intents into room changes and sends every client its own view (ADR 0004).
 import type { IncomingMessage } from 'node:http';
 import { WebSocketServer, WebSocket } from 'ws';
-import { isBand, isDrama, isSpice, isVoice, type ClientMsg, type ErrorCode, type ServerMsg } from '@smartmouth/protocol';
+import { isBand, isDrama, isLength, isSpice, isVoice, type ClientMsg, type ErrorCode, type ServerMsg } from '@smartmouth/protocol';
 import { RoomStore, hostView, playerView, adminSeatId, type Room } from './rooms.ts';
 import { GAMES, findGame } from './games.ts';
 import { RateLimit, clientAddress, originAllowed } from './limits.ts';
@@ -291,6 +291,14 @@ const SPEECH_TAIL_MS = 1200;
         // In the lobby Salty says hello again, so the room hears the new voice.
         if (!room.game) room.salty.stageKey = '';
         syncRoom(room, t);
+        return broadcast(room);
+      }
+
+      case 'admin:length': {
+        const room = roomOf(c);
+        if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
+        if (!isLength(msg.length)) return error(c, 'bad-message', 'Unknown game length.');
+        room.length = msg.length; // used by the next game that starts
         return broadcast(room);
       }
 

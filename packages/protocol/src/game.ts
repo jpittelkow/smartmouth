@@ -34,6 +34,13 @@ export type Drama = 'full' | 'quick';
 export const DRAMAS: readonly Drama[] = ['full', 'quick'];
 export const isDrama = (v: unknown): v is Drama => v === 'full' || v === 'quick';
 
+/** How long a game runs, set by a grown-up (owner, 2026-11-27). For trivia: questions, with the leaderboard after each. */
+export type GameLength = 'short' | 'medium' | 'long';
+export const LENGTHS: readonly GameLength[] = ['short', 'medium', 'long'];
+export const LENGTH_QUESTIONS: Record<GameLength, number> = { short: 10, medium: 30, long: 50 };
+export const LENGTH_LABEL: Record<GameLength, string> = { short: 'Short', medium: 'Medium', long: 'Long' };
+export const isLength = (v: unknown): v is GameLength => v === 'short' || v === 'medium' || v === 'long';
+
 export interface GameModule<State, Intent, HostView, PlayerView> {
   manifest: GameManifest;
   init(players: readonly GamePlayer[], settings: GameSettings, now: number): State;

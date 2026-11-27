@@ -1,7 +1,7 @@
 // Every message on the socket (ADR 0004). Clients send intents; the server sends views.
 import type { Band } from './bands.ts';
 import type { Spice } from './spice.ts';
-import type { Drama, GameManifest } from './game.ts';
+import type { Drama, GameLength, GameManifest } from './game.ts';
 
 export const MAX_PLAYERS = 10;
 export const NAME_MAX = 16;
@@ -32,6 +32,8 @@ export type ClientMsg =
   | { t: 'admin:voice'; voice: VoiceId }
   /** Full drama or Quick for staged reveals (ADR 0024). */
   | { t: 'admin:drama'; drama: Drama }
+  /** Short, Medium or Long, for the next game. */
+  | { t: 'admin:length'; length: GameLength }
   | { t: 'admin:kick'; seatId: string }
   /** Pause or resume the game: every clock stops while paused. */
   | { t: 'admin:pause'; paused: boolean }
@@ -100,6 +102,7 @@ export interface HostLobbyView {
   spice: SpiceState;
   voice: VoiceId;
   drama: Drama;
+  length: GameLength;
   games: GameManifest[];
   notice: string | null;
   salty: SaltyCue | null;
@@ -114,6 +117,7 @@ export interface PlayerLobbyView {
   spice: SpiceState;
   voice: VoiceId;
   drama: Drama;
+  length: GameLength;
   games: GameManifest[];
   notice: string | null;
 }
@@ -129,6 +133,7 @@ export interface HostGameView {
   spice: SpiceState;
   voice: VoiceId;
   drama: Drama;
+  length: GameLength;
   /** A grown-up paused the game: every clock is stopped. */
   paused: boolean;
   game: unknown;
@@ -148,6 +153,7 @@ export interface PlayerGameView {
   spice: SpiceState;
   voice: VoiceId;
   drama: Drama;
+  length: GameLength;
   paused: boolean;
   game: unknown;
 }
