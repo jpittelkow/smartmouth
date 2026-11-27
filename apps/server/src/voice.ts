@@ -3,7 +3,7 @@
 // into DATA_DIR/media/voice (served, with salted unguessable names) and listed in DATA_DIR/voice/manifest.json
 // (not served: it maps questions to their recordings). Without them Salty is captions only.
 import { readFileSync, statSync } from 'node:fs';
-import { SPICES, isSpice, spiceAllows, spiceRank, type Spice } from '@smartmouth/protocol';
+import { SPICES, VOICES, isSpice, spiceAllows, spiceRank, type Spice, type VoiceId } from '@smartmouth/protocol';
 
 export type Moment = 'lobby' | 'join' | 'intro' | 'question' | 'allRight' | 'allWrong' | 'mixed' | 'turn'
   | 'littleRight' | 'littleWrong' | 'final';
@@ -16,11 +16,14 @@ export interface SaltyCue { key: string; caption: string | null; clips: string[]
 /** Audio for a question: the prompt read aloud, each answer (picture questions), and the follow-up line. */
 export interface QuestionReads { prompt: string | null; answers: Array<string | null>; explain: string | null }
 
+interface Reads { prompt?: string; answers?: Array<string | null>; explain?: string }
+
 interface Manifest {
   voice: string;
   model: string;
   lines: Record<string, string>;
-  questions: Record<string, { prompt?: string; answers?: Array<string | null>; explain?: string }>;
+  /** `nice` holds the warm reading, used at Mild; the top level is the snarky one (or the only one, for Littles). */
+  questions: Record<string, Reads & { nice?: Reads }>;
 }
 
 // Strong words are bleeped in captions at every level (the audio keeps them, Filthy only: ADR 0014).
@@ -34,9 +37,7 @@ export function caption(text: string): string {
 export class VoiceBank {
   lines: Line[];
   manifestFile: string;
-  private manifest: Manifest | null = null;
-  private manifestMtime = 0;
-  private lastCheck = 0;
+  private manifests = new Map<string, { m: Manifest | null; mtime: number; checked: number }>();
 
   constructor(linesFile: string, manifestFile: string) {
     const doc = JSON.parse(readFileSync(linesFile, 'utf8')) as { lines: Line[] };
@@ -44,21 +45,34 @@ export class VoiceBank {
     this.manifestFile = manifestFile;
   }
 
-  /** The manifest is re-read when the generator rewrites it (checked at most every 10 s). */
-  private current(now: number): Manifest | null {
-    if (now - this.lastCheck < 10_000) return this.manifest;
-    this.lastCheck = now;
-    const file = this.manifestFile;
-    try {
-      const m = statSync(file).mtimeMs;
-      if (m !== this.manifestMtime) {
-        this.manifest = JSON.parse(readFileSync(file, 'utf8')) as Manifest;
-        this.manifestMtime = m;
+  /** Each voice's recordings are listed in manifest-<voice>.json beside `manifestFile`. */
+  fileFor(voice: VoiceId): string {
+    return this.manifestFile.replace(/\.json$/, `-${voice}.json`);
+  }
+
+  /** A manifest is re-read when the generator rewrites it (checked at most every 10 s). */
+  private load(file: string, now: number): Manifest | null {
+    const c = this.manifests.get(file) ?? { m: null, mtime: 0, checked: -Infinity };
+    if (now - c.checked >= 10_000) {
+      c.checked = now;
+      try {
+        const mtime = statSync(file).mtimeMs;
+        if (mtime !== c.mtime) { c.m = JSON.parse(readFileSync(file, 'utf8')) as Manifest; c.mtime = mtime; }
+      } catch {
+        c.m = null; c.mtime = 0;
       }
-    } catch {
-      this.manifest = null;
+      this.manifests.set(file, c);
     }
-    return this.manifest;
+    return c.m;
+  }
+
+  /** The room's voice; if it has no recordings yet, the other voice, then the old single manifest. */
+  private current(now: number, voice: VoiceId = 'male'): Manifest | null {
+    for (const v of [voice, ...VOICES.filter((x) => x !== voice)]) {
+      const m = this.load(this.fileFor(v), now);
+      if (m) return m;
+    }
+    return this.load(this.manifestFile, now);
   }
 
   private url(file: string | null | undefined): string | null {
@@ -80,12 +94,14 @@ export class VoiceBank {
     return null;
   }
 
-  lineAudio(id: string, now: number): string | null {
-    return this.url(this.current(now)?.lines[id]);
+  lineAudio(id: string, now: number, voice?: VoiceId): string | null {
+    return this.url(this.current(now, voice)?.lines[id]);
   }
 
-  reads(questionId: number, now: number): QuestionReads {
-    const q = this.current(now)?.questions[String(questionId)];
+  /** At Mild a question is read nicely when there's a nice reading; above it, snarkily. */
+  reads(questionId: number, now: number, voice?: VoiceId, spice: Spice = 'spicy'): QuestionReads {
+    const entry = this.current(now, voice)?.questions[String(questionId)];
+    const q = spice === 'mild' && entry?.nice ? entry.nice : entry;
     return { prompt: this.url(q?.prompt), answers: (q?.answers ?? []).map((f) => this.url(f)), explain: this.url(q?.explain) };
   }
 }

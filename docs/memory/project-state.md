@@ -21,11 +21,17 @@ of Salty's voice. All ADRs except 0021 are **Proposed** (the owner will review t
   controller, kid mode during a Little's turn), `/admin` (password, library, editor, coverage, export/import).
 - **Content:** 103 seed questions (`content/seed/questions.json`, all live; Little ones show word cards), about 130 Salty
   lines (`content/voice/lines.json`).
-- **Voice:** five-style audition at https://play.303.social/media/voice/audition/index.html (8 voices). The provisional bank
+- **Voice:** two room voices since 2026-11-27, chosen by a grown-up on the phone (`admin:voice`): male = ElevenLabs
+  `harry`, female = `jessica` (owner's picks). Delivery follows spice: Mild and Little moments Nice (`[warmly]`), the rest Snarky
+  (`[sarcastic]`); grown-up questions get both readings. Each voice has `voice/manifest-<male|female>.json`.
+  Round-2 audition: /media/voice/audition-elevenlabs/index.html. Round 1: five-style audition at https://play.303.social/media/voice/audition/index.html (8 voices). The provisional bank
   voice is `google/gemini-2.5-pro-tts:Algenib` (385 clips). Tool: `tools/voice/voice.mjs`.
 - **Code hosting:** public GitHub `jpittelkow/smartmouth` (ADR 0021), MIT.
 
 ## Next
+0. **Game #2 is decided (owner, 2026-11-27): a hidden-traitor game inspired by the TV show "The Traitors"**
+   (secret traitors among the players, round-table votes to banish, night "murders"). Logged only; nothing designed yet.
+   Its own name, art and rules when we get to it, not the show's branding.
 1. The owner picks Salty's voice; rerun `bank` with that `VOICE` if it changes.
 2. The first family playtest on the office TV, with sound.
 3. Back actually pauses; the kid-mode lock; more tracking (results by age band, which wrong answer people pick, the average answer time

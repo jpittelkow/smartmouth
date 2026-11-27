@@ -2,7 +2,7 @@
 // key and the data folder are, so the key never leaves the server:
 //
 //   docker exec -e VOICES=... smartmouth node tools/voice/voice.mjs audition
-//   docker exec -e VOICE=... -e MAX_USD=5 smartmouth node tools/voice/voice.mjs bank
+//   docker exec -e VOICE=... -e SLOT=male|female -e MAX_USD=5 smartmouth node tools/voice/voice.mjs bank
 //
 // A voice is "<model>:<voice>", e.g. "elevenlabs/eleven-v4:callum", "google/gemini-2.5-pro-tts:Algenib" or
 // "fish-audio/s2.1-pro:default" (default = the model's own voice). ElevenLabs takes delivery tags like [sighs] in the
@@ -43,6 +43,8 @@ export const STYLE = 'You are Salty, a washed-up former sea captain who now host
 /** The character, for auditions; each style adds how to deliver the line. */
 const AUDITION_BASE = 'You are Salty, the host of a living-room trivia game show: a washed-up former sea captain with a '
   + 'gravelly, slightly hoarse middle-aged male voice and quick comic timing. Not a cartoon pirate accent.';
+const NICE = '[warmly]';
+const SNARKY = '[sarcastic]';
 const KIDS_STYLE = 'You are Salty, a grumpy but loving game-show host talking to a three-year-old. Gravelly male '
   + 'voice, but warm, slow, clear and delighted. Big friendly energy, no sarcasm.';
 
@@ -177,7 +179,10 @@ async function bank() {
   const saltFile = join(PRIVATE, 'salt');
   if (!existsSync(saltFile)) writeFileSync(saltFile, randomBytes(16).toString('hex'), { mode: 0o600 });
   const salt = readFileSync(saltFile, 'utf8').trim();
-  const manifestFile = join(PRIVATE, 'manifest.json');
+  // Salty has two voices (male, female); each bank writes its own manifest, and the room picks one.
+  const slot = process.env.SLOT;
+  if (!['male', 'female'].includes(slot)) { console.error('Set SLOT=male or SLOT=female'); process.exit(1); }
+  const manifestFile = join(PRIVATE, `manifest-${slot}.json`);
   const manifest = { voice: v.spec, model: v.model, made: new Date().toISOString(), lines: {}, questions: {} };
 
   const jobs = [];
@@ -188,19 +193,25 @@ async function bank() {
     const base = KID_MOMENTS.has(l.moment) ? KIDS_STYLE : STYLE;
     const tags = [...l.text.matchAll(/\[([^\]]+)\]/g)].map((m) => m[1]);
     const style = v.directed && tags.length ? `${base} Delivery cues for this line: ${tags.join(', ')}.` : base;
-    jobs.push({ text: l.text, style, put: (f) => { manifest.lines[l.id] = f; } });
+    const tag = KID_MOMENTS.has(l.moment) || l.spice === 'mild' ? NICE : SNARKY;
+    jobs.push({ text: l.text, style, tag: /^\[/.test(l.text) ? null : tag, put: (f) => { manifest.lines[l.id] = f; } });
   }
-  for (const q of questions) {
-    const little = Number(q.age_min) === 0;
-    const style = little ? KIDS_STYLE : STYLE;
-    const entry = (manifest.questions[String(q.id)] ??= {});
-    jobs.push({ text: q.prompt, style, put: (f) => { entry.prompt = f; } });
+  // Questions: Littles' are read nicely only. Everyone else's are read snarkily, plus nicely for Mild rooms when the
+  // voice takes tags (directed models get one reading).
+  const readQuestion = (q, entry, style, tag) => {
+    jobs.push({ text: q.prompt, style, tag, put: (f) => { entry.prompt = f; } });
     if (q.kind === 'picture') {
       const answers = JSON.parse(q.answers);
       entry.answers = answers.map(() => null);
-      answers.forEach((a, i) => jobs.push({ text: `${a.text}!`, style, put: (f) => { entry.answers[i] = f; } }));
+      answers.forEach((a, i) => jobs.push({ text: `${a.text}!`, style, tag, put: (f) => { entry.answers[i] = f; } }));
     }
-    if (q.explain) jobs.push({ text: q.explain, style, put: (f) => { entry.explain = f; } });
+    if (q.explain) jobs.push({ text: q.explain, style, tag, put: (f) => { entry.explain = f; } });
+  };
+  for (const q of questions) {
+    const little = Number(q.age_min) === 0;
+    const entry = (manifest.questions[String(q.id)] ??= {});
+    readQuestion(q, entry, little ? KIDS_STYLE : STYLE, little ? NICE : SNARKY);
+    if (!little && !v.directed) readQuestion(q, (entry.nice = {}), STYLE, NICE);
   }
   const chars = jobs.reduce((n, j) => n + j.text.length, 0);
   console.log(`${jobs.length} clips, ${chars} characters, voice ${v.spec}, cap $${MAX_USD}`);
@@ -209,7 +220,7 @@ async function bank() {
   const start = await usage();
   let made = 0, kept = 0, failed = 0;
   for (const [i, job] of jobs.entries()) {
-    const name = createHash('sha256').update(`${salt}|${v.spec}|${job.style}|${job.text}`).digest('hex').slice(0, 24) + '.' + v.ext;
+    const name = createHash('sha256').update(`${salt}|${v.spec}|${job.style}|${job.tag ?? ''}|${job.text}`).digest('hex').slice(0, 24) + '.' + v.ext;
     const file = join(dir, name);
     if (existsSync(file)) { kept++; job.put(`${v.slug}/${name}`); continue; }
     if (made % 20 === 0 && start !== null) {
@@ -217,7 +228,7 @@ async function bank() {
       if (now !== null && now - start > MAX_USD) { console.error(`stopping: spent $${(now - start).toFixed(2)} (cap $${MAX_USD})`); break; }
     }
     try {
-      writeFileSync(file, await speak(v, job.text, job.style));
+      writeFileSync(file, await speak(v, job.text, job.style, job.tag));
       job.put(`${v.slug}/${name}`);
       made++;
       if (made % 25 === 0) console.log(`${i + 1}/${jobs.length}`);

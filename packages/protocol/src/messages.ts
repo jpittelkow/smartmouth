@@ -7,6 +7,12 @@ export const MAX_PLAYERS = 10;
 export const NAME_MAX = 16;
 export const AVATAR_COUNT = 8;
 
+/** Salty comes in two voices; a grown-up picks one per room (owner, 2026-11-27). Each has its own recordings. */
+export const VOICES = ['male', 'female'] as const;
+export type VoiceId = (typeof VOICES)[number];
+export const VOICE_LABEL: Record<VoiceId, string> = { male: 'His voice', female: 'Her voice' };
+export const isVoice = (v: unknown): v is VoiceId => (VOICES as readonly unknown[]).includes(v);
+
 export const PLAYER_COLORS = [
   '#ffd23f', '#ff4f7b', '#36dcb8', '#5aa8ff', '#a77bff',
   '#ff9a3c', '#a6e34f', '#ff5a4e', '#3fd0f0', '#f4f0ff',
@@ -21,6 +27,7 @@ export type ClientMsg =
   | { t: 'player:avatar'; avatar: number }
   | { t: 'player:leave' }
   | { t: 'admin:spice'; spice: Spice }
+  | { t: 'admin:voice'; voice: VoiceId }
   | { t: 'admin:kick'; seatId: string }
   | { t: 'admin:start'; gameId: string }
   /** End the current wait (reveal, intro, a stalled turn). */
@@ -72,6 +79,7 @@ export interface HostLobbyView {
   joinUrl: string;
   players: PublicSeat[];
   spice: SpiceState;
+  voice: VoiceId;
   games: GameManifest[];
   notice: string | null;
   salty: SaltyCue | null;
@@ -84,6 +92,7 @@ export interface PlayerLobbyView {
   you: PublicSeat;
   playerCount: number;
   spice: SpiceState;
+  voice: VoiceId;
   games: GameManifest[];
   notice: string | null;
 }
@@ -97,6 +106,7 @@ export interface HostGameView {
   joinUrl: string;
   players: PublicSeat[];
   spice: SpiceState;
+  voice: VoiceId;
   game: unknown;
   salty: SaltyCue | null;
   /** Recordings for the TV's question and the Little turn's question (answers are read as focus moves). */
@@ -112,6 +122,7 @@ export interface PlayerGameView {
   playerCount: number;
   players: PublicSeat[];
   spice: SpiceState;
+  voice: VoiceId;
   game: unknown;
 }
 

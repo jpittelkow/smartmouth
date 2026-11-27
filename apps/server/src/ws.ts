@@ -1,7 +1,7 @@
 // The live socket: turns client intents into room changes and sends every client its own view (ADR 0004).
 import type { IncomingMessage } from 'node:http';
 import { WebSocketServer, WebSocket } from 'ws';
-import { isBand, isSpice, type ClientMsg, type ErrorCode, type ServerMsg } from '@smartmouth/protocol';
+import { isBand, isSpice, isVoice, type ClientMsg, type ErrorCode, type ServerMsg } from '@smartmouth/protocol';
 import { RoomStore, hostView, playerView, adminSeatId, type Room } from './rooms.ts';
 import { GAMES, findGame } from './games.ts';
 import { RateLimit, clientAddress, originAllowed } from './limits.ts';
@@ -197,6 +197,17 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
         if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
         if (!isSpice(msg.spice)) return error(c, 'bad-message', 'Unknown spice level.');
         room.spiceChosen = msg.spice;
+        syncRoom(room, t);
+        return broadcast(room);
+      }
+
+      case 'admin:voice': {
+        const room = roomOf(c);
+        if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
+        if (!isVoice(msg.voice)) return error(c, 'bad-message', 'Unknown voice.');
+        room.voice = msg.voice;
+        // In the lobby Salty says hello again, so the room hears the new voice.
+        if (!room.game) room.salty.stageKey = '';
         syncRoom(room, t);
         return broadcast(room);
       }

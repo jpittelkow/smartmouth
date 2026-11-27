@@ -25,7 +25,7 @@ export const newSalty = (): SaltyState => ({ stageKey: '', cue: null, recent: []
 export function readsFor(room: Room, bank: VoiceBank | null, now: number): { question: QuestionReads | null; turn: QuestionReads | null } {
   const s = room.game?.state;
   if (!s || !bank || s.stage !== 'turn' || !s.turn) return { question: null, turn: null };
-  const r = bank.reads(s.turn.question.id, now);
+  const r = bank.reads(s.turn.question.id, now, room.voice, spiceState(room).effective);
   return { question: null, turn: { prompt: null, answers: r.answers, explain: null } };
 }
 
@@ -44,9 +44,9 @@ export function updateSalty(room: Room, bank: VoiceBank | null, now: number): vo
   const spice = spiceState(room).effective;
   const line = bank.pick(moment, spice, new Set(st.recent));
   if (line) st.recent = [line.id, ...st.recent].slice(0, 12);
-  const lineClip = line ? bank.lineAudio(line.id, now) : null;
+  const lineClip = line ? bank.lineAudio(line.id, now, room.voice) : null;
   const tvId = s && s.tvBand ? s.current[s.tvBand]?.id : undefined;
-  const reads = { question: tvId !== undefined ? bank.reads(tvId, now) : null, turn: s?.turn ? bank.reads(s.turn.question.id, now) : null };
+  const reads = { question: tvId !== undefined ? bank.reads(tvId, now, room.voice, spice) : null, turn: s?.turn ? bank.reads(s.turn.question.id, now, room.voice, spice) : null };
   const clips: string[] = [];
   let text = line?.text ?? null;
 

@@ -102,3 +102,20 @@ test('the TV gets Salty’s cues: a lobby line, a hello on join, Mild only once 
     await srv.close();
   }
 });
+
+test('each room voice has its own recordings, falls back to the other, and Mild gets the nice reading', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'sm-voices-'));
+  const base = join(dir, 'manifest.json');
+  const bank = new VoiceBank(LINES, base);
+  const q = (tag: string) => ({ prompt: `${tag}-q.mp3`, explain: `${tag}-x.mp3` });
+  writeFileSync(bank.fileFor('male'), JSON.stringify({ voice: 'm', model: 'm', lines: { a: 'm-a.mp3' }, questions: { 7: { ...q('m'), nice: q('mn') } } }));
+  // Only the male voice exists yet: a female room still hears him.
+  assert.equal(bank.lineAudio('a', 0, 'female'), '/media/voice/m-a.mp3');
+  writeFileSync(bank.fileFor('female'), JSON.stringify({ voice: 'f', model: 'f', lines: { a: 'f-a.mp3' }, questions: { 7: q('f') } }));
+  assert.equal(bank.lineAudio('a', 20_000, 'female'), '/media/voice/f-a.mp3');
+  assert.equal(bank.lineAudio('a', 20_000, 'male'), '/media/voice/m-a.mp3');
+  assert.equal(bank.reads(7, 20_000, 'male', 'mild').prompt, '/media/voice/mn-q.mp3');
+  assert.equal(bank.reads(7, 20_000, 'male', 'hot').prompt, '/media/voice/m-q.mp3');
+  // No nice reading recorded: Mild falls back to the only one.
+  assert.equal(bank.reads(7, 20_000, 'female', 'mild').prompt, '/media/voice/f-q.mp3');
+});

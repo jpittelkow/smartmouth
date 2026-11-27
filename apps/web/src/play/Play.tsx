@@ -1,7 +1,7 @@
 // The phone controller (design guide §6 Phone). Join in one screen, then "look at the TV".
 import { useState } from 'react';
 import {
-  AVATAR_COUNT, BANDS, NAME_MAX, PLAYER_COLORS, SPICES, SPICE_LABEL, spiceAllows,
+  AVATAR_COUNT, BANDS, NAME_MAX, PLAYER_COLORS, SPICES, SPICE_LABEL, VOICES, VOICE_LABEL, spiceAllows, type VoiceId,
   type Band, type PlayerView, type ServerMsg, type Spice,
 } from '@smartmouth/protocol';
 import { useSocket, store, save } from '../socket.ts';
@@ -125,7 +125,7 @@ function Waiting({ view, send, online, onLeave }: {
       {view.you.isAdmin && (
         <>
           <button className="press big-btn" onClick={() => setSheet((s) => !s)}>{sheet ? 'Close grown-up controls' : 'Grown-up controls'}</button>
-          {sheet && <AdminSheet view={view} onSpice={(s) => send({ t: 'admin:spice', spice: s })} />}
+          {sheet && <AdminSheet view={view} onSpice={(s) => send({ t: 'admin:spice', spice: s })} onVoice={(v) => send({ t: 'admin:voice', voice: v })} />}
         </>
       )}
       <button className="press" style={{ padding: 12 }} onClick={onLeave}>Leave the game</button>
@@ -133,7 +133,7 @@ function Waiting({ view, send, online, onLeave }: {
   );
 }
 
-function AdminSheet({ view, onSpice }: { view: PlayerView; onSpice: (s: Spice) => void }) {
+function AdminSheet({ view, onSpice, onVoice }: { view: PlayerView; onSpice: (s: Spice) => void; onVoice: (v: VoiceId) => void }) {
   return (
     <div className="sheet">
       <h2>Spice level</h2>
@@ -147,6 +147,12 @@ function AdminSheet({ view, onSpice }: { view: PlayerView; onSpice: (s: Spice) =
         {view.spice.cap === 'filthy'
           ? 'Grown-ups only, so anything goes. Filthy means real swearing.'
           : `Capped at ${SPICE_LABEL[view.spice.cap]} because of the youngest player in the room.`}
+      </div>
+      <h2>Salty's voice</h2>
+      <div className="spice-row">
+        {VOICES.map((v) => (
+          <button key={v} className="press" aria-pressed={view.voice === v} onClick={() => onVoice(v)}>{VOICE_LABEL[v]}</button>
+        ))}
       </div>
     </div>
   );
