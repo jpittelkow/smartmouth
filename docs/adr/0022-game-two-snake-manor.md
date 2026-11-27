@@ -17,7 +17,7 @@ Related work from 2026-11-27:
 - the session notes: [journal 2026-11-27](../journal/2026-11-27.md)
 
 ## Decision
-- **Working name: Snake Manor.** There are three roles. The roles and the name are working names (see Open items).
+- **The name is Snake Manor,** with Guests and Snakes (owner, 2026-11-27). There are three roles.
   - **Guests** know only their own role. They win if the game ends with no Snake left alive, and the surviving
     Guests split the pot.
   - **Snakes** know each other. They win if at least one Snake is alive at the end, and the surviving Snakes take
@@ -37,7 +37,8 @@ Related work from 2026-11-27:
   Each round has one banishment and one murder. There is **no murder on night 1 when there are 6 or fewer players**.
 - **Age bands** (ADR 0008):
   - Tweens and older can be any role.
-  - Kids (6–8) play, but are always Guests, and everyone is told so.
+  - Kids (6–8) play, but are always Guests, and everyone is told so (owner, 2026-11-27). The room can rule them
+    out, which is a fair price for sparing a young kid from having to lie.
   - Littles are left out of the manifest's `bands`, so they sit this game out (ADR 0009).
 - **The round loop** takes about 11 minutes. A game is 2 or 3 rounds plus about 8 minutes of setup and endgame,
   so 30 to 40 minutes in all.
@@ -50,8 +51,14 @@ Related work from 2026-11-27:
   4. **Banishment** (30 s): the banished player's role is revealed.
   5. **Night** (1.5 min): 60 seconds of identical phone screens (ADR 0023), then the murder is locked in.
 
-  The game checks for the endgame after every banishment and every murder. Banishing the last Snake ends the game
-  at once, and the Guests win.
+  The game checks for the endgame after every banishment and every murder.
+- **When the last Snake is banished** (owner, 2026-11-27):
+  - **With 5 or more players left,** Salty secretly recruits a new Snake that night, picked at random from the
+    living Guests, and the game runs on. Kids 6–8 are never picked. The chosen Guest gets the offer as their night
+    screen and can't refuse: Salty "insists". The room is told only "the manor never sleeps without a Snake".
+  - **With 4 or fewer left,** the Guests win at once.
+
+  This stops a 5- or 6-player game with one Snake ending after 12 minutes.
 - **Missions** use questions from the existing bank, picked per band as in trivia.
   - **Pot and target:** every correct answer adds money to the pot. Each mission also has a target (about 75%
     correct). Hit it and the mission's bonus is banked too. Miss it and the Snakes earn a **Dagger**.
@@ -68,8 +75,11 @@ Related work from 2026-11-27:
     and a tie is broken at random.
   - **Guests** write a private suspect note and vote for a suspect. These feed Salty's breakfast hints.
   - **Ghosts** make a Ghost Bet on who the Snakes are.
+  - **The Snake chat** is free text, capped at 140 characters (owner, 2026-11-27). Guests type their suspect notes at
+    the same moment, so both sides' thumbs move the same way (ADR 0023). Both screens also get the same row of tap
+    chips (player names and a few set phrases) as shortcuts.
   - **Recruitment:** after a Snake is banished, the surviving Snakes may offer one Guest a place on the next night.
-    The offer arrives as that Guest's night screen.
+    The offer arrives as that Guest's night screen. When no Snake is left, Salty recruits instead (above).
 - **The endgame:**
   1. At the endgame size, every living player votes in secret: End or Banish again.
   2. Only a unanimous End ends the game. Anything else runs one more Round Table with no mission and no night, and it
@@ -100,12 +110,14 @@ Related work from 2026-11-27:
 - **Murdered players sit out:** half an hour of nothing to do kills a party game. Ghosts keep them in.
 - **One murder every night at every size:** a 6-player game would be over after one round.
 
-## Open items (waiting on the owner)
-1. Name: Snake Manor, Guests and Snakes, or something else (for example Two-Faced or Backstabbers).
-2. Kids 6–8 as always-Guests, or Tweens and up only?
-3. Snake chat as free text, or quick-chat only (names plus set phrases)?
-4. If the last Snake is banished early, end the game at once (as written), or have Salty secretly recruit a new Snake?
-5. Can Ghosts talk at the Round Table? As written, they can heckle but not vote.
+## Open items, answered by the owner on 2026-11-27
+1. **Name:** keep Snake Manor, with Guests and Snakes. Two-Faced and Backstabbers were the other options.
+2. **Kids 6–8:** they play, always as Guests. The other option was Tweens and up only.
+3. **Snake chat:** free text with tap chips on both screens. Quick-chat only would have had Snakes tapping while
+   Guests type, which is a visible tell.
+4. **Last Snake banished early:** Salty recruits if 5 or more players are left; otherwise the Guests win. The other
+   option was ending the game at once.
+5. **Ghosts at the Round Table:** they can heckle but not vote. This was kept as written, with no change.
 
 ## Where it lives
 `packages/games/snakes/` (planned: manifest, rules, view types), `apps/web/src/games/snakes/` (planned: views),

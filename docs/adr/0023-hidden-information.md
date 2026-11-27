@@ -38,6 +38,8 @@ These are platform rules. They apply to any game that has hidden information.
   - it's capped in length (planned: 140 characters)
   - it's rate-limited like other intents
   - it stays in room memory only, like names (ADR 0016), and is never logged
+  - **both sides type at the same moment** (the Snake chat and the Guest note), and both screens get the same row of
+    tap chips, so thumbs move the same way on every phone (owner, 2026-11-27, ADR 0022)
 - **Tests that must exist before the first Snake Manor playtest:**
   - no player view ever contains another player's role
   - neither the host view nor the admin view contains a role before its reveal
