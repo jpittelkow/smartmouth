@@ -87,3 +87,13 @@ drawer (normal launcher entry), so it can be tried on a phone emulator.
 Debug builds enable WebView remote debugging: open `chrome://inspect` on the PC with the device
 connected over ADB. Page `console.*` output is also mirrored to logcat:
 `adb logcat -s SmartmouthTV`.
+
+## The build installed on the office Chromecast (2026-11-26)
+Built with the public address as its default, so no setup is needed on the TV:
+```bash
+JAVA_TOOL_OPTIONS='-Djdk.net.unixdomain.tmpdir=C:\tmp\gradle-sock' TEMP='C:\tmp' TMP='C:\tmp' \
+  ./gradlew.bat assembleDebug -PsmartmouthServerUrl=https://play.303.social
+adb -s <tv> install -r app/build/outputs/apk/debug/app-debug.apk
+```
+Checked on the real device: the lobby loads from play.303.social; D-pad focus, OK to start, left/right/OK for a Little's
+turn, and Back → menu → End game all work. If GlanceTV's screensaver is showing, the app opens behind it until a key is pressed.

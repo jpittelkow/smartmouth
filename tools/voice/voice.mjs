@@ -4,12 +4,14 @@
 //   docker exec -e VOICES=... smartmouth node tools/voice/voice.mjs audition
 //   docker exec -e VOICE=... -e MAX_USD=5 smartmouth node tools/voice/voice.mjs bank
 //
-// A voice is "<model>:<voice>", e.g. "elevenlabs/eleven-v4:callum" or "google/gemini-3.8-flash-tts:Fenrir".
-// ElevenLabs takes delivery tags like [sighs] in the text and returns mp3. Gemini takes the written direction below
-// (tags are removed from its text, or it would read them out) and returns wav.
+// A voice is "<model>:<voice>", e.g. "elevenlabs/eleven-v4:callum", "google/gemini-2.5-pro-tts:Algenib" or
+// "fish-audio/s2.1-pro:default" (default = the model's own voice). ElevenLabs takes delivery tags like [sighs] in the
+// text and returns mp3. Gemini (wav) and Fish Audio (mp3) take written directions; tags are removed from their text,
+// or they'd read them out.
 //
-// audition: every voice in VOICES reads audition-lines.json into DATA_DIR/media/voice/audition/, with an index.html
-//           to compare them (served at /media/voice/audition/index.html).
+// audition: the owner's format (2026-11-26): every voice in VOICES says the line in audition-styles.json in five
+//           styles, into DATA_DIR/media/voice/audition/, with a voices x styles page at
+//           /media/voice/audition/index.html.
 // bank:     VOICE reads every line in content/voice/lines.json, and every live question's prompt, its answers
 //           (picture questions) and its follow-up line, into DATA_DIR/media/voice/<voice>/, then writes
 //           DATA_DIR/voice/manifest.json (outside the served folder), which the server picks up within seconds. Existing files are kept,
@@ -38,6 +40,9 @@ export const STYLE = 'You are Salty, a washed-up former sea captain who now host
   + 'flourish: a lazy drawl that suddenly speeds up into an exasperated rant, mock outrage at tiny things, quick '
   + 'comic timing, and a cowardly wobble when he backs down. Sarcastic but warm underneath. Not a cartoon pirate '
   + 'accent. Keep it snappy, like a stand-up comic hosting.';
+/** The character, for auditions; each style adds how to deliver the line. */
+const AUDITION_BASE = 'You are Salty, the host of a living-room trivia game show: a washed-up former sea captain with a '
+  + 'gravelly, slightly hoarse middle-aged male voice and quick comic timing. Not a cartoon pirate accent.';
 const KIDS_STYLE = 'You are Salty, a grumpy but loving game-show host talking to a three-year-old. Gravelly male '
   + 'voice, but warm, slow, clear and delighted. Big friendly energy, no sarcasm.';
 
@@ -50,7 +55,8 @@ function parseVoice(spec) {
   const model = spec.slice(0, i);
   const voice = spec.slice(i + 1);
   const gemini = model.startsWith('google/');
-  return { spec, model, voice, gemini, ext: gemini ? 'wav' : 'mp3', slug: spec.replace(/[^\w.-]+/g, '_') };
+  const directed = gemini || model.startsWith('fish-audio/');
+  return { spec, model, voice, gemini, directed, ext: gemini ? 'wav' : 'mp3', slug: spec.replace(/[^\w.-]+/g, '_') };
 }
 
 const stripTags = (t) => t.replace(/\[[^\]]+\]\s*/g, '').trim();
@@ -63,10 +69,12 @@ async function usage() {
   return typeof j?.data?.usage === 'number' ? j.data.usage : null;
 }
 
-async function speak(v, text, style) {
-  const body = v.gemini
-    ? { model: v.model, voice: v.voice, input: stripTags(text), instructions: style, response_format: 'wav' }
-    : { model: v.model, voice: v.voice, input: text, response_format: 'mp3' };
+/** `style` steers directed models (Gemini, Fish Audio); `tag` (e.g. "[sarcastic]") goes in front for ElevenLabs. */
+async function speak(v, text, style, tag) {
+  const body = v.directed
+    ? { model: v.model, input: stripTags(text), instructions: style, response_format: v.ext }
+    : { model: v.model, voice: v.voice, input: tag ? `${tag} ${text}` : text, response_format: 'mp3' };
+  if (v.directed && v.voice !== 'default') body.voice = v.voice;
   for (let attempt = 0; attempt < 4; attempt++) {
     const r = await fetch('https://openrouter.ai/api/v1/audio/speech', {
       method: 'POST', headers: { Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' },
@@ -83,41 +91,54 @@ async function speak(v, text, style) {
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
 async function audition() {
-  const voices = (process.env.VOICES || '').split(',').map((s) => s.trim()).filter(Boolean).map(parseVoice);
+  const voices = (process.env.VOICES || '').split(',').map((x) => x.trim()).filter(Boolean).map(parseVoice);
   if (!voices.length) { console.error('Set VOICES=model:voice,model:voice'); process.exit(1); }
-  const { lines } = JSON.parse(readFileSync(join(here, 'audition-lines.json'), 'utf8'));
+  const { line, styles } = JSON.parse(readFileSync(join(here, 'audition-styles.json'), 'utf8'));
   const out = join(MEDIA, 'audition');
   const start = await usage();
-  const made = [];
+  const made = {};
+  const errors = [];
   for (const v of voices) {
     mkdirSync(join(out, v.slug), { recursive: true });
-    for (const line of lines) {
-      const file = `${v.slug}/${line.id}.${v.ext}`;
-      if (DRY) { console.log(v.spec, line.id); continue; }
+    for (const st of styles) {
+      const file = `${v.slug}/${st.id}.${v.ext}`;
+      if (DRY) { console.log(v.spec, st.id); continue; }
       try {
-        if (!existsSync(join(out, file))) writeFileSync(join(out, file), await speak(v, line.text, STYLE));
-        made.push({ voice: v.spec, id: line.id, file });
+        if (!existsSync(join(out, file))) writeFileSync(join(out, file), await speak(v, line, `${AUDITION_BASE} ${st.instruction}`, st.tag));
+        made[`${v.spec}|${st.id}`] = file;
         console.log(`made ${file}`);
-      } catch (e) { console.error(`failed ${v.spec} ${line.id}: ${e.message}`); }
+      } catch (e) { errors.push(`${v.spec} ${st.id}: ${e.message}`); console.error(`failed ${v.spec} ${st.id}: ${e.message}`); }
     }
   }
   if (DRY) return;
-  let html = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Salty auditions</title><style>body{font:16px system-ui;background:#14111f;color:#fff6e6;padding:16px;max-width:1200px;margin:auto}
-h1{margin:0 0 4px}p{color:#b9b1d6}.line{border-top:1px solid #2b2450;padding:12px 0}.text{color:#b9b1d6;margin:4px 0 8px}
-.takes{display:flex;flex-wrap:wrap;gap:14px}label{display:grid;gap:4px;font-size:14px}audio{height:34px;max-width:260px}
-.spice{font-size:12px;padding:1px 8px;border-radius:99px;background:#2b2450;margin-left:6px}</style>
-<h1>Salty auditions</h1><p>Every voice reads the same lines. ElevenLabs voices act from tags in the text; Gemini voices
-act from a written description of Salty. ElevenLabs' stock voices retire on 2026-12-31 (files already made keep working).</p>`;
-  for (const line of lines) {
-    html += `<div class="line"><b>${esc(line.id)}</b><span class="spice">${esc(line.spice)}</span><div class="text">${esc(line.text)}</div><div class="takes">`;
-    for (const m of made.filter((x) => x.id === line.id)) html += `<label>${esc(m.voice)}<audio controls preload="none" src="${esc(m.file)}"></audio></label>`;
-    html += '</div></div>';
-  }
-  html += `<script>document.addEventListener('play',e=>{for(const a of document.querySelectorAll('audio'))if(a!==e.target)a.pause()},true)</script>`;
-  writeFileSync(join(out, 'index.html'), html);
   const end = await usage();
-  console.log(`\naudition page: /media/voice/audition/index.html · ${made.length} clips · spent ${start !== null && end !== null ? '$' + (end - start).toFixed(3) : 'unknown'}`);
+  const spent = start !== null && end !== null ? '$' + (end - start).toFixed(3) : 'unknown';
+  let html = `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Salty auditions</title><style>
+body{font:16px system-ui;background:#14111f;color:#fff6e6;margin:0;padding:16px}
+h1{margin:0 0 6px;font-size:28px}p{color:#b9b1d6;max-width:80ch;margin:4px 0 14px}
+.wrap{overflow-x:auto}table{border-collapse:collapse;min-width:900px}
+th,td{border:1px solid #2b2450;padding:8px;text-align:left;vertical-align:top}
+th{background:#1f1a36;font-size:14px}td.v{font-weight:700;white-space:nowrap}td.v small{display:block;color:#b9b1d6;font-weight:400}
+audio{width:170px;height:34px}.err{color:#ff4f7b;font-size:12px}</style>
+<h1>Salty auditions</h1>
+<p>One line in five styles, every voice: &ldquo;${esc(line)}&rdquo;</p>
+<p>Gemini and Fish Audio act from a written description of Salty plus the style. ElevenLabs acts from a tag
+(${styles.map((x) => esc(x.tag)).join(' ')}). ElevenLabs' stock voices retire on 2026-12-31; files already made keep working.
+Made ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC. Cost ${spent}.</p>
+<div class="wrap"><table><tr><th>Voice</th>${styles.map((x) => `<th>${esc(x.label)}</th>`).join('')}</tr>`;
+  for (const v of voices) {
+    html += `<tr><td class="v">${esc(v.voice === 'default' ? 'default voice' : v.voice)}<small>${esc(v.model)}</small></td>`;
+    for (const st of styles) {
+      const f = made[`${v.spec}|${st.id}`];
+      html += f ? `<td><audio controls preload="none" src="${esc(f)}"></audio></td>` : '<td class="err">failed</td>';
+    }
+    html += '</tr>';
+  }
+  html += `</table></div>${errors.length ? `<p class="err">${errors.map(esc).join('<br>')}</p>` : ''}
+<script>document.addEventListener('play',e=>{for(const a of document.querySelectorAll('audio'))if(a!==e.target)a.pause()},true)</script>`;
+  writeFileSync(join(out, 'index.html'), html);
+  console.log(`\naudition page: /media/voice/audition/index.html · ${Object.keys(made).length} clips · ${errors.length} failed · spent ${spent}`);
 }
 
 async function bank() {

@@ -32,6 +32,19 @@ its narrator with ElevenLabs v4 through OpenRouter's `POST /api/v1/audio/speech`
 - **Voice lifetime:** ElevenLabs retires default voices on 2026-12-31 (Crayon Box ADR 0032). If one of those is picked,
   the bank is made before then, or a long-lived voice is picked instead.
 
+**Built 2026-11-26 (still Proposed):**
+- **The server picks every line** (`apps/server/src/salty.ts`, `voice.ts`) at or below the room's effective spice level,
+  preferring the exact level and avoiding the last 12 lines. The TV gets a cue: a bleeped caption plus the clips to play
+  in order. Lines live in `content/voice/lines.json` (about 130 lines across 11 moments and 4 levels).
+- **Two routes were auditioned:** ElevenLabs v4 stock voices (act from inline tags, mp3; **stock voices retire
+  2026-12-31**, but files already made keep working) and Gemini 3.8 Flash TTS (acts from a written description of Salty, wav,
+  not retiring). The owner picks by ear on `/media/voice/audition/index.html`.
+- **Recordings and privacy:** the files are served from `DATA_DIR/media/voice` under salted, unguessable names. The
+  manifest that maps questions to recordings lives in `DATA_DIR/voice`, which isn't served, and `.json` is never served
+  from `/media` (from a security review on 2026-11-26). Only a Little turn's picture names reach the TV ahead of time; a
+  question's read-aloud and its follow-up line arrive in the cue for their moment.
+- `tools/voice/voice.mjs` (`audition` | `bank`) runs inside the container, keeps files that already exist, and stops at `MAX_USD`.
+
 ## Consequences
 - The voice is instant in play and costs nothing per game, but every new line costs a speech call (paid once).
 - The line bank decides how funny the game is. Writing and reviewing it is real, ongoing work.

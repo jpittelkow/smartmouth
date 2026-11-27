@@ -1,0 +1,11 @@
+{
+  "//": "The owner's audition format (2026-11-26): one line, five styles, every voice. `instruction` steers models that take written directions (Gemini, Fish Audio); `tag` steers ElevenLabs, which acts from tags in the text.",
+  "line": "Oh look, you made it. Grab a phone, pick a name, and try not to embarrass yourselves.",
+  "styles": [
+    { "id": "snarky", "label": "Snarky", "tag": "[sarcastic]", "instruction": "Deliver it snarky: dry, sarcastic and eye-rolling, a smirk you can hear, leaning on the words for comic effect." },
+    { "id": "mean", "label": "Mean", "tag": "[angry]", "instruction": "Deliver it mean: cutting, contemptuous and impatient, like the guests personally ruined his day. Harsh, but still funny." },
+    { "id": "indifferent", "label": "Indifferent", "tag": "[bored]", "instruction": "Deliver it indifferent: flat, bored, low energy, a can't-be-bothered monotone with a little sigh in it." },
+    { "id": "nice", "label": "Nice", "tag": "[warmly]", "instruction": "Deliver it nice: warm, kind and gentle, genuinely glad to see everyone, like a favorite uncle." },
+    { "id": "cheerful", "label": "Cheerful", "tag": "[excited]", "instruction": "Deliver it cheerful: bright, upbeat and bouncy, full game-show energy, grinning the whole way through." }
+  ]
+}

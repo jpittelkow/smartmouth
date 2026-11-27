@@ -11,11 +11,14 @@ A voice is written `<model>:<voice>`:
   stripped from its text so it doesn't read them out. Returns wav.
 
 ## Audition (pick a voice by ear)
+The owner's format: one line, said in five styles (snarky, mean, indifferent, nice, cheerful), by every voice. The line and
+the styles are in [audition-styles.json](audition-styles.json).
 ```bash
-docker exec -e VOICES="elevenlabs/eleven-v4:callum,google/gemini-3.8-flash-tts:Fenrir" smartmouth node tools/voice/voice.mjs audition
+docker exec -e VOICES="google/gemini-2.5-pro-tts:Algenib,fish-audio/s2.1-pro:default" smartmouth node tools/voice/voice.mjs audition
 ```
-This writes `DATA_DIR/media/voice/audition/`, and the page is at `https://play.303.social/media/voice/audition/index.html`.
-The lines are in [audition-lines.json](audition-lines.json).
+This writes `DATA_DIR/media/voice/audition/`, and the page (voices x styles) is at
+`https://play.303.social/media/voice/audition/index.html`. Fish Audio (`fish-audio/s2.1-pro:<voice>`) takes written
+directions and returns mp3; `default` uses the model's own voice.
 
 ## Bank (everything the game says)
 ```bash
