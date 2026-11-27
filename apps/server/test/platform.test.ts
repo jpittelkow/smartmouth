@@ -82,3 +82,27 @@ test('the game’s sound list: the newest file per cue, only well-named mp3s', a
   assert.deepEqual(await gameSounds(media), { bell: '/media/sounds/game/bell.bbb.mp3', night: '/media/sounds/game/night.x1.mp3' });
   assert.deepEqual(await gameSounds(join(media, 'missing')), {});
 });
+
+test('a question counts as asked the moment it shows, so a game ended early starts somewhere new next time', async () => {
+  const { loadSeeds } = await import('../src/seeds.ts');
+  const { fileURLToPath } = await import('node:url');
+  const { drainLog, endGame, tickGame } = await import('../src/gameRuntime.ts');
+  const db = openDb(':memory:');
+  loadSeeds(db, fileURLToPath(new URL('../../../content/seed', import.meta.url)), 0);
+  const store = new RoomStore();
+  const firstQuestion = (room: ReturnType<RoomStore['create']>, now: number) => {
+    assert.ok(startGame(room, 'trivia', db, now).ok);
+    tickGame(room, now + 10_000); // past the title card: question one is on screen
+    drainLog(room, db, now + 10_000);
+    const s = room.game!.state as { current: Record<string, { id: number }> };
+    return s.current.grownups!.id;
+  };
+  const a = store.create(0);
+  store.join(a, { name: 'One', band: 'grownups', avatar: 0 }, 0);
+  const q1 = firstQuestion(a, 1000);
+  endGame(a); // ended before the reveal: no play recorded
+  const b = store.create(0);
+  store.join(b, { name: 'Two', band: 'grownups', avatar: 0 }, 0);
+  assert.notEqual(firstQuestion(b, 60_000), q1, 'the next game does not open with the same question');
+  db.close();
+});

@@ -200,6 +200,14 @@ export function pickForGame(
 }
 
 /** Adds one play to a question's stats (per question, never per person: ADR 0016). */
+/**
+ * A question appeared on screen: it counts as recently asked for picking, even if the game ends before its reveal
+ * (owner, 2026-11-27: "it's always picking the same questions"). The play itself is counted at the reveal.
+ */
+export function markShown(db: Db, questionId: number, now: number): void {
+  db.prepare('UPDATE questions SET last_asked_at = :at WHERE id = :id').run({ id: questionId, at: new Date(now).toISOString() });
+}
+
 export function recordPlay(db: Db, questionId: number, right: boolean, ms: number | null, now: number): void {
   db.prepare(`UPDATE questions SET asked = asked + 1, correct_count = correct_count + :right,
       total_ms = total_ms + :ms, last_asked_at = :at WHERE id = :id`)

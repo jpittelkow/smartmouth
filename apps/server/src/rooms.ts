@@ -56,6 +56,8 @@ export interface RunningGame {
   seed: number;
   /** How many of state.log's plays have been recorded in the library. */
   logged: number;
+  /** Questions already marked as shown (so a game ended early doesn't ask them again first next time). */
+  shown?: number[];
 }
 
 export type Result<T> = { ok: true; value: T } | { ok: false; code: ErrorCode; message: string };

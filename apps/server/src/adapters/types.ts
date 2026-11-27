@@ -55,6 +55,8 @@ export interface GameAdapter<S = unknown> {
   scores(state: S): Record<string, number>;
   /** Every question played so far (the platform records the new ones). */
   plays(state: S): readonly Play[];
+  /** Questions on screen now, so the library can mark them shown the moment they appear (optional). */
+  shown?(state: S): number[];
   /** Move every clock in the state forward by `ms` (the game was paused that long). */
   shift?(state: S, ms: number): S;
   /** Keep the current pause going until `until` (Salty is still talking). Optional; never shortens a wait. */

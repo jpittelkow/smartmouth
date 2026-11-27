@@ -3,7 +3,7 @@
 import { randomInt } from 'node:crypto';
 import { BANDS, TEXT_MAX, isBand, effectiveSpice, type GamePlayer } from '@smartmouth/protocol';
 import type { Db } from './db.ts';
-import { recordPlay } from './questions.ts';
+import { markShown, recordPlay } from './questions.ts';
 import { spiceState, type Room } from './rooms.ts';
 import { findGame } from './games.ts';
 import { RateLimit } from './limits.ts';
@@ -131,6 +131,13 @@ export function syncRoom(room: Room, now: number): void {
 export function drainLog(room: Room, db: Db, now: number): void {
   const g = room.game;
   if (!g) return;
+  const shownNow = adapterFor(g.id).shown?.(g.state) ?? [];
+  for (const id of shownNow) {
+    if (g.shown?.includes(id)) continue;
+    markShown(db, id, now);
+    room.asked.add(id);
+    (g.shown ??= []).push(id);
+  }
   const plays = adapterFor(g.id).plays(g.state);
   for (const play of plays.slice(g.logged)) {
     recordPlay(db, play.questionId, play.right, play.ms, now);
