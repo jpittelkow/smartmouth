@@ -3,7 +3,7 @@
 //
 // Every screen says three things: what to do now, what comes next, and where we are in the round (the "now" strip).
 // Every moment's picture, sound and caption tell one story: votes are sealed letters, the reveal opens them.
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ClientMsg, HostGameView, PublicSeat } from '@smartmouth/protocol';
 import { rules, type HistoryEvent, type SnakesHostView, type SPublicPlayer, type TalkLine } from '@smartmouth/game-snakes';
 import { serverNow } from '../../socket.ts';
@@ -146,7 +146,14 @@ function Herald({ cue, quiet }: { cue: HostGameView['salty']; quiet: boolean }) 
   const now = useNow(250);
   const sound = useSoundCaption();
   const part = cue?.parts?.filter((p) => p.at <= now).at(-1);
-  const text = cue?.parts ? (part?.caption ?? '…') : (cue?.caption ?? '…');
+  const full = cue?.parts ? (part?.caption ?? '…') : (cue?.caption ?? '…');
+  // A long line (a rules card's explanation) pages through at about speaking pace, two lines at a time.
+  const pages = useMemo(() => captionPages(full), [full]);
+  const since = useRef({ text: '', at: 0 });
+  if (since.current.text !== full) since.current = { text: full, at: now };
+  let page = 0;
+  for (let t = now - since.current.at, i = 0; i < pages.length - 1; i++) { t -= pages[i]!.length * SPOKEN_MS_PER_CHAR; if (t < 0) break; page = i + 1; }
+  const text = pages[page] ?? full;
   return (
     <div className={`sm-herald${quiet ? ' quiet' : ''}`} role="status">
       <Seal talking={talking} />
@@ -157,6 +164,23 @@ function Herald({ cue, quiet }: { cue: HostGameView['salty']; quiet: boolean }) 
       </div>
     </div>
   );
+}
+
+/** About how fast Salty speaks (calibrated on his recordings: roughly 0.06 s a character). */
+const SPOKEN_MS_PER_CHAR = 62;
+const PAGE_CHARS = 120;
+/** A caption cut into pages of whole sentences that fit the herald's two lines. */
+function captionPages(text: string): string[] {
+  if (text.length <= PAGE_CHARS) return [text];
+  const sentences = text.match(/[^.!?]+[.!?]+["”’)]*\s*|[^.!?]+$/g) ?? [text];
+  const pages: string[] = [];
+  for (const raw of sentences) {
+    const sn = raw.trim();
+    const last = pages.at(-1);
+    if (last !== undefined && (last + ' ' + sn).length <= PAGE_CHARS) pages[pages.length - 1] = `${last} ${sn}`;
+    else pages.push(sn);
+  }
+  return pages;
 }
 
 /** `hideRoleOf`: the player being banished right now; their role waits for the reveal (ADR 0024). */
