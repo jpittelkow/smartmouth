@@ -139,7 +139,7 @@ function Body({ g, view, seat, act }: { g: SnakesPlayerView; view: PlayerGameVie
   if (me.status === 'left') return <Message big="Gone" say="You left the manor." />;
 
   if (g.stage === 'deal') return <RoleCard g={g} seat={seat} open />;
-  if (g.stage === 'briefing' && g.brief) return <><BriefPhone g={g} /><RoleCard g={g} seat={seat} /></>;
+  if (g.stage === 'briefing' && g.brief) return g.brief === 'game' ? <BriefPhone g={g} /> : <><BriefPhone g={g} /><RoleCard g={g} seat={seat} /></>;
   if (g.stage === 'mission' && g.mission) return <MissionPhone g={g} act={act} />;
   if (g.stage === 'missionReveal') {
     return <Message big="Look at the TV" say={g.mission?.result?.shield ? 'You earned a shield. Nobody can murder you tonight. Tell anyone, or don’t.' : 'The count is on the TV.'} />;

@@ -10,10 +10,17 @@ export interface Brief {
   /** One small worked example or catch. */
   note: string;
   /** The stage the card leads into, for the round track and the music. */
-  leads: 'mission' | 'debate' | 'night' | 'endVote';
+  leads: 'deal' | 'mission' | 'debate' | 'night' | 'endVote';
 }
 
 export const BRIEFS: Record<BriefId, Brief> = {
+  game: {
+    title: 'Snake Manor',
+    steps: ['Most of you are Guests. A few are secret Snakes, and the Snakes know each other.', 'Each round: a trivia mission for the pot, the Round Table vote, then night.', 'At night the Snakes make someone vanish. The vanished become Ghosts.'],
+    stakes: 'Guests win if every Snake is banished. Snakes win if one survives to the end.',
+    note: 'Your secret role is on your phone next. Keep a straight face.',
+    leads: 'deal',
+  },
   'mission-everyone': {
     title: 'The Mission',
     steps: ['A question comes up on every phone. Answer it quickly.', 'Each right answer adds crowns to the pot.', 'A Snake can secretly sink one right answer.'],

@@ -6,7 +6,7 @@
 // the living vote: End, or Banish again.
 import { bandRank, type Band, type GamePlayer, type Spice } from '@smartmouth/protocol';
 import * as R from './rng.ts';
-import { missionIntent, missionTick, startMission as runMission, missionPublic, missionForPlayer, formatFor, MISSION_REVEAL_MS } from './mission.ts';
+import { missionIntent, missionTick, startMission as runMission, missionPublic, missionForPlayer, formatFor, tvQuestion, MISSION_REVEAL_MS } from './mission.ts';
 import type {
   BreakfastState, DaggerKind, NightScreen, Role, SPlayer, SPublicPlayer, SnakesContent, SnakesHostView, SnakesIntent,
   SnakesPlayerView, SnakesSettings, SnakesState, Stage, Words,
@@ -16,7 +16,7 @@ import type {
 export const DEAL_MS = 15_000;
 /** A rules card stays up at least this long, and until Salty finishes explaining (ADR 0025). */
 export const BRIEF_MS = 12_000;
-export const BRIEFS: readonly BriefId[] = ['mission-everyone', 'mission-chain', 'mission-pairs', 'table', 'night', 'endgame'];
+export const BRIEFS: readonly BriefId[] = ['game', 'mission-everyone', 'mission-chain', 'mission-pairs', 'table', 'night', 'endgame'];
 export const DEBATE_MS = 180_000;
 export const VOTE_MS = 45_000;
 export const REVEAL_PER_VOTE_MS = 2_500;
@@ -73,10 +73,10 @@ export function init(players: readonly GamePlayer[], settings: SnakesSettings, c
   }
   return {
     seed: settings.seed, rng, drama: settings.drama, spice: settings.spice, startCount: players.length,
-    endSize: endSizeFor(players.length), stage: 'deal', stageStart: now, stageEnds: now + DEAL_MS, round: 1,
+    endSize: endSizeFor(players.length), stage: 'briefing', stageStart: now, stageEnds: now + BRIEF_MS, round: 1,
     players: ps, order, pot: 0, daggers: 0, peeks: [], chat: [], queues: content, mission: null, vote: null,
     banished: null, night: null, breakfast: null, endgame: false, endVotes: {}, forceRecruit: false, mayRecruit: false,
-    unmasked: 0, log: [], history: [], talk: [], brief: null, briefed: [],
+    unmasked: 0, log: [], history: [], talk: [], brief: 'game', briefed: [],
   };
 }
 
@@ -187,6 +187,7 @@ function afterBrief(s0: SnakesState, now: number): SnakesState {
   const id = s0.brief;
   const s = { ...s0, brief: null, briefed: id ? [...s0.briefed, id] : s0.briefed };
   switch (id) {
+    case 'game': return to(s, 'deal', now, DEAL_MS);
     case 'table': return startDebate(s, now);
     case 'night': return startNight(s, now);
     case 'endgame': return startEndVote(s, now);
@@ -196,6 +197,11 @@ function afterBrief(s0: SnakesState, now: number): SnakesState {
 
 function startMission(s: SnakesState, now: number): SnakesState {
   return briefFirst(s, `mission-${formatFor(s.round)}`, now, (x) => runMission(x, now));
+}
+
+/** The question on the TV now (the one Salty reads), if a mission question is up. */
+export function missionQuestion(s: SnakesState) {
+  return s.stage === 'mission' && s.mission?.step === 'question' ? tvQuestion(s, s.mission) : null;
 }
 
 function afterMission(s: SnakesState, now: number): SnakesState {

@@ -200,7 +200,7 @@ export function missionIntent(
 }
 
 /** The question the TV shows: the oldest band's (everyone, pairs), or the chain player's. */
-function tvQuestion(s: SnakesState, m: MissionState): MQuestion | null {
+export function tvQuestion(s: SnakesState, m: MissionState): MQuestion | null {
   const ids = Object.keys(m.questions);
   if (ids.length === 0) return null;
   const oldest = [...ids].sort((a, b) => bandRank(s.players[b]?.band as Band) - bandRank(s.players[a]?.band as Band))[0] as string;

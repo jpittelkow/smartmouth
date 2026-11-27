@@ -255,8 +255,19 @@ test('pause: intents are refused while paused, and resuming moves every clock fo
 
 // ---------- briefings (ADR 0025) ----------
 
+test('the game opens with the whole-game card, then the deal', () => {
+  const s = start(6);
+  assert.equal(s.stage, 'briefing');
+  assert.equal(s.brief, 'game');
+  assert.equal(momentFor(s), 'sm-brief-game');
+  const d = rules.tick(s, s.stageEnds ?? 0);
+  assert.equal(d.stage, 'deal');
+  assert.deepEqual(d.briefed, ['game']);
+});
+
 test('the first mission waits behind its rules card: no question and no clock but the card’s', () => {
   let s = start(6);
+  s = rules.tick(s, s.stageEnds ?? 0);
   s = rules.tick(s, s.stageEnds ?? 0);
   assert.equal(s.stage, 'briefing');
   assert.equal(s.brief, 'mission-everyone');
@@ -268,7 +279,7 @@ test('the first mission waits behind its rules card: no question and no clock bu
   const m = rules.tick(held, held.stageEnds ?? 0);
   assert.equal(m.stage, 'mission');
   assert.equal(m.stageStart, held.stageEnds, 'the mission starts when the card ends');
-  assert.deepEqual(m.briefed, ['mission-everyone']);
+  assert.deepEqual(m.briefed, ['game', 'mission-everyone']);
 });
 
 test('each rules card shows once per game, before the thing it explains', async () => {
@@ -291,7 +302,18 @@ test('each rules card shows once per game, before the thing it explains', async 
     const ids = seen.map((x) => x.brief);
     assert.equal(new Set(ids).size, ids.length, `no card twice (${ids.join(', ')})`);
     assert.ok(ids.includes('mission-everyone') && ids.includes('table'), 'the first mission and table are always explained');
-    const leads: Record<string, string> = { 'mission-everyone': 'mission', 'mission-chain': 'mission', 'mission-pairs': 'mission', table: 'debate', night: 'night', endgame: 'endVote' };
+    const leads: Record<string, string> = { game: 'deal', 'mission-everyone': 'mission', 'mission-chain': 'mission', 'mission-pairs': 'mission', table: 'debate', night: 'night', endgame: 'endVote' };
     for (const x of seen) assert.equal(x.next, leads[x.brief], `${x.brief} leads into ${x.next}`);
   }
+});
+
+test('Salty reads each mission question from its recording, and says nothing over it', () => {
+  const s = toMission(start(6));
+  const q = rules.missionQuestion(s)!;
+  assert.ok(q, 'a question is up');
+  const tools = { line: () => ({ text: 'A line', clip: 'line.mp3' }), reads: (id: number) => ({ prompt: `q${id}.mp3`, answers: [], explain: null }) } as never;
+  const say = snakes.say!(s, tools);
+  assert.equal(say.text, q.prompt);
+  assert.deepEqual(say.clips, [`q${q.id}.mp3`]);
+  assert.equal(momentFor(s), null, 'no mission line over the first question');
 });

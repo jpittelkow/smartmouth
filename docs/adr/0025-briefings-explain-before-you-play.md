@@ -18,6 +18,7 @@ The screens already say what to do now and next (ADR 0024, design guide §8), bu
 
   | Brief | Before | Covers |
   |---|---|---|
+  | `game` | the deal (the very start) | the whole game: Guests and secret Snakes who know each other, the round (mission, Round Table, night), Ghosts, who wins |
   | `mission-everyone` | the first mission | answer on your phone, right answers fill the pot, the target, a miss gives the Snakes a Dagger, the top scorer gets a secret shield, a Snake can secretly sink an answer |
   | `mission-chain` | the first chain | one player at a time, a run of right answers pays more, one wrong breaks the chain |
   | `mission-pairs` | the first pairs mission | your partner is on the TV, a pair scores only if both are right |
@@ -40,7 +41,7 @@ The screens already say what to do now and next (ADR 0024, design guide §8), bu
   - no names, so the lines can be recorded ahead (ADR 0013, 0016);
   - reviewed by a grown-up before the voice bank is made (ADR 0011).
 
-  The stage's own line then gets short ("Phones out. Go."), and the old `sm-how-*` lines retire.
+  Nothing is said over a mission question except the question itself: Salty reads it from its recording, as in Trivia (owner, 2026-11-27: the first question had a second explainer on it and wasn't read). The old `sm-how-*` and `sm-mission` lines retire.
 - **The briefing is public information only (ADR 0023).** It runs before anything secret is decided. The night brief comes before the night's recruit choice, so the card can't hint at it.
 - **Deterministic and replayable.** Which briefs have run is part of the game state (`briefed`), so a replay and a reconnecting TV see the same thing.
 

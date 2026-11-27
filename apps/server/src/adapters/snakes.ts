@@ -7,7 +7,7 @@ import type { GameAdapter, Say, SaltyTools } from './types.ts';
 
 /** Every moment Salty has Snake Manor lines for (content/voice/lines.json), at every spice level. */
 export const SM_MOMENTS: readonly Moment[] = [
-  'sm-deal', 'sm-mission', 'sm-overboard', 'sm-target-hit', 'sm-target-miss', 'sm-table', 'sm-vote', 'sm-revote', 'sm-seals',
+  'sm-deal', 'sm-overboard', 'sm-target-hit', 'sm-target-miss', 'sm-table', 'sm-vote', 'sm-revote', 'sm-seals',
   'sm-no-votes', 'sm-reveal-setup', 'sm-reveal-snake', 'sm-reveal-guest', 'sm-night', 'sm-murder', 'sm-saved', 'sm-quiet',
   'sm-recruited', 'sm-morning', 'sm-final-vote', 'sm-unmask', 'sm-guests-win', 'sm-snakes-win',
   // Rules cards (ADR 0025): the first time the table meets each thing, Salty explains it before anyone plays.
@@ -136,9 +136,9 @@ export function momentFor(s: SnakesState): Moment | null {
     case 'briefing': return s.brief ? `sm-brief-${s.brief}` : null;
     case 'mission': {
       const m = host.mission;
-      if (!m) return 'sm-mission';
-      if (m.step === 'tally') return m.overboardSaid ? 'sm-overboard' : null;
-      return m.index === 0 ? 'sm-mission' : null;
+      // A question is read aloud (sayFor), never talked over (owner, 2026-11-27).
+      if (m?.step === 'tally') return m.overboardSaid ? 'sm-overboard' : null;
+      return null;
     }
     case 'missionReveal': return host.mission?.result?.hit ? 'sm-target-hit' : 'sm-target-miss';
     case 'debate': return 'sm-table';
@@ -162,6 +162,12 @@ export function momentFor(s: SnakesState): Moment | null {
 }
 
 function sayFor(s: SnakesState, tools: SaltyTools): Say {
+  // Salty reads the question on the TV from its recording, like Trivia; the caption is the question.
+  const q = rules.missionQuestion(s);
+  if (q) {
+    const r = tools.reads(q.id);
+    return { text: q.prompt, clips: r.prompt ? [r.prompt] : [] };
+  }
   const moment = momentFor(s);
   if (!moment) return { text: null, clips: [] };
   const line = tools.line(moment);

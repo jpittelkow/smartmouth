@@ -7,7 +7,7 @@ export type Role = 'guest' | 'snake';
 export type Status = 'alive' | 'ghost' | 'banished' | 'left';
 
 /** A rules card Salty explains before the table first meets something (ADR 0025). */
-export type BriefId = 'mission-everyone' | 'mission-chain' | 'mission-pairs' | 'table' | 'night' | 'endgame';
+export type BriefId = 'game' | 'mission-everyone' | 'mission-chain' | 'mission-pairs' | 'table' | 'night' | 'endgame';
 
 export type Stage =
   | 'deal' | 'briefing' | 'mission' | 'missionReveal' | 'debate' | 'vote' | 'voteReveal' | 'banish'

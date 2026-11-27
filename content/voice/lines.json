@@ -806,36 +806,6 @@
    "text": "Welcome to my manor. One of you is a Snake. I picked them. What the hell was I thinking? Shit."
   },
   {
-   "id": "sm-mission-m1",
-   "moment": "sm-mission",
-   "spice": "mild",
-   "text": "A mission! Fill my pot with crowns. Our pot. Your pot. Fine."
-  },
-  {
-   "id": "sm-mission-s1",
-   "moment": "sm-mission",
-   "spice": "spicy",
-   "text": "A mission. Answer well and the pot grows. Answer badly and I sulk."
-  },
-  {
-   "id": "sm-mission-s2",
-   "moment": "sm-mission",
-   "spice": "spicy",
-   "text": "Brains out, guests. The pot is hungry and so am I."
-  },
-  {
-   "id": "sm-mission-h1",
-   "moment": "sm-mission",
-   "spice": "hot",
-   "text": "Mission time. Somebody's going to tank this on purpose. Act surprised."
-  },
-  {
-   "id": "sm-mission-f1",
-   "moment": "sm-mission",
-   "spice": "filthy",
-   "text": "Mission time. Get it right, or get it wrong on purpose. Either way, I'm drinking. Shit."
-  },
-  {
    "id": "sm-overboard-m1",
    "moment": "sm-overboard",
    "spice": "mild",
@@ -1584,6 +1554,30 @@
    "moment": "sm-brief-endgame",
    "spice": "filthy",
    "text": "Final table, you paranoid lot. End it now, or toss one more? Everyone has to pick End or it's back to the damn Round Table. When it ends, masks off. If a Snake's still sitting there, they win. So think, for once."
+  },
+  {
+   "id": "sm-brief-game-m1",
+   "moment": "sm-brief-game",
+   "spice": "mild",
+   "text": "Welcome to Snake Manor! Most of you are honest Guests, but a few of you are secret Snakes, and they know each other. Each round, we play a trivia mission to fill the pot, argue at the Round Table, and vote someone out. Then night falls, and the Snakes make someone vanish. Guests win if every Snake is caught. Snakes win if even one survives to the end. Your secret role is on your phone next."
+  },
+  {
+   "id": "sm-brief-game-s1",
+   "moment": "sm-brief-game",
+   "spice": "spicy",
+   "text": "Welcome to my manor, darlings. Most of you are Guests. A few of you are secret Snakes, and they know exactly who their friends are. Every round: a trivia mission for the pot, then the Round Table, where you vote someone out. Then night, when the Snakes make someone vanish. Catch every Snake and the Guests win. Let one slither to the end and the Snakes win. Your role's on your phone next."
+  },
+  {
+   "id": "sm-brief-game-h1",
+   "moment": "sm-brief-game",
+   "spice": "hot",
+   "text": "Welcome to Snake Manor. Most of you are Guests. A few of you are Snakes, and the Snakes know each other. Each round: a trivia mission to fill the pot, the Round Table where you vote someone out, then night, when the Snakes murder a Guest. Guests win by banishing every Snake. Snakes win if just one of them is still standing at the end. Check your phone for your role, and keep a straight face."
+  },
+  {
+   "id": "sm-brief-game-f1",
+   "moment": "sm-brief-game",
+   "spice": "filthy",
+   "text": "Welcome to my damn manor. Most of you are Guests. A few of you are Snakes, and those little bastards know each other. Each round: a trivia mission for the pot, the Round Table where you throw someone out, then night, when the Snakes murder a Guest. Guests win if every Snake is gone. Snakes win if one survives to the end. Your role's on your phone. Don't blow it."
   }
  ]
 }
