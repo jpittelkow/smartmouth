@@ -33,6 +33,8 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
   // Sound for each stage (the owner's picks): a bed under thinking, the leaderboard and the final; a sting as each
   // stage starts. Music ducks under Salty.
   const { talking } = useSalty(view.salty);
+  /** The drum roll that just played had its own crash built in. */
+  const rolled = useRef(false);
   useEffect(() => { duck(talking); }, [talking]);
   useEffect(() => () => stopMusic(), []);
   useEffect(() => {
@@ -40,9 +42,12 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
       case 'intro': bed(null); fx('start'); break;
       case 'question': bed('think'); break;
       // The drum roll builds while the answer is still hidden; the result lands with the reveal.
-      case 'suspense': bed(null); fx('reveal', 0, 0.85); break;
+      // One generated roll-and-crash (four takes, rotating: owner, 2026-11-27) whose crash lands as the answer shows;
+      // without one, the picked drum roll here and the separate bang at the reveal.
+      case 'suspense': bed(null); rolled.current = fx('rollcrash', 0, 0.85); if (!rolled.current) fx('reveal', 0, 0.85); break;
       case 'reveal': {
-        bang();
+        if (!rolled.current) bang();
+        rolled.current = false;
         const graded = g.players.filter((p) => p.right !== null);
         const right = graded.filter((p) => p.right).length;
         if (graded.length && right === graded.length) { fx('right'); fx('applause', 0.2, 0.55); }
