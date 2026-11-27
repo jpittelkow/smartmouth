@@ -38,11 +38,16 @@ _Last updated: 2026-11-26_
   one-liner).
 
 ## Voice (2026-11-26)
+- `content/voice/lines.json` holds every game's lines (trivia's plain moments, Snake Manor's `sm-*`). A rewrite must replace
+  only its own game's moments and keep the rest: a trivia rewrite on 2026-11-27 dropped Snake Manor's 98 lines (restored from
+  `289dedc`). The `snakes-platform` test catches it.
 - OpenRouter lists speech models at `/api/v1/audio/speech/models/<id>`, not in `/api/v1/models`. `openai/gpt-4o-mini-tts` isn't
   there.
 - Gemini TTS returns only wav or pcm (about 48 KB a second). ElevenLabs stock voices retire on 2026-12-31. Fish Audio S2.1 Pro works with no
   voice given and takes `instructions`.
 - One request at a time: the shared key's in-flight budget gives 402s for parallel calls (found by Crayon Box).
+- Lyria 3 music on OpenRouter returns audio only with `"modalities": ["text", "audio"]` and `"stream": true` (base64 mp3 in
+  `choices[0].delta.audio.data`). Without them it still charges $0.04 and returns just `<instrumental>` (2026-11-27, `tools/sounds/README.md`).
 
 ## Office Chromecast
 - GlanceTV's screensaver stays over a newly launched app until a key wakes the device (`input keyevent KEYCODE_WAKEUP`).
