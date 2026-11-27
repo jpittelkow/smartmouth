@@ -14,9 +14,9 @@
   --sm-pale: #cfc5b0;
   --sm-muted: #9a8d77;
   --sm-candle: #f4c66a;
-  --sm-uncial: 'Uncial Antiqua', 'EB Garamond', Georgia, serif;
-  --sm-caps: 'Cinzel', 'Trajan Pro', Georgia, serif;
-  --sm-book: 'EB Garamond', Garamond, 'Times New Roman', serif;
+  --sm-uncial: 'Uncial Antiqua', 'EB Garamond Variable', Georgia, serif;
+  --sm-caps: 'Cinzel Variable', 'Cinzel', Georgia, serif;
+  --sm-book: 'EB Garamond Variable', 'EB Garamond', Garamond, 'Times New Roman', serif;
 }
 
 /* ---------- the TV ---------- */

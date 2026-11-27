@@ -7,6 +7,7 @@ import { serverNow } from '../../socket.ts';
 import { useSalty } from '../../host/voice.ts';
 import { Arms, Candle, Mark, Seal, clock, useLeft } from './arms.tsx';
 import { Drama } from './drama.tsx';
+import './fonts.ts';
 import './snakes.css';
 
 type Seat = (id: string) => PublicSeat | undefined;

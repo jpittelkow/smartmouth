@@ -6,6 +6,7 @@ import type { ClientMsg, PlayerGameView, PublicSeat } from '@smartmouth/protocol
 import { TEXT_MAX } from '@smartmouth/protocol';
 import type { NightScreen, SnakesPlayerView } from '@smartmouth/game-snakes';
 import { Arms, Mark, clock, useLeft } from './arms.tsx';
+import './fonts.ts';
 import './snakes.css';
 
 type Send = (m: ClientMsg) => void;
