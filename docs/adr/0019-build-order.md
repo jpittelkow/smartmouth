@@ -80,6 +80,14 @@ game ID, and Salty's line picker imports trivia's rules. So the first step makes
     - kids in the room
     - tune the knobs: night length, mission target, the Dagger menu, how often shields come up
     - the owner accepts or revises ADRs 0022 to 0024
+18. **Briefings** ([ADR 0025](0025-briefings-explain-before-you-play.md)), after the first owner runs:
+    - a `briefing` stage before the first mission of each format, the first Round Table, the first night and
+      the endgame; no clock runs during one
+    - a rules card on the TV (three steps, win/lose, an example) and the same steps on the phones
+    - Salty's briefing lines at every spice level, reviewed, then voiced; the old how-to lines retire
+
+    Done when a first-time player can say what to do at each new stage without asking, and no question timer starts
+    while Salty explains.
 
 Steps 14 and 15 change styles and lines, not rules, so they can run alongside step 13 once step 12 is done. Step 16
 needs step 15's two-part clips. The playtest at step 12 comes before any polish on purpose: the riskiest question is

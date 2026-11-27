@@ -34,3 +34,4 @@ the same commit.
 | [0022](0022-game-two-snake-manor.md) | Game #2 is Snake Manor, a hidden-traitor game on trivia missions | Proposed |
 | [0023](0023-hidden-information.md) | Hidden information: secrets on one phone, every phone looks the same | Proposed |
 | [0024](0024-drama-sequences.md) | Drama sequences: timed reveals, paired sound and picture, Full or Quick | Proposed |
+| [0025](0025-briefings-explain-before-you-play.md) | Briefings: Salty explains each new thing on a rules card first | Proposed |
