@@ -22,11 +22,17 @@ export type ClientMsg =
   | { t: 'player:leave' }
   | { t: 'admin:spice'; spice: Spice }
   | { t: 'admin:kick'; seatId: string }
-  | { t: 'admin:pickGame'; gameId: string }
+  | { t: 'admin:start'; gameId: string }
+  /** End the current wait (reveal, intro, a stalled turn). */
+  | { t: 'admin:next' }
+  /** Back to the lobby; a finished game's scores are added to the night's totals. */
+  | { t: 'admin:end' }
+  /** A game's own intent; the game module checks it (ADR 0006). */
+  | { t: 'game:intent'; intent: unknown }
   | { t: 'ping' };
 
 // ---- server → client ----
-export type ErrorCode = 'no-room' | 'room-full' | 'bad-name' | 'bad-token' | 'bad-message' | 'rate' | 'kicked' | 'not-allowed' | 'not-ready';
+export type ErrorCode = 'no-room' | 'room-full' | 'bad-name' | 'bad-token' | 'bad-message' | 'rate' | 'kicked' | 'not-allowed' | 'not-ready' | 'no-questions';
 
 export type ServerMsg =
   | { t: 'host:welcome'; code: string; token: string }
@@ -75,5 +81,29 @@ export interface PlayerLobbyView {
   notice: string | null;
 }
 
-export type HostView = HostLobbyView;
-export type PlayerView = PlayerLobbyView;
+/** A game in progress. `game` is that game's own view (for trivia, TriviaHostView / TriviaPlayerView). */
+export interface HostGameView {
+  role: 'host';
+  phase: 'game';
+  gameId: string;
+  code: string;
+  joinUrl: string;
+  players: PublicSeat[];
+  spice: SpiceState;
+  game: unknown;
+}
+
+export interface PlayerGameView {
+  role: 'player';
+  phase: 'game';
+  gameId: string;
+  code: string;
+  you: PublicSeat;
+  playerCount: number;
+  players: PublicSeat[];
+  spice: SpiceState;
+  game: unknown;
+}
+
+export type HostView = HostLobbyView | HostGameView;
+export type PlayerView = PlayerLobbyView | PlayerGameView;

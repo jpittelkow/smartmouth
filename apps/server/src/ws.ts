@@ -6,6 +6,8 @@ import { RoomStore, hostView, playerView, adminSeatId, type Room } from './rooms
 import { GAMES, findGame } from './games.ts';
 import { RateLimit, clientAddress, originAllowed } from './limits.ts';
 import { normalizeCode } from './codes.ts';
+import type { Db } from './db.ts';
+import { deadline, drainLog, endGame, gameIntent, skip, startGame, syncRoom, tickGame } from './gameRuntime.ts';
 
 export interface SocketOptions {
   /** The address phones use, shown on the TV. Falls back to the host page's own origin. */
@@ -13,6 +15,8 @@ export interface SocketOptions {
   allowedOrigins: ReadonlySet<string>;
   /** Which peers may vouch for the client's address (limits.ts trustedProxies). */
   trusted?: (addr: string | undefined) => boolean;
+  /** The question library, for picking a game's questions and recording plays. */
+  db: Db;
   now?: () => number;
 }
 
@@ -47,7 +51,33 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
     return `${base.replace(/\/$/, '')}/play?code=${room.code}`;
   };
 
+  const timers = new Map<string, ReturnType<typeof setTimeout>>();
+  let stopped = false;
+
+  /** After any change: record plays, re-arm the game's timer, then send everyone their view. */
   function broadcast(room: Room) {
+    if (stopped) return; // shutting down: the database may already be closed
+    settle(room);
+    send_views(room);
+  }
+
+  function settle(room: Room) {
+    const t = now();
+    drainLog(room, opts.db, t);
+    clearTimeout(timers.get(room.code));
+    timers.delete(room.code);
+    const due = deadline(room);
+    if (due !== null) {
+      timers.set(room.code, setTimeout(() => {
+        timers.delete(room.code);
+        if (!store.rooms.has(room.code)) return;
+        tickGame(room, now());
+        broadcast(room);
+      }, Math.max(0, due - t) + 5));
+    }
+  }
+
+  function send_views(room: Room) {
     const t = now();
     for (const c of clients) {
       if (c.conn.kind === 'host' && c.conn.code === room.code) {
@@ -122,6 +152,7 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
         takeOver(c, { kind: 'player', code: room.code, seatId: r.value.id });
         send(c, { t: 'player:welcome', code: room.code, token: r.value.token, seatId: r.value.id });
         refreshPresence(room);
+        syncRoom(room, t);
         return broadcast(room);
       }
 
@@ -151,6 +182,7 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
         store.remove(room, c.conn.seatId, t);
         c.conn = { kind: 'none' };
         refreshPresence(room);
+        syncRoom(room, t);
         return broadcast(room);
       }
 
@@ -159,6 +191,7 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
         if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
         if (!isSpice(msg.spice)) return error(c, 'bad-message', 'Unknown spice level.');
         room.spiceChosen = msg.spice;
+        syncRoom(room, t);
         return broadcast(room);
       }
 
@@ -174,10 +207,11 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
           }
         }
         refreshPresence(room);
+        syncRoom(room, t);
         return broadcast(room);
       }
 
-      case 'admin:pickGame': {
+      case 'admin:start': {
         const room = roomOf(c);
         if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
         const game = findGame(msg.gameId);
@@ -186,7 +220,31 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
           room.notice = `${game.name} isn't built yet. Salty is "rehearsing".`;
           return broadcast(room);
         }
-        return error(c, 'not-ready', 'Starting games comes in build step 2.');
+        const r = startGame(room, game.id, opts.db, t);
+        if (!r.ok) { room.notice = r.message; broadcast(room); return error(c, r.code, r.message); }
+        return broadcast(room);
+      }
+
+      case 'admin:next': {
+        const room = roomOf(c);
+        if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
+        skip(room, t);
+        return broadcast(room);
+      }
+
+      case 'admin:end': {
+        const room = roomOf(c);
+        if (!room || !isAdmin(c, room)) return error(c, 'not-allowed', 'Only a grown-up can do that.');
+        endGame(room);
+        return broadcast(room);
+      }
+
+      case 'game:intent': {
+        const room = roomOf(c);
+        if (!room || c.conn.kind === 'none') return error(c, 'not-allowed', 'Join a room first.');
+        const actor = c.conn.kind === 'host' ? { kind: 'host' as const } : { kind: 'player' as const, seatId: c.conn.seatId };
+        if (gameIntent(room, actor, msg.intent, t)) broadcast(room);
+        return;
       }
 
       default:
@@ -225,9 +283,12 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
       const t = now();
       joinLimit.prune(t);
       createLimit.prune(t);
-      return store.sweep(t);
+      const gone = store.sweep(t);
+      for (const code of gone) { clearTimeout(timers.get(code)); timers.delete(code); }
+      return gone;
     },
     clientCount: () => clients.size,
+    stop: () => { stopped = true; for (const tm of timers.values()) clearTimeout(tm); timers.clear(); },
     normalizeCode,
   };
 }

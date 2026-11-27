@@ -146,6 +146,7 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
   const sockets = attachSockets(wss, store, {
     publicUrl: cfg.publicUrl,
     trusted,
+    db,
     allowedOrigins: new Set([...(cfg.publicUrl ? [new URL(cfg.publicUrl).origin] : []), ...cfg.allowedOrigins]),
   });
   server.on('upgrade', (req, socket, head) => {
@@ -161,6 +162,7 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
       server, store, db,
       close: () => new Promise<void>((done) => {
         clearInterval(sweeper);
+        sockets.stop();
         for (const c of wss.clients) c.terminate();
         wss.close();
         server.close(() => { db.close(); done(); });

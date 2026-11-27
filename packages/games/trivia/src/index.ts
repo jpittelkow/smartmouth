@@ -1,4 +1,4 @@
-// Trivia's manifest. The rules (server.ts), Host.tsx and Controller.tsx come in build step 2 (ADR 0006, 0019).
+// Trivia: game one (ADR 0006, 0008, 0009). The manifest, the rules, and the view types the web app draws.
 import { BAND_IDS, type GameManifest } from '@smartmouth/protocol';
 
 export const manifest: GameManifest = {
@@ -8,5 +8,10 @@ export const manifest: GameManifest = {
   minPlayers: 1,
   maxPlayers: 10,
   bands: BAND_IDS,
-  ready: false,
+  ready: true,
 };
+
+export const DEFAULT_ROUNDS = 8;
+
+export * as rules from './server.ts';
+export type * from './types.ts';

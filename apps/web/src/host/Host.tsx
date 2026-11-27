@@ -1,10 +1,11 @@
 // The TV host screen (ADR 0007, design guide §6 TV). Drawn at 1920×1080 and scaled to the window.
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
-import { APP_NAME, BANDS, HOST_NAME, MAX_PLAYERS, SPICE_LABEL, type HostView, type ServerMsg } from '@smartmouth/protocol';
+import { APP_NAME, BANDS, HOST_NAME, MAX_PLAYERS, SPICE_LABEL, type HostLobbyView, type HostView, type ServerMsg } from '@smartmouth/protocol';
 import { useSocket, store, save } from '../socket.ts';
 import { Blob, Grin } from '../ui/art.tsx';
 import { captionText, pickLine } from '../lines.ts';
+import { TriviaHost } from '../games/trivia/TriviaHost.tsx';
 
 const KEY = 'smartmouth.host';
 
@@ -35,13 +36,24 @@ export function Host() {
     },
   );
 
-  // Back on the TV remote: nothing to go back to in the lobby yet, so let the shell confirm quitting.
-  useEffect(() => { window.smartmouthBack = () => false; return () => { delete window.smartmouthBack; }; }, []);
+  // Back on the TV remote: in a game it opens the menu (never quits mid-game, guide §6 TV rule 5); in the lobby
+  // the shell asks before quitting.
+  const [menu, setMenu] = useState(false);
+  const inGame = view?.phase === 'game';
+  useEffect(() => {
+    window.smartmouthBack = () => { if (!inGame) return false; setMenu((m) => !m); return true; };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && inGame) setMenu((m) => !m); };
+    window.addEventListener('keydown', onKey);
+    return () => { delete window.smartmouthBack; window.removeEventListener('keydown', onKey); };
+  }, [inGame]);
+  useEffect(() => { if (!inGame) setMenu(false); }, [inGame]);
 
   return (
     <Stage>
-      {view ? <Lobby view={view} onPick={(gameId) => send({ t: 'admin:pickGame', gameId })} problem={problem} />
-        : <div className="tv-message display"><Grin />{status === 'open' ? 'Setting up a room…' : `Finding the ${APP_NAME} server…`}</div>}
+      {!view && <div className="tv-message display"><Grin />{status === 'open' ? 'Setting up a room…' : `Finding the ${APP_NAME} server…`}</div>}
+      {view?.phase === 'lobby' && <Lobby view={view} onPick={(gameId) => send({ t: 'admin:start', gameId })} problem={problem} />}
+      {view?.phase === 'game' && !menu && <TriviaHost view={view} send={send} />}
+      {view?.phase === 'game' && menu && <Menu onResume={() => setMenu(false)} onEnd={() => { setMenu(false); send({ t: 'admin:end' }); }} />}
     </Stage>
   );
 }
@@ -61,7 +73,31 @@ function Stage({ children }: { children: React.ReactNode }) {
   return <div className="tv-viewport"><div className="tv" ref={ref}><div className="tv-panel">{children}</div></div></div>;
 }
 
-function Lobby({ view, onPick, problem }: { view: HostView; onPick: (id: string) => void; problem: string | null }) {
+/** The pause menu (Back on the remote). The game keeps its own clock; this just gets out of the way. */
+function Menu({ onResume, onEnd }: { onResume: () => void; onEnd: () => void }) {
+  const first = useRef<HTMLButtonElement>(null);
+  useEffect(() => { first.current?.focus(); }, []);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+      const items = [...document.querySelectorAll<HTMLButtonElement>('.menu .game-card')];
+      const i = items.indexOf(document.activeElement as HTMLButtonElement);
+      items[(i + (e.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length]?.focus();
+      e.preventDefault();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+  return (
+    <div className="menu">
+      <div className="display" style={{ fontSize: 72 }}>Menu</div>
+      <button ref={first} className="press game-card" onClick={onResume}><span className="name display">Resume</span></button>
+      <button className="press game-card danger" onClick={onEnd}><span className="name display">End game</span></button>
+    </div>
+  );
+}
+
+function Lobby({ view, onPick, problem }: { view: HostLobbyView; onPick: (id: string) => void; problem: string | null }) {
   const [qr, setQr] = useState('');
   const [seed] = useState(() => Math.floor(Math.random() * 1000));
   const firstCard = useRef<HTMLButtonElement>(null);
@@ -145,7 +181,7 @@ function Lobby({ view, onPick, problem }: { view: HostView; onPick: (id: string)
   );
 }
 
-function capReason(view: HostView): string {
+function capReason(view: HostLobbyView): string {
   const bands = new Set(view.players.map((p) => p.band));
   if (bands.has('little')) return 'a little one is playing';
   if (bands.has('kids') || bands.has('tweens')) return 'kids are playing';

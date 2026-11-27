@@ -2,9 +2,10 @@
 // the socket layer (ws.ts) calls these and sends the views.
 import {
   AVATAR_COUNT, MAX_PLAYERS, NAME_MAX, PLAYER_COLORS, effectiveSpice, spiceCap,
-  type Band, type ErrorCode, type GameManifest, type HostLobbyView, type PlayerLobbyView, type PublicSeat, type Spice,
-  type SpiceState,
+  type Band, type ErrorCode, type GameManifest, type HostGameView, type HostLobbyView, type PlayerGameView,
+  type PlayerLobbyView, type PublicSeat, type Spice, type SpiceState,
 } from '@smartmouth/protocol';
+import { rules, type TriviaState } from '@smartmouth/game-trivia';
 import { makeCode, makeToken, normalizeCode } from './codes.ts';
 
 /** A room with no host and no players connected is deleted after this long. */
@@ -31,6 +32,17 @@ export interface Room {
   /** Last time anything was connected or anything happened. */
   lastActive: number;
   nextSeat: number;
+  /** The game being played, if any (only trivia exists so far). */
+  game: RunningGame | null;
+  /** Questions asked in this room tonight, so the next game doesn't repeat them (ADR 0010). */
+  asked: Set<number>;
+}
+
+export interface RunningGame {
+  id: 'trivia';
+  state: TriviaState;
+  /** How many of state.log's plays have been recorded in the library. */
+  logged: number;
 }
 
 export type Result<T> = { ok: true; value: T } | { ok: false; code: ErrorCode; message: string };
@@ -52,7 +64,7 @@ export class RoomStore {
     const code = makeCode((c) => this.rooms.has(c));
     const room: Room = {
       code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy',
-      notice: null, lastActive: now, nextSeat: 1,
+      notice: null, lastActive: now, nextSeat: 1, game: null, asked: new Set(),
     };
     this.rooms.set(code, room);
     return room;
@@ -135,14 +147,27 @@ function publicSeat(room: Room, s: Seat): PublicSeat {
   };
 }
 
-export function hostView(room: Room, joinUrl: string, games: GameManifest[]): HostLobbyView {
+export function hostView(room: Room, joinUrl: string, games: GameManifest[]): HostLobbyView | HostGameView {
+  if (room.game) {
+    return {
+      role: 'host', phase: 'game', gameId: room.game.id, code: room.code, joinUrl,
+      players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), game: rules.hostView(room.game.state),
+    };
+  }
   return {
     role: 'host', phase: 'lobby', code: room.code, joinUrl,
     players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), games, notice: room.notice,
   };
 }
 
-export function playerView(room: Room, seat: Seat, games: GameManifest[]): PlayerLobbyView {
+export function playerView(room: Room, seat: Seat, games: GameManifest[]): PlayerLobbyView | PlayerGameView {
+  if (room.game) {
+    return {
+      role: 'player', phase: 'game', gameId: room.game.id, code: room.code, you: publicSeat(room, seat),
+      playerCount: room.seats.length, players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room),
+      game: rules.playerView(room.game.state, seat.id),
+    };
+  }
   return {
     role: 'player', phase: 'lobby', code: room.code, you: publicSeat(room, seat),
     playerCount: room.seats.length, spice: spiceState(room), games, notice: room.notice,

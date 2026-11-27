@@ -133,3 +133,58 @@ test('sockets from other sites are refused', async () => {
     await srv.close();
   }
 });
+
+test('a grown-up starts trivia; phones get their own questions; plays are recorded; end returns to the lobby', async () => {
+  const { loadSeeds } = await import('../src/seeds.ts');
+  const seedDir = new URL('../../../content/seed', import.meta.url);
+  const srv = await startServer({
+    port: 0, publicUrl: null, allowedOrigins: [], webDir: '.',
+    onDb: (db) => { loadSeeds(db, (seedDir.pathname.replace(/^\/([A-Za-z]:)/, '$1')), Date.now()); },
+  });
+  const port = (srv.server.address() as { port: number }).port;
+  try {
+    const host = client(port);
+    await host.open;
+    host.send({ t: 'host:create' });
+    const w = await host.next((m) => m.t === 'host:welcome');
+    if (w.t !== 'host:welcome') return assert.fail();
+    const grown = client(port);
+    await grown.open;
+    grown.send({ t: 'player:join', code: w.code, name: 'Captain Test', band: 'grownups', avatar: 0 });
+    await grown.next((m) => m.t === 'player:welcome');
+    const kid = client(port);
+    await kid.open;
+    kid.send({ t: 'player:join', code: w.code, name: 'Blue Blob', band: 'kids', avatar: 1 });
+    await kid.next((m) => m.t === 'player:welcome');
+
+    kid.send({ t: 'admin:start', gameId: 'trivia' });
+    assert.equal(((await kid.next((m) => m.t === 'error')) as { code: string }).code, 'not-allowed', 'kids can’t start games');
+
+    grown.send({ t: 'admin:start', gameId: 'trivia' });
+    await host.next((m) => m.t === 'view' && m.view.phase === 'game');
+    grown.send({ t: 'admin:next' }); // skip the intro
+    type G = { stage: string; question: { prompt: string } | null; showPrompt: boolean; result: { right: boolean } | null };
+    const gq = await grown.next((m) => m.t === 'view' && m.view.phase === 'game' && (m.view.game as G).stage === 'question');
+    const kq = await kid.next((m) => m.t === 'view' && m.view.phase === 'game' && (m.view.game as G).stage === 'question');
+    const gg = (gq as { view: { game: G } }).view.game;
+    const kg = (kq as { view: { game: G } }).view.game;
+    assert.ok(gg.question && kg.question);
+    assert.notEqual(gg.question?.prompt, kg.question?.prompt, 'each band gets its own question');
+    assert.equal(kg.showPrompt, true);
+    assert.ok(!JSON.stringify(kq).includes('"correct":0') && !JSON.stringify(kq).includes('"correct":1'), 'no answer leaks to a phone');
+
+    grown.send({ t: 'game:intent', intent: { type: 'answer', choice: 0 } });
+    kid.send({ t: 'game:intent', intent: { type: 'answer', choice: 0 } });
+    const rev = await kid.next((m) => m.t === 'view' && m.view.phase === 'game' && (m.view.game as G).stage === 'reveal');
+    assert.ok((rev as { view: { game: G } }).view.game.result, 'the phone learns if it was right only at the reveal');
+
+    const asked = srv.db.prepare('SELECT SUM(asked) AS n FROM questions').get() as { n: number };
+    assert.equal(asked.n, 2, 'both plays recorded in the library');
+
+    grown.send({ t: 'admin:end' });
+    await host.next((m) => m.t === 'view' && m.view.phase === 'lobby');
+    for (const c of [host, grown, kid]) c.close();
+  } finally {
+    await srv.close();
+  }
+});

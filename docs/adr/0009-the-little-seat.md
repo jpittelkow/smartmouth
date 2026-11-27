@@ -22,6 +22,10 @@ owner's Crayon Box rules for toddlers (pictures not words, big targets, no failu
   3. **A tablet** in kid mode.
 - **A Little player always ends on a win screen** with a badge, whatever the scores (design guide §6).
 
+**Until pictures exist** (2026-11-26), a picture answer is drawn as a big word card in a pastel colour, so the Little
+seat can be played and tested now. A grown-up nearby reads the words, and Salty will once the voice exists. The 8 Little seed
+questions are live on that basis.
+
 ## Consequences
 - Picture questions need images that are made ahead of time and reviewed (ADR 0011). They're the slowest content to build.
 - The remote seat gives the TV screen two jobs during a Little's turn. Turn rounds keep that simple.

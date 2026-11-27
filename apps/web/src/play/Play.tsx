@@ -6,6 +6,7 @@ import {
 } from '@smartmouth/protocol';
 import { useSocket, store, save } from '../socket.ts';
 import { BandIcon, Blob } from '../ui/art.tsx';
+import { TriviaController } from '../games/trivia/TriviaController.tsx';
 
 const seatKey = (code: string) => `smartmouth.seat.${code}`;
 const LAST_NAME = 'smartmouth.name';
@@ -50,6 +51,7 @@ export function Play() {
     return <AvatarPick view={view} onPick={(a) => { send({ t: 'player:avatar', avatar: a }); setPickedAvatar(true); }}
       onSkip={() => setPickedAvatar(true)} />;
   }
+  if (view.phase === 'game') return <TriviaController view={view} send={send} />;
   return <Waiting view={view} send={send} online={status === 'open'} onLeave={() => {
     send({ t: 'player:leave' }); save(seatKey(view.code), null); setView(null);
   }} />;

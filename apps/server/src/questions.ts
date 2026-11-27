@@ -1,7 +1,7 @@
 // The question library store (ADR 0010). Grading rules live in @smartmouth/protocol so the admin page and the
 // server agree; this file only stores, filters and counts.
 import {
-  BANDS, BAND_IDS, CATEGORIES, SPICES, STATUSES, bandRank, checkReasons, measuredDifficulty, spiceRank,
+  BANDS, BAND_IDS, CATEGORIES, SPICES, STATUSES, bandRank, checkReasons, inSeason, measuredDifficulty, spiceRank,
   type Band, type Category, type Coverage, type Question, type QuestionFilter, type QuestionInput, type QuestionPage,
   type QuestionStatus,
 } from '@smartmouth/protocol';
@@ -159,3 +159,49 @@ export function importSeeds(db: Db, seeds: Array<{ key: string; question: Questi
 }
 
 export { CATEGORIES };
+
+/** A question as a game uses it (trivia's TQuestion shape). */
+export interface GameQuestion {
+  id: number; prompt: string; kind: Question['kind']; answers: Array<{ text: string; image: string | null }>;
+  correct: number; explain: string; category: string; spice: Question['spice'];
+}
+
+/**
+ * Picks a game's questions for every band (ADR 0010 "Picking"): live, not expired, in season, spice allowed, the
+ * band inside the age range, not already asked in this room, least recently asked first, then random. Little
+ * questions are those written for Little; other bands get no picture questions. A question goes to one band only
+ * when there's enough to go round.
+ */
+export function pickForGame(
+  db: Db, opts: { spice: Question['spice']; exclude: ReadonlySet<number>; perBand: number }, now: number,
+): Record<Band, GameQuestion[]> {
+  const t = today(now);
+  const taken = new Set<number>();
+  const out = {} as Record<Band, GameQuestion[]>;
+  // Youngest first: they have the fewest questions to choose from.
+  for (const band of BAND_IDS) {
+    const rank = bandRank(band);
+    const rows = db.prepare(`SELECT * FROM questions
+      WHERE status = 'live' AND (expires_at IS NULL OR expires_at >= :today)
+        AND :rank BETWEEN age_min AND age_max AND spice <= :spice
+        AND ${band === 'little' ? 'age_min = 0' : "kind != 'picture'"}
+      ORDER BY last_asked_at IS NOT NULL, last_asked_at, random()
+      LIMIT 200`).all({ today: t, rank, spice: spiceRank(opts.spice) }) as Row[];
+    const fits = rows.map((r) => toQuestion(r, now)).filter((q) => !opts.exclude.has(q.id) && inSeason(q.season, t));
+    const fresh = fits.filter((q) => !taken.has(q.id));
+    const chosen = [...fresh, ...fits.filter((q) => taken.has(q.id))].slice(0, opts.perBand);
+    for (const q of chosen) taken.add(q.id);
+    out[band] = chosen.map((q) => ({
+      id: q.id, prompt: q.prompt, kind: q.kind, answers: q.answers.map((a) => ({ text: a.text, image: a.image ?? null })),
+      correct: q.correct, explain: q.explain, category: q.category, spice: q.spice,
+    }));
+  }
+  return out;
+}
+
+/** Adds one play to a question's stats (per question, never per person: ADR 0016). */
+export function recordPlay(db: Db, questionId: number, right: boolean, ms: number | null, now: number): void {
+  db.prepare(`UPDATE questions SET asked = asked + 1, correct_count = correct_count + :right,
+      total_ms = total_ms + :ms, last_asked_at = :at WHERE id = :id`)
+    .run({ id: questionId, right: right ? 1 : 0, ms: ms ?? 0, at: new Date(now).toISOString() });
+}

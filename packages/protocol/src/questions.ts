@@ -38,6 +38,23 @@ export const REGION_LABEL: Record<Region, string> = { global: 'Anywhere', us: 'U
 export const SEASONS = ['halloween', 'thanksgiving', 'winter-holidays', 'new-year', 'valentines', 'easter', 'summer', 'back-to-school'] as const;
 export type Season = (typeof SEASONS)[number];
 
+/** Whether a seasonal question fits today's date (month 1–12, day 1–31). Questions with no season always fit. */
+export function inSeason(season: Season | null, date: string): boolean {
+  if (!season) return true;
+  const m = Number(date.slice(5, 7));
+  const d = Number(date.slice(8, 10));
+  switch (season) {
+    case 'halloween': return m === 10 || (m === 11 && d <= 2);
+    case 'thanksgiving': return m === 11;
+    case 'winter-holidays': return m === 12 || (m === 1 && d <= 6);
+    case 'new-year': return (m === 12 && d >= 26) || (m === 1 && d <= 15);
+    case 'valentines': return m === 2 && d <= 15;
+    case 'easter': return m === 3 || m === 4;
+    case 'summer': return m >= 6 && m <= 8;
+    case 'back-to-school': return (m === 8 && d >= 10) || (m === 9 && d <= 20);
+  }
+}
+
 /** What each difficulty level means, relative to the youngest age in the question's range. */
 export const DIFFICULTY_HELP: Record<number, string> = {
   1: 'Gimme: nearly every player in the range gets it',

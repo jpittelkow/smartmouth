@@ -4,6 +4,10 @@ import type { ClientMsg, ServerMsg } from '@smartmouth/protocol';
 
 export type SocketStatus = 'connecting' | 'open' | 'closed';
 
+// The server keeps the clock (ADR 0004): every view carries the server's time, and countdowns use it.
+let clockOffset = 0;
+export const serverNow = () => Date.now() + clockOffset;
+
 export function useSocket(onOpen: () => ClientMsg | null, onMessage: (m: ServerMsg) => void) {
   const [status, setStatus] = useState<SocketStatus>('connecting');
   const wsRef = useRef<WebSocket | null>(null);
@@ -28,7 +32,10 @@ export function useSocket(onOpen: () => ClientMsg | null, onMessage: (m: ServerM
         if (hello) ws.send(JSON.stringify(hello));
       };
       ws.onmessage = (e) => {
-        try { handlers.current.onMessage(JSON.parse(String(e.data)) as ServerMsg); } catch { /* ignore junk */ }
+        let m: ServerMsg;
+        try { m = JSON.parse(String(e.data)) as ServerMsg; } catch { return; }
+        if ((m.t === 'view' || m.t === 'pong') && typeof m.serverNow === 'number') clockOffset = m.serverNow - Date.now();
+        handlers.current.onMessage(m);
       };
       ws.onclose = () => {
         if (wsRef.current === ws) wsRef.current = null;

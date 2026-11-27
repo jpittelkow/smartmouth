@@ -15,7 +15,9 @@ A game is a folder in `packages/games/<id>/` with four parts:
   `tick(state, now)`, `hostView(state)` and `playerView(state, playerId)`. There are no sockets, timers or I/O inside. The
   platform calls `tick` when a deadline passes and supplies content (questions, voice lines) through arguments.
 - **`Host.tsx`** and **`Controller.tsx`:** React views of `hostView` and `playerView`, built from the shared components
-  in the design guide.
+  in the design guide. *Revised 2026-11-26 while building trivia:* the views live in the web app at
+  `apps/web/src/games/<id>/`, beside the shared UI kit they use (blobs, slot shapes, the clock), so a game package
+  holds only the manifest, the pure rules and its view types. The rules run on the server only.
 
 The platform owns everything around the game: rooms, the lobby, the game picker (built from manifests), pause,
 the spice level, the host voice queue, scores across several games in one night, and the admin sheet. A game reaches these

@@ -12,6 +12,7 @@ polishing things that can't be played yet.
 1. Platform skeleton: rooms, join by code, the lobby on the host screen, reconnects. Works in two browser tabs.
    *(Scaffolded 2026-11-26.)*
 2. Trivia v1: everyone-answers and turn rounds, about 100 hand-seeded questions across all five bands, and scoring with handicaps.
+   *(Rules, platform and screens built 2026-11-26, with 39 seed questions so far; the question library in /admin came first.)*
 3. TV shell on a real Android TV, with the Little seat on the remote.
 4. Salty v0: audition and pick a voice, a first line bank of about 150 lines across the spice levels, question reads for the
    seeds, and the playback queue with captions.

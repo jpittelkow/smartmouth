@@ -53,3 +53,46 @@ export function BandIcon({ band }: { band: Band }) {
     </svg>
   );
 }
+
+/** Answer slots: colour AND shape, so colour is never the only signal (design guide §5.2). */
+export const SLOTS = [
+  { color: 'var(--slot-1)', name: 'star' },
+  { color: 'var(--slot-2)', name: 'heart' },
+  { color: 'var(--slot-3)', name: 'moon' },
+  { color: 'var(--slot-4)', name: 'bolt' },
+] as const;
+
+const SHAPES: Record<string, string> = {
+  star: 'M50 6 L62 37 L95 38 L69 58 L79 91 L50 72 L21 91 L31 58 L5 38 L38 37 Z',
+  heart: 'M50 88 C20 66 6 50 6 32 C6 17 18 8 30 8 C40 8 46 14 50 22 C54 14 60 8 70 8 C82 8 94 17 94 32 C94 50 80 66 50 88 Z',
+  moon: 'M62 6 C38 10 22 30 22 52 C22 76 42 94 66 94 C76 94 86 90 92 84 C64 84 46 66 46 44 C46 26 54 14 62 6 Z',
+  bolt: 'M58 4 L18 56 L46 56 L38 96 L82 40 L54 40 L64 4 Z',
+};
+
+export function SlotShape({ slot, size = 48 }: { slot: number; size?: number }) {
+  const s = SLOTS[slot % SLOTS.length] ?? SLOTS[0];
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true" style={{ flex: 'none' }}>
+      <path d={SHAPES[s.name]} fill={s.color} stroke="var(--ink)" strokeWidth="6" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function Tick({ size = 40 }: { size?: number }) {
+  return (
+    <svg viewBox="0 0 48 48" width={size} height={size} aria-hidden="true">
+      <circle cx="24" cy="24" r="21" fill="var(--zap)" stroke="var(--ink)" strokeWidth="4" />
+      <path d="M14 25 L21 32 L35 17" fill="none" stroke="var(--ink)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** A picture answer: the picture when there is one, else a big word card (until pictures are made, ADR 0011). */
+export function PictureCard({ text, image, index }: { text: string; image: string | null; index: number }) {
+  const tints = ['#fff1b8', '#ffd6e0', '#c9f5ea', '#d3e6ff'];
+  return (
+    <span className="pic-card" style={{ background: tints[index % tints.length] }}>
+      {image ? <img src={image} alt={text} /> : <span className="pic-word">{text}</span>}
+    </span>
+  );
+}
