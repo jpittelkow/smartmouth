@@ -31,7 +31,8 @@
     { "id": "tick", "use": "The last ten seconds of a vote or the night: one tick per second.", "seconds": 1,
       "prompt": "Sound effect: one single loud tick of an old wooden grandfather clock, dry and close, one tick only" },
     { "id": "hiss", "use": "A banished player turns out to be a Snake: a serpent's hiss as the word lands.", "seconds": 3,
-      "prompt": "Sound effect: a long menacing snake hiss, close to the microphone, swelling then fading out, a real reptile, no other sound" },
+      "prompt": "King cobra snake growling hiss, deep throaty reptile hiss, animal sound, wildlife documentary recording",
+      "negative": "human, person, man, woman, child, mouth, lips, teeth, whisper, shushing, sss, speech, voice, singing, music, wind, steam, kettle, tire, white noise, static, crowd, low quality" },
     { "id": "lute", "use": "A banished player turns out to be an innocent Guest: one sad lute note as the candles go out.", "seconds": 3,
       "prompt": "A single sad plucked lute note followed by a second lower note, melancholy and quiet, solo medieval lute, slow decay, no other instruments" }
   ]

@@ -19,7 +19,8 @@ Trimmed and levelled for the game (tools/sounds/README.md).
 Generated on our own GPU with **Stable Audio Open 1.0** (`stabilityai/stable-audio-open-1.0`) on 2026-11-27, from
 the prompts in `tools/sounds/sfx-cues.json` (each says what the sound is for), and picked by ear on the audition
 page. Files: `media/sounds/game/<cue>.g1.mp3` for envelope, unfold, letter, dagger, shield, cards, whoosh, knock,
-gasp, fanfare, misfanfare, chime, birds, tick and lute. Powered by Stability AI, under the Stability AI Community
+gasp, fanfare, misfanfare, chime, birds, tick and lute, plus `hiss.g1.mp3` (the king cobra prompt in
+`tools/sounds/sfx-hiss.json`, take 2). Powered by Stability AI, under the Stability AI Community
 License (https://stability.ai/community-license-agreement).
 
 ## Music and the bell (Snake Manor)
@@ -68,5 +69,5 @@ own prompts in `tools/sounds/trivia/rollcrash.mjs`: a snare roll building into a
 sound-effects model; ElevenLabs' voice models there refuse tag-only input.
 
 ## Synthesized
-Everything else (the snake hiss, the lute, the fanfares, the chimes, the countdown ticks) is synthesized in the browser
+Fallbacks for any sound whose file is missing, and Trivia's small interface sounds, are synthesized in the browser
 with Web Audio by our own code (`apps/web/src/games/snakes/sound.ts`, `apps/web/src/host/sfx.ts`).
