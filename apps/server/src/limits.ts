@@ -39,10 +39,28 @@ export function isPrivateAddress(addr: string | undefined): boolean {
  * private address (the tunnel); Cloudflare overwrites that header, so a visitor through the tunnel can't fake it.
  * X-Forwarded-For is never used: anyone can set it.
  */
-export function clientAddress(headers: Record<string, string | string[] | undefined>, remote: string | undefined): string {
+export function clientAddress(
+  headers: Record<string, string | string[] | undefined>, remote: string | undefined, trusted: (addr: string | undefined) => boolean = isPrivateAddress,
+): string {
   const cf = headers['cf-connecting-ip'];
-  if (isPrivateAddress(remote) && typeof cf === 'string' && cf.length > 0 && cf.length < 64) return cf;
+  if (trusted(remote) && typeof cf === 'string' && cf.length > 0 && cf.length < 64) return cf;
   return remote ?? '?';
+}
+
+/**
+ * Which peers may vouch for the client's address. TRUSTED_PROXIES (exact addresses, e.g. the cloudflared
+ * container's) narrows it; unset, any home-network address is trusted, so only a device already on the home
+ * network could fake an address (accepted 2026-11-26, ADR 0015).
+ */
+export function trustedProxies(list: readonly string[]): (addr: string | undefined) => boolean {
+  if (list.length === 0) return isPrivateAddress;
+  const set = new Set(list.map((a) => a.replace(/^::ffff:/, '')));
+  return (addr) => !!addr && set.has(addr.replace(/^::ffff:/, ''));
+}
+
+/** A request straight from the home network, not through the tunnel. */
+export function fromHomeNetwork(headers: Record<string, string | string[] | undefined>, remote: string | undefined): boolean {
+  return isPrivateAddress(remote) && headers['cf-connecting-ip'] === undefined;
 }
 
 export function originAllowed(origin: string | undefined, allowed: ReadonlySet<string>, requestHost?: string): boolean {

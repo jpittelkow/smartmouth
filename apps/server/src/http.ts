@@ -8,7 +8,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { RoomStore } from './rooms.ts';
 import { attachSockets } from './ws.ts';
 import { AdminAuth, COOKIE, readCookie, sessionCookie } from './admin.ts';
-import { clientAddress } from './limits.ts';
+import { clientAddress, fromHomeNetwork, trustedProxies } from './limits.ts';
 
 export interface ServerConfig {
   port: number;
@@ -18,6 +18,8 @@ export interface ServerConfig {
   webDir: string;
   /** ADMIN_PASSWORD. Without it the admin area stays locked. */
   adminPassword?: string | null;
+  /** TRUSTED_PROXIES: exact addresses allowed to vouch for the client's address (the tunnel). */
+  trustedProxies?: string[];
   now?: () => number;
 }
 
@@ -40,9 +42,6 @@ function readJson(req: IncomingMessage): Promise<unknown> {
   });
 }
 
-function clientIp(req: IncomingMessage): string {
-  return clientAddress(req.headers, req.socket.remoteAddress);
-}
 
 /** Behind the tunnel the app sees plain HTTP; Cloudflare says the original scheme in X-Forwarded-Proto. */
 function isHttps(req: IncomingMessage): boolean {
@@ -63,6 +62,8 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
   const webRoot = resolve(cfg.webDir);
   const now = cfg.now ?? Date.now;
   const admin = new AdminAuth(cfg.adminPassword);
+  const trusted = trustedProxies(cfg.trustedProxies ?? []);
+  const clientIp = (req: IncomingMessage) => clientAddress(req.headers, req.socket.remoteAddress, trusted);
 
   // Any unexpected error answers 500 instead of leaving a rejected promise behind.
   const server = createServer((req, res) => {
@@ -92,7 +93,8 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
         if (!String(req.headers['content-type'] ?? '').startsWith('application/json')) { json(res, 415, { error: 'Send JSON.' }); return; }
         let body: unknown;
         try { body = await readJson(req); } catch { json(res, 400, { error: 'Bad request.' }); return; }
-        const r = admin.login((body as { password?: unknown } | null)?.password, clientIp(req), now());
+        const r = admin.login((body as { password?: unknown } | null)?.password, clientIp(req), now(),
+          fromHomeNetwork(req.headers, req.socket.remoteAddress));
         if (r.ok) { json(res, 200, { signedIn: true }, { 'set-cookie': sessionCookie(r.token, isHttps(req)) }); return; }
         const status = r.code === 'rate' ? 429 : r.code === 'off' ? 503 : 401;
         const error = r.code === 'rate' ? 'Too many wrong tries. Wait 15 minutes.'
@@ -134,6 +136,7 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
   const wss = new WebSocketServer({ noServer: true, maxPayload: 8192 });
   const sockets = attachSockets(wss, store, {
     publicUrl: cfg.publicUrl,
+    trusted,
     allowedOrigins: new Set([...(cfg.publicUrl ? [new URL(cfg.publicUrl).origin] : []), ...cfg.allowedOrigins]),
   });
   server.on('upgrade', (req, socket, head) => {

@@ -11,6 +11,8 @@ export interface SocketOptions {
   /** The address phones use, shown on the TV. Falls back to the host page's own origin. */
   publicUrl: string | null;
   allowedOrigins: ReadonlySet<string>;
+  /** Which peers may vouch for the client's address (limits.ts trustedProxies). */
+  trusted?: (addr: string | undefined) => boolean;
   now?: () => number;
 }
 
@@ -195,7 +197,7 @@ export function attachSockets(wss: WebSocketServer, store: RoomStore, opts: Sock
   wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
     const origin = req.headers.origin;
     if (!originAllowed(origin, opts.allowedOrigins, req.headers.host)) { ws.close(4003, 'origin'); return; }
-    const ip = clientAddress(req.headers, req.socket.remoteAddress);
+    const ip = clientAddress(req.headers, req.socket.remoteAddress, opts.trusted);
     const c: Client = { ws, ip, origin, conn: { kind: 'none' }, msgWindow: 0, msgCount: 0 };
     clients.add(c);
 

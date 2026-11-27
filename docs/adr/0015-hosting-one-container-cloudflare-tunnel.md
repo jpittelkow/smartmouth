@@ -20,6 +20,12 @@ Cloudflare for DNS.
   Sessions are held in memory, so a restart signs everyone out. Five wrong tries per address lock that address out for 15 minutes, and
   the comparison takes the same time whatever the guess. Every admin API route checks the session on the server. Without
   `ADMIN_PASSWORD`, the admin area stays locked.
+- **Wrong guesses are also capped globally**, at 50 per 15 minutes whatever the address. While the cap is reached, a correct
+  password still signs in from the home network (a request straight from a private address with no tunnel header), and
+  existing sessions keep working. Guessers elsewhere can't lock the owner out.
+- **Client addresses for rate limits:** `X-Forwarded-For` is never used. `CF-Connecting-IP` is used only from a trusted peer, set
+  as `TRUSTED_PROXIES` (exact addresses, ideally the cloudflared container's). Unset, any home-network address is trusted.
+  That's an accepted trade-off (2026-11-26): only a device already on the home network could fake an address.
 - **Abuse limits:** the server rate-limits room creation and join attempts per IP, caps messages per socket, and
   checks the WebSocket `Origin` against `PUBLIC_ORIGIN`.
 - **On the LAN**, the TV can use the server's LAN address directly (the setting in ADR 0007), which avoids

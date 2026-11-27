@@ -27,11 +27,15 @@ export class AdminAuth {
 
   get enabled(): boolean { return this.passwordDigest !== null; }
 
-  login(password: unknown, ip: string, now: number): LoginResult {
+  /**
+   * `home` is true for a request straight from the home network: when the global cap is reached by guessers
+   * elsewhere, the owner can still sign in from home (and existing sessions keep working everywhere).
+   */
+  login(password: unknown, ip: string, now: number, home = false): LoginResult {
     if (!this.passwordDigest) return { ok: false, code: 'off' };
     if (!this.limit.allow(ip, now)) return { ok: false, code: 'rate' };
     const g = this.globalFails.hits.get('all');
-    if (g && now - g.start < this.globalFails.windowMs && g.count >= this.globalFails.max) return { ok: false, code: 'rate' };
+    if (!home && g && now - g.start < this.globalFails.windowMs && g.count >= this.globalFails.max) return { ok: false, code: 'rate' };
     // Compare digests so the comparison takes the same time whatever the length of the guess.
     const right = typeof password === 'string' && timingSafeEqual(digest(password), this.passwordDigest);
     if (!right) { this.globalFails.allow('all', now); return { ok: false, code: 'wrong' }; }
@@ -56,6 +60,7 @@ export class AdminAuth {
   prune(now: number): void {
     for (const [t, until] of this.sessions) if (until < now) this.sessions.delete(t);
     this.limit.prune(now);
+    this.globalFails.prune(now);
   }
 }
 

@@ -12,6 +12,7 @@ const { server } = await startServer({
   publicUrl: env.PUBLIC_URL?.trim() || null,
   allowedOrigins: list(env.EXTRA_ORIGINS),
   adminPassword: env.ADMIN_PASSWORD,
+  trustedProxies: list(env.TRUSTED_PROXIES),
   webDir: env.WEB_DIR ?? fileURLToPath(new URL('../../web/dist', import.meta.url)),
 });
 const addr = server.address();

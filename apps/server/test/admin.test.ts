@@ -99,3 +99,18 @@ test('a malformed cookie is just "not signed in", not a crash', async () => {
     await srv.close();
   }
 });
+
+test('when guessers fill the global cap, the right password still works from home', () => {
+  const auth = new AdminAuth('pw');
+  for (let i = 0; i < 50; i++) auth.login('nope', `198.51.100.${i}`, 0);
+  assert.ok(!auth.login('pw', '198.51.100.200', 0).ok, 'from outside: still capped');
+  assert.ok(auth.login('pw', '192.168.1.20', 0, true).ok, 'from the home network: allowed');
+});
+
+test('TRUSTED_PROXIES narrows who may vouch for the client address', async () => {
+  const { clientAddress, trustedProxies } = await import('../src/limits.ts');
+  const only = trustedProxies(['172.18.0.7']);
+  const h = { 'cf-connecting-ip': '5.6.7.8' };
+  assert.equal(clientAddress(h, '172.18.0.7', only), '5.6.7.8');
+  assert.equal(clientAddress(h, '192.168.1.50', only), '192.168.1.50');
+});
