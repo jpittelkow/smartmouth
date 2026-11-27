@@ -44,6 +44,7 @@ export const trivia: GameAdapter<TriviaState> = {
   isOver: (state) => rules.isOver(state),
   scores: (state) => Object.fromEntries(Object.entries(state.players).map(([id, p]) => [id, p.score])),
   plays: (state) => state.log,
+  countsStats: true,
   shown: (s) => [...Object.values(s.current).map((q) => q!.id), ...(s.turn ? [s.turn.question.id] : [])],
   stageKey: (s) => `${s.round}:${s.stage}`,
 

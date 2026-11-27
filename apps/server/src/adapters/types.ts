@@ -61,6 +61,12 @@ export interface GameAdapter<S = unknown> {
   scores(state: S): Record<string, number>;
   /** Every question played so far (the platform records the new ones). */
   plays(state: S): readonly Play[];
+  /**
+   * Whether this game's plays count in the library's stats and freshness. Only trivia's do: Snake Manor borrows questions
+   * for its missions, and its (often bot-filled) test games made the library think 100 questions had just been asked
+   * (2026-11-27). Plays still keep the night from repeating a question either way.
+   */
+  countsStats?: boolean;
   /** Questions on screen now, so the library can mark them shown the moment they appear (optional). */
   shown?(state: S): number[];
   /** Move every clock in the state forward by `ms` (the game was paused that long). */

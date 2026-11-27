@@ -138,9 +138,11 @@ export function drainLog(room: Room, db: Db, now: number): void {
     room.asked.add(id);
     (g.shown ??= []).push(id);
   }
-  const plays = adapterFor(g.id).plays(g.state);
+  const adapter = adapterFor(g.id);
+  const plays = adapter.plays(g.state);
   for (const play of plays.slice(g.logged)) {
     room.asked.add(play.questionId);
+    if (!adapter.countsStats) continue;
     // House bots play, but their answers aren't real people's: they stay out of the stats (2026-11-27).
     if (play.player && room.seats.find((x) => x.id === play.player)?.bot) continue;
     recordPlay(db, play.questionId, play.right, play.ms, now);
