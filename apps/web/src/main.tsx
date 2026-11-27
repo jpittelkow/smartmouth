@@ -6,14 +6,12 @@ import './styles/app.css';
 import { APP_NAME } from '@smartmouth/protocol';
 import { Host } from './host/Host.tsx';
 import { Play } from './play/Play.tsx';
+import { Admin } from './admin/Admin.tsx';
 
 function App() {
   const path = location.pathname.replace(/\/$/, '');
   if (path === '/host') { document.title = `${APP_NAME} — TV`; return <Host />; }
-  if (path === '/admin') {
-    document.title = `${APP_NAME} — admin`;
-    return <div className="phone"><h1 className="display">Admin</h1><p className="muted">The review queue and settings come in milestone 2 (ADR 0019).</p></div>;
-  }
+  if (path === '/admin') { document.title = `${APP_NAME} — admin`; return <Admin />; }
   document.title = APP_NAME;
   return <Play />;
 }

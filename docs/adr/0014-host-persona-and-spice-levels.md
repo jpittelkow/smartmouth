@@ -21,8 +21,9 @@ The same host has to work for a 4-year-old and for an adults-only night.
   not a convention in the UI.
 - **Rules that hold at every level:** he punches up or at himself, never mocks who a player is, never targets real
   people, and never uses slurs, sexual content about players, politics or religion. Kids always beat him.
-- **Captions at Filthy:** spoken profanity is real, and how the caption shows it is an owner choice still open (bleeped
-  `★★★★` or written out). See the open questions.
+- **Captions at Filthy are bleeped** (owner, 2026-11-26). Spoken swearing is real, but in the caption each swear word
+  becomes a pill of exactly four `★`, so its length doesn't give the word away. The voice file keeps the real word, and the caption
+  text is bleeped from a word list when the line is saved.
 
 ## Consequences
 - The game's tone can go from preschool to adults-only without separate products.

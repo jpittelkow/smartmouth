@@ -11,6 +11,7 @@ const { server } = await startServer({
   port,
   publicUrl: env.PUBLIC_URL?.trim() || null,
   allowedOrigins: list(env.EXTRA_ORIGINS),
+  adminPassword: env.ADMIN_PASSWORD,
   webDir: env.WEB_DIR ?? fileURLToPath(new URL('../../web/dist', import.meta.url)),
 });
 const addr = server.address();

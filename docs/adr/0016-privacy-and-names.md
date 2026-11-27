@@ -1,4 +1,4 @@
-# 0016. Privacy: names stay in the room, nothing identifying in the repo, no names to AI by default
+# 0016. Privacy: names stay in the room, nothing identifying in the repo, names to AI only for live lines
 
 - **Status:** Proposed
 - **Date:** 2026-11-26
@@ -10,16 +10,19 @@ apps keep kids' identities out of the repo (Crayon Box) and out of AI calls (col
 ## Decision
 - **Player names, bands and avatars live only in room memory** and in that phone's `localStorage`. They're never
   written to the database or logs, and they're deleted with the room (ADR 0005). Logs record room codes and counts only.
-- **Nothing sent to an AI model contains a player's name** by default. Live lines (ADR 0013) refer to "you", "Blue"
-  (the seat colour) or the team. A setting, **"Salty can say names"** (off by default, Grown-ups-only rooms), allows
-  names in live lines. It's never allowed when a Little or Kid is in the room.
+- **Salty can say players' names** (owner, 2026-11-26: "fine with saying any names"). Live lines (ADR 0013) may
+  include the names players typed, in any room, which means those names are sent to the text and speech models through
+  OpenRouter. A room setting, **"Salty says names"**, is **on by default**, and a grown-up can turn it off for a night with
+  guests. Off, he uses "you", the seat colour or the team. Names are sent only for the line being made, and are never stored
+  with the line or in logs.
 - **The repo never contains anything that identifies the family's kids**: no names, nicknames, birthdays, schools,
   photos or device names. This covers docs, code, tests, sample data and commit messages. Test data uses made-up seat names
   ("Blue Blob", "Captain Test"). This is the same rule as Crayon Box's CLAUDE.md.
 - **No analytics or telemetry**, and no third-party scripts on the phone or TV pages. Fonts are self-hosted.
 
 ## Consequences
-- Live roasts are a bit less personal unless grown-ups opt in.
+- Live roasts can be personal ("Toast, that was tragic"), at the cost of sending typed names to OpenRouter and the
+  model makers behind it.
 - Play stats are per question, never per person (ADR 0010).
 
 ## Alternatives

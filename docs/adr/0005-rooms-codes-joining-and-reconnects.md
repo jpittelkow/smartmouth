@@ -18,7 +18,7 @@ Joining has to take seconds, from any phone, with nothing to install or sign up 
   A room with no host socket and no connected players for 15 minutes is deleted, along with everything in it.
 - **The first player who picks "Grown-up" is the room admin**, with skip, pause, spice level, kick and end game. The host
   screen (the TV remote) has the same powers. If the admin leaves, the role moves to the next grown-up.
-- **No accounts and no logins** for players. The admin page is separate and sits behind Cloudflare Access (ADR 0015).
+- **No accounts and no logins** for players. The admin page is separate and has its own password (ADR 0015).
 - The QR code on the TV opens `play.<domain>/play?code=WXYZ`, so scanning fills in the code.
 
 ## Consequences

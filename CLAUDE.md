@@ -48,7 +48,7 @@ TV app: see [apps/tv/README.md](apps/tv/README.md).
   prompts, lines or voice settings. No voice cloning.
 - **AI content is made ahead of time and reviewed** (ADR 0011). Little and Kids content always needs a grown-up's approval.
   Tests never call OpenRouter.
-- **Secrets** (`OPENROUTER_API_KEY`, `ADMIN_TOKEN`, tunnel credentials) never go in the repo. Use `.env`, which is gitignored.
+- **Secrets** (`OPENROUTER_API_KEY`, `ADMIN_PASSWORD`, tunnel credentials) never go in the repo. Use `.env`, which is gitignored.
 - Dates in docs are absolute (`2026-11-26`), never "yesterday".
 - Dev machine is Windows, so commands in docs should work in Git Bash or PowerShell.
 

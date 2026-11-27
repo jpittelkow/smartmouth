@@ -24,9 +24,10 @@ the same commit.
 | [0012](0012-current-events-questions.md) | Current-events questions from chosen feeds, with expiry | Proposed |
 | [0013](0013-host-voice-openrouter-tts-as-files.md) | The host's voice: OpenRouter speech, made ahead, played from files | Proposed |
 | [0014](0014-host-persona-and-spice-levels.md) | The host persona and spice levels | Proposed |
-| [0015](0015-hosting-one-container-cloudflare-tunnel.md) | Hosting: one container, Cloudflare Tunnel | Proposed |
-| [0016](0016-privacy-and-names.md) | Privacy: names stay in the room; none to AI by default | Proposed |
+| [0015](0015-hosting-one-container-cloudflare-tunnel.md) | Hosting: one container, Cloudflare Tunnel, our own admin password | Proposed |
+| [0016](0016-privacy-and-names.md) | Privacy: names stay in the room; Salty may say them | Proposed |
 | [0017](0017-design-language.md) | Design language: a late-night cartoon game show | Proposed |
 | [0018](0018-testing-approach.md) | Testing approach | Proposed |
 | [0019](0019-build-order.md) | Build order | Proposed |
 | [0020](0020-working-name-smartmouth.md) | Working name: Smartmouth, hosted by Salty | Proposed |
+| [0021](0021-code-hosting-public-github.md) | Code hosting: public GitHub, MIT license | Accepted |

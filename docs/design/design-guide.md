@@ -82,7 +82,10 @@ The room has a **spice level**, capped by the youngest player in it ([ADR 0014](
 - Write for the ear: contractions, short words, one idea per line, the punchline at the end.
 - Use ElevenLabs v4 audio tags for delivery: `[sighs]`, `[scoffs]`, `[gasps]`, `[laughs]`, `[whispers]`,
   `[sarcastic]`, `[muttering]`. One or two per line, never more.
-- He refers to players as "you", "this one" or by team colour. He only uses a name when names are allowed to reach the voice model ([ADR 0016](../adr/0016-privacy-and-names.md)).
+- In live lines he uses players' names (on by default; a grown-up can turn it off, [ADR 0016](../adr/0016-privacy-and-names.md)).
+  Pre-made lines say "you", "this one" or the team colour.
+- **Captions bleep swearing.** At Filthy the voice swears for real, and the caption shows each swear word as a `--hot`
+  pill of exactly four ★ ([ADR 0014](../adr/0014-host-persona-and-spice-levels.md)).
 - Example kinds of line: intro, game pick, a question read, "time's almost up", everyone right, everyone wrong,
   one person right, a comeback, a Little wins, the final scores, idle in the lobby, someone joined, someone left.
 
@@ -211,7 +214,7 @@ For players who can't read yet ([ADR 0009](../adr/0009-the-little-seat.md)). The
 
 ### Admin page (`/admin`)
 The plain grown-up tool for the question bank, review queue, voice lines, settings and spend. It's light/dark,
-dense and boring on purpose, and it sits behind Cloudflare Access.
+dense and boring on purpose, and it sits behind the admin password (ADR 0015).
 
 ## 7. Accessibility checklist
 - Contrast 4.5:1 for text, 3:1 for large display text and focus rings.

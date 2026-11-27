@@ -14,14 +14,15 @@ waiting on the owner.
   `/`. 10 tests (rules + real sockets). No database, AI or voice code yet.
 - **Web** (`apps/web`): `/host` TV lobby (code, QR, players, spice chip, game picker with D-pad focus, a caption
   strip with placeholder text lines), `/play` (join with age pictures, blob picker, waiting screen, grown-up spice
-  controls, leave), and `/admin` (placeholder).
+  controls, leave), and `/admin` (password sign-in, nothing behind it yet).
+- **Code hosting:** public GitHub (ADR 0021), MIT license.
 - **TV app** (`apps/tv`): a Kotlin WebView shell. The debug APK builds (`app.smartmouth.tv`) with 4 unit tests. **Never run on a
   device or emulator yet.**
 - **Voice tooling** (`tools/voice`): audition lines plus a generator through OpenRouter speech. Never run (no key used yet).
 - **Deploy:** `Dockerfile`, `deploy/`, `scripts/deploy.sh` for the home server on port 8470. **The Docker build has not
   been tried yet, and nothing is deployed.**
 - **Hosting:** the Cloudflare route `play.303.social` → `http://192.168.1.4:8470` was set up on 2026-11-26 by another
-  session. It returns 502 until the container runs. **Cloudflare Access for `/admin` is not set up.**
+  session. It returns 502 until the container runs. `/admin` has its own password (`ADMIN_PASSWORD`, ADR 0015).
 
 ## Next
 1. The owner reviews the ADRs, the design guide and the mockups, and answers the [open questions](open-questions.md).

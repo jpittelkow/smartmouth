@@ -17,6 +17,14 @@ _Last confirmed: 2026-11-26_
 - Open to naming ideas (2026-11-26). "Smartmouth" and "Salty" are working names only.
 - Wants mockups and a UI/UX and branding design guide (2026-11-26).
 
+- **Answers from 2026-11-26:**
+  - Smartmouth and Salty are fine as working names.
+  - The code goes on **public GitHub**.
+  - **Filthy captions are bleeped.**
+  - **Salty may say any player's name**, in any room (ADR 0016).
+  - **`/admin` uses our own password**, not Cloudflare Access (ADR 0015).
+  - The owner will review the ADRs later.
+
 ## Working style
 - ADRs in the owner's usual format. Memory (long-term) and a journal (short-term) live in the repo (2026-11-26).
 - The owner's habit from other projects: see a choice running or mocked up before deciding, rather than only reading
