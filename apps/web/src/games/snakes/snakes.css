@@ -398,14 +398,14 @@ body:has(.sm-phone) { background: var(--sm-stone); }
 
 /* Rules cards (ADR 0025): one vellum card, steps arrive as Salty explains them. */
 .sm-brief { display: grid; place-items: center; min-height: 0; }
-.brief-card { width: min(1500px, 100%); padding: 44px 64px 40px; animation: sm-brief-in .7s ease-out both; }
-.brief-card .kicker { font-family: var(--sm-caps); letter-spacing: .3em; text-transform: uppercase; font-size: 24px; color: var(--sm-gules); margin: 0; }
-.brief-card h2 { font-family: var(--sm-uncial); font-weight: 400; font-size: 84px; line-height: 1; margin: 6px 0 26px; color: var(--sm-ink); text-wrap: balance; }
-.brief-card ol { list-style: none; margin: 0 0 24px; padding: 0; display: grid; gap: 18px; }
-.brief-card li { display: grid; grid-template-columns: 76px 1fr; align-items: baseline; gap: 18px; font-family: var(--sm-book); font-size: 44px; line-height: 1.2; color: var(--sm-ink); animation: sm-step-in .6s ease-out both; }
-.brief-card li .n { font-family: var(--sm-caps); font-weight: 700; font-size: 40px; color: var(--sm-gules); text-align: right; }
-.brief-card .stakes { font-family: var(--sm-book); font-weight: 600; font-size: 38px; line-height: 1.25; color: var(--sm-ink); border-top: 2px solid var(--sm-gold-dim); padding-top: 18px; margin: 0 0 10px; animation: sm-step-in .6s ease-out both; }
-.brief-card .note { font-family: var(--sm-book); font-style: italic; font-size: 34px; line-height: 1.25; color: #5a4632; margin: 0; animation: sm-step-in .6s ease-out both; }
+.brief-card { width: min(1600px, 100%); padding: 26px 48px 24px; animation: sm-brief-in .7s ease-out both; }
+.brief-card .kicker { font-family: var(--sm-caps); letter-spacing: .3em; text-transform: uppercase; font-size: 20px; color: var(--sm-gules); margin: 0; }
+.brief-card h2 { font-family: var(--sm-uncial); font-weight: 400; font-size: 60px; line-height: 1; margin: 2px 0 16px; color: var(--sm-ink); text-wrap: balance; }
+.brief-card ol { list-style: none; margin: 0 0 16px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.brief-card li { display: grid; gap: 4px; align-content: start; font-family: var(--sm-book); font-size: 34px; line-height: 1.18; color: var(--sm-ink); animation: sm-step-in .6s ease-out both; }
+.brief-card li .n { font-family: var(--sm-caps); font-weight: 700; font-size: 34px; color: var(--sm-gules); border-bottom: 2px solid var(--sm-gold-dim); padding-bottom: 2px; }
+.brief-card .stakes { font-family: var(--sm-book); font-weight: 600; font-size: 32px; line-height: 1.2; color: var(--sm-ink); border-top: 2px solid var(--sm-gold-dim); padding-top: 12px; margin: 0 0 6px; animation: sm-step-in .6s ease-out both; }
+.brief-card .note { font-family: var(--sm-book); font-style: italic; font-size: 28px; line-height: 1.2; color: #5a4632; margin: 0; animation: sm-step-in .6s ease-out both; }
 @keyframes sm-brief-in { from { opacity: 0; transform: translateY(24px) scale(.98); } to { opacity: 1; transform: none; } }
 @keyframes sm-step-in { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .brief-card, .brief-card li, .brief-card .stakes, .brief-card .note { animation: none; } }
