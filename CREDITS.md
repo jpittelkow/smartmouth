@@ -54,6 +54,12 @@ Generated with **Google Lyria 3** (`google/lyria-3-clip-preview`) through OpenRo
 prompts in `tools/sounds/trivia/music.mjs`; two takes of each, rotating. Cues: trivia-lobby, trivia-think,
 trivia-leaderboard, trivia-winner.
 
+## The drum roll (Trivia)
+Generated with **ByteDance Seed Audio 1.0** (`bytedance-seed/seed-audio-1-0`) through OpenRouter on 2026-11-27, from our
+own prompts in `tools/sounds/trivia/rollcrash.mjs`: a snare roll building into a crash, four takes that rotate
+(trivia-rollcrash-1 to 4). Each is trimmed so its crash lands as the answer appears (2.2 s). OpenRouter has no dedicated
+sound-effects model; ElevenLabs' voice models there refuse tag-only input.
+
 ## Synthesized
 Everything else (the snake hiss, the lute, the fanfares, the chimes, the countdown ticks) is synthesized in the browser
 with Web Audio by our own code (`apps/web/src/games/snakes/sound.ts`, `apps/web/src/host/sfx.ts`).
