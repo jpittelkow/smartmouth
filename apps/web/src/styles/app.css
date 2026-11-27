@@ -152,16 +152,24 @@ button, input { font: inherit; color: inherit; }
 .tv-intro { display: grid; place-content: center; text-align: center; gap: 12px; font-size: 64px; }
 .tv-intro .big { font-size: 160px; color: var(--spot); line-height: 1; }
 .board { display: grid; gap: 18px; align-content: start; }
-.board-head { display: flex; align-items: center; gap: 18px; min-height: 96px; }
+.board { position: relative; }
+.board-head { display: flex; align-items: center; gap: 18px; min-height: 96px; padding-right: 220px; }
 .cat-chip { font-size: 30px; padding: 8px 22px; border-radius: 999px; background: var(--grape); color: var(--ink); font-weight: 700; }
 .split-chip { font-size: 28px; color: var(--muted); }
-.timer { margin-left: auto; position: relative; width: 96px; height: 96px; }
+/* The countdown: big enough to read across the room; the last five seconds pulse and tick (owner, 2026-11-27). */
+/* Sits in the board's top-right corner, out of the flow, with room for the pulse inside .tv-game's clip. */
+.timer { position: absolute; top: 12px; right: 24px; width: 168px; height: 168px; z-index: 2; }
+.timer-face { position: absolute; inset: 0; }
+.timer-face.pulse { animation: timer-pulse 1s ease-out; }
+@keyframes timer-pulse { 0% { transform: scale(1.12); filter: drop-shadow(0 0 22px var(--hot)); } 60% { transform: scale(1); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .timer-face.pulse { animation: none; } }
 .timer svg { width: 100%; height: 100%; }
 .timer .track { fill: var(--ink); stroke: var(--stage-2); stroke-width: 12; }
 .timer .fill { fill: none; stroke: var(--spot); stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 200ms linear; }
 .timer.late .fill { stroke: var(--hot); }
-.timer span { position: absolute; inset: 0; display: grid; place-items: center; font-size: 40px; }
-.q-text { font-size: 64px; line-height: 1.08; max-width: 1600px; text-wrap: balance; }
+.timer span { position: absolute; inset: 0; display: grid; place-items: center; font-size: 84px; }
+.timer.late span { color: var(--hot); }
+.q-text { font-size: 64px; line-height: 1.08; max-width: calc(100% - 220px); text-wrap: balance; }
 .q-text.small { font-size: 48px; }
 .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .answer {

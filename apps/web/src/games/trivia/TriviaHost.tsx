@@ -8,6 +8,7 @@ import { Blob, PictureCard, SlotShape, Tick } from '../../ui/art.tsx';
 import { serverNow } from '../../socket.ts';
 import { SaltyStrip } from '../../host/SaltyStrip.tsx';
 import { sayClip } from '../../host/voice.ts';
+import { buzz, tick } from '../../host/sfx.ts';
 
 export function TriviaHost({ view, send }: { view: HostGameView; send: (m: ClientMsg) => void }) {
   const g = view.game as TriviaHostView;
@@ -77,14 +78,30 @@ function Countdown({ deadline }: { deadline: number }) {
     const id = setInterval(() => setLeft(Math.max(0, deadline - serverNow())), 200);
     return () => clearInterval(id);
   }, [deadline]);
+  const secs = Math.ceil(left / 1000);
+  // The last five seconds tick and pulse; zero buzzes (owner, 2026-11-27). A deadline already under 5 s when the
+  // board appears (a reconnect) still ticks from where it is.
+  const lastSec = useRef<number | null>(null);
+  useEffect(() => {
+    if (lastSec.current === secs) return;
+    const first = lastSec.current === null;
+    lastSec.current = secs;
+    if (first && secs > 5) return;
+    if (secs >= 1 && secs <= 5) tick(secs);
+    else if (secs === 0 && !first) buzz();
+  }, [secs]);
   const frac = left / total.current;
   const r = 52;
   const c = 2 * Math.PI * r;
+  const late = secs <= 5;
   return (
-    <div className={`timer${left < 5000 ? ' late' : ''}`} aria-label={`${Math.ceil(left / 1000)} seconds left`}>
-      <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r={r} className="track" /><circle cx="60" cy="60" r={r} className="fill"
-        strokeDasharray={c} strokeDashoffset={c * (1 - frac)} transform="rotate(-90 60 60)" /></svg>
-      <span className="display">{Math.ceil(left / 1000)}</span>
+    <div className={`timer${late ? ' late' : ''}`} aria-label={`${secs} seconds left`}>
+      {/* Re-keyed every second in the last five, so the pulse replays on each tick. */}
+      <div key={late ? secs : 'calm'} className={`timer-face${late && secs > 0 ? ' pulse' : ''}`}>
+        <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r={r} className="track" /><circle cx="60" cy="60" r={r} className="fill"
+          strokeDasharray={c} strokeDashoffset={c * (1 - frac)} transform="rotate(-90 60 60)" /></svg>
+        <span className="display">{secs}</span>
+      </div>
     </div>
   );
 }

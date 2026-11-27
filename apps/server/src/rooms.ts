@@ -72,7 +72,7 @@ export class RoomStore {
   create(now: number): Room {
     const code = makeCode((c) => this.rooms.has(c));
     const room: Room = {
-      code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy', voice: 'male', drama: 'full',
+      code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy', voice: 'female', drama: 'full',
       notice: null, lastActive: now, nextSeat: 1, game: null, asked: new Set(), salty: newSalty(),
     };
     this.rooms.set(code, room);
