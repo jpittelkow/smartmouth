@@ -56,6 +56,10 @@ _Last updated: 2026-11-26_
   the old headers (a cached CORP header stopped the sound audition playing, 2026-11-27): link to `?v=<stamp>` or purge.
 
 ## Office Chromecast
+- The TV app keeps its WebView page alive in the background for hours, so a deploy didn't reach the TV (2026-11-27: an
+  hour-old page showed none of the day's changes). Since `e640d25` the page reloads itself when it reconnects or comes
+  back to the foreground and the server's script name differs (`reloadIfStale` in `apps/web/src/socket.ts`). To force it
+  by hand: `adb shell am force-stop app.smartmouth.tv`, then launch it.
 - GlanceTV's screensaver stays over a newly launched app until a key wakes the device (`input keyevent KEYCODE_WAKEUP`).
 
 ## Tooling
