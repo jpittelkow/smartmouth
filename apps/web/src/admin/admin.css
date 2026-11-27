@@ -106,8 +106,25 @@ a.adm-btn { text-decoration: none; display: inline-flex; align-items: center; }
 .adm-totals b { font-size: 24px; font-variant-numeric: tabular-nums; }
 .adm-totals span { color: var(--a-muted); font-size: 13px; }
 
-.adm-signin { max-width: 420px; margin: 10vh auto 0; padding: 0 16px; display: grid; gap: 14px; }
-.adm-signin h1 { font-family: var(--font-display); margin: 0; }
+/* Sign-in: a small card in the middle of the screen. */
+.adm-gate {
+  min-height: 100dvh; display: grid; place-items: center;
+  padding: 24px max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px));
+}
+.adm-signin {
+  width: min(340px, 100%); display: grid; gap: 10px; align-content: start;
+  background: var(--a-panel); border: 1px solid var(--a-line); border-radius: 14px; padding: 24px;
+  box-shadow: 0 1px 2px rgba(20, 17, 31, .06), 0 8px 24px rgba(20, 17, 31, .06);
+}
+.adm-signin input, .adm-signin button { font: inherit; color: inherit; }
+.adm-signin-head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.adm-signin-head h1 { font-family: var(--font-display); font-size: 20px; line-height: 1.1; margin: 0; }
+.adm-signin-mark { width: 40px; height: 40px; flex: none; display: grid; place-items: center; background: var(--ink, #14111f); border-radius: 10px; }
+.adm-signin-mark svg { width: 38px; height: 38px; }
+.adm-signin-label { font-weight: 700; font-size: 14px; }
+.adm-signin .adm-field { width: 100%; }
+.adm-signin .adm-btn.primary { width: 100%; color: var(--a-accent-ink); margin-top: 4px; }
+.adm-signin-error { color: var(--a-bad); font-size: 14px; margin: 0; }
 .adm-toast { position: fixed; bottom: max(16px, env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--a-text); color: var(--a-bg); padding: 10px 16px; border-radius: 8px; z-index: 20; }
 
 /* Generate tab */

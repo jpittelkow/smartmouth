@@ -4,6 +4,7 @@ import { APP_NAME } from '@smartmouth/protocol';
 import { Library, NO_FILTERS, type Filters } from './Library.tsx';
 import { Coverage } from './Coverage.tsx';
 import { Generate } from './Generate.tsx';
+import { Grin } from '../ui/art.tsx';
 import './admin.css';
 
 type Me = { enabled: boolean; signedIn: boolean };
@@ -22,7 +23,7 @@ export function Admin() {
   const load = () => fetch('/api/admin/me').then((r) => r.json()).then(setMe).catch(() => setError("Couldn't reach the server."));
   useEffect(() => { load(); }, []);
 
-  if (!me) return <div className="adm-signin"><h1>Admin</h1><p>{error ?? 'Loading…'}</p></div>;
+  if (!me) return <div className="adm-gate"><div className="adm-signin"><p className="adm-count">{error ?? 'Loading…'}</p></div></div>;
   if (!me.signedIn) return <SignIn enabled={me.enabled} onDone={load} />;
   return <Signedin onSignOut={async () => { await fetch('/api/admin/logout', { method: 'POST' }); load(); }} />;
 }
@@ -49,16 +50,23 @@ function SignIn({ enabled, onDone }: { enabled: boolean; onDone: () => void }) {
   };
 
   return (
-    <form className="adm adm-signin" onSubmit={submit}>
-      <h1>{APP_NAME} admin</h1>
-      {!enabled && <p style={{ color: 'var(--a-bad)' }}>No admin password is set on the server. Add ADMIN_PASSWORD to its settings.</p>}
-      <label htmlFor="admin-password" style={{ display: 'grid', gap: 6, fontWeight: 700 }}>Password
+    <div className="adm-gate">
+      <form className="adm-signin" onSubmit={submit}>
+        <div className="adm-signin-head">
+          <span className="adm-signin-mark"><Grin /></span>
+          <div>
+            <h1>{APP_NAME}</h1>
+            <div className="adm-count">Grown-ups' admin</div>
+          </div>
+        </div>
+        {!enabled && <p className="adm-signin-error">No admin password is set on the server. Add ADMIN_PASSWORD to its settings.</p>}
+        <label htmlFor="admin-password" className="adm-signin-label">Password</label>
         <input id="admin-password" className="adm-field" type="password" autoComplete="current-password" value={password}
           onChange={(e) => setPassword(e.target.value)} autoFocus />
-      </label>
-      <div role="alert" style={{ color: 'var(--a-bad)', minHeight: 20 }}>{error ?? ''}</div>
-      <button className="adm-btn primary" type="submit" disabled={busy || !password || !enabled}>Sign in</button>
-    </form>
+        {error && <div role="alert" className="adm-signin-error">{error}</div>}
+        <button className="adm-btn primary" type="submit" disabled={busy || !password || !enabled}>{busy ? 'Signing in…' : 'Sign in'}</button>
+      </form>
+    </div>
   );
 }
 
