@@ -1,33 +1,52 @@
 # Salty's voice
 
-Salty's recordings come from OpenRouter speech (ADR 0013), not Piper. `voice.mjs` runs **inside the server's
-container**, which holds `OPENROUTER_API_KEY` and the data folder, so the key never leaves the server.
-
-A voice is written `<model>:<voice>`:
-- `elevenlabs/eleven-v4:<name>`: acts from tags in the text (`[sighs]`, `[scoffs]`). Returns mp3. ElevenLabs' stock voices
-  (callum, bill, roger, george and others) **retire on 2026-12-31**. Files already made keep working, but new lines after
-  that need another voice.
-- `google/gemini-3.8-flash-tts:<Name>`: acts from a written description of Salty (`STYLE` in `voice.mjs`). Tags are
-  stripped from its text so it doesn't read them out. Returns wav.
-
-## Audition (pick a voice by ear)
-The owner's format: one line, said in five styles (snarky, mean, indifferent, nice, cheerful), by every voice. The line and
-the styles are in [audition-styles.json](audition-styles.json).
+Salty's recordings come from OpenRouter speech (ADR 0013), not Piper. Every script here that calls OpenRouter runs
+**inside the server's container**, which holds `OPENROUTER_API_KEY` and the data folder, so the key never leaves the server.
+Scripts not baked into the image are piped in:
 ```bash
-docker exec -e VOICES="google/gemini-2.5-pro-tts:Algenib,fish-audio/s2.1-pro:default" smartmouth node tools/voice/voice.mjs audition
+ssh root@192.168.1.4 "docker exec -i smartmouth node --input-type=module -" < tools/voice/<script>.mjs
 ```
-This writes `DATA_DIR/media/voice/audition/`, and the page (voices x styles) is at
-`https://play.303.social/media/voice/audition/index.html`. Fish Audio (`fish-audio/s2.1-pro:<voice>`) takes written
-directions and returns mp3; `default` uses the model's own voice.
+
+**Now (2026-11-27):** the owner's voice is **Gemini 3.8 Flash, "Laomedeia"** (woman), directed upbeat (`STYLE` in
+`voice.mjs`), chosen for "the best timing by far". A man's voice (Zubenelgenubi) was picked but not recorded yet; the
+"His voice" option still plays the older ElevenLabs Harry recordings.
+
+## The voiceover loop
+1. **Draft lines** with [draft-lines.mjs](draft-lines.mjs) (Grok 4.7). Its brief tells the writer, for every moment, what's
+   on the TV, what Salty just said and what comes right after (reveal lines hand off to the fun fact; hello introduces
+   Salty and the rules). It prints JSON candidates. Nothing is used as-is: a person curates.
+2. **Curate** into [content/voice/lines.json](../../content/voice/lines.json). That file holds **every game's lines**
+   (trivia's plain moments, Snake Manor's `sm-*`): replace only your own game's moments and keep the rest. The owner's
+   rules from two reviews: greet first and end on a hype call; every line makes literal sense; an everyday situation with
+   one specific, unexpected twist; a clear attitude; "another one", not "the new one".
+3. **Review** with [build-review.py](build-review.py): it builds the Keep/Cut/Fix page (an Artifact with a small database;
+   read the marks back with ArtifactData). Rewritten lines get a **new id**, so old marks don't attach to new words.
+4. **Record** with `voice.mjs bank` (below). Then deploy if lines.json changed.
 
 ## Bank (everything the game says)
 ```bash
-docker exec -e VOICE="elevenlabs/eleven-v4:callum" -e MAX_USD=5 smartmouth node tools/voice/voice.mjs bank
+docker exec -e SLOT=female -e VOICE=google/gemini-3.8-flash-tts:Laomedeia -e MAX_USD=5 smartmouth node tools/voice/voice.mjs bank
 ```
-This makes every line in `content/voice/lines.json`, plus, for every live question, its prompt, its answers (picture questions only) and
-its follow-up line. Little questions use a warmer, slower direction. Files that already exist are kept, so after you add
-questions or lines a re-run only makes what's new. It writes `DATA_DIR/voice/manifest.json` last (outside the served folder), and the server picks it up within
-10 seconds; there's no restart. Recording names are salted (`DATA_DIR/voice/salt`), so they can't be guessed from the text. Switching voices means running `bank` again with the new `VOICE`. `DRY=1` counts the clips and
-characters without making anything. `MAX_USD` stops the run once the key's usage has grown by that much.
+Makes every line in `content/voice/lines.json`, plus, for every live question, its prompt, its answers (picture questions
+only) and its follow-up line. Little questions use a warmer direction. Files that already exist are kept, so a re-run only
+makes what's new or changed. `SLOT` (`female` or `male`) picks which room voice it fills: it writes
+`DATA_DIR/voice/manifest-<slot>.json`, which the server picks up within 10 seconds. The manifest stores each line's text
+(`lineText`), and a line's clip only plays when its words match the line, so a rewrite can't play an old joke under a new
+caption. `DRY=1` counts clips and characters without making anything; `MAX_USD` stops at that much spend.
+Don't deploy while a bank runs: the restart kills it.
+
+**New questions are voiced automatically**: when the generator publishes questions, the server runs the bank for every
+voice in `SALTY_VOICES` (server `.env`, e.g. `female=google/gemini-3.8-flash-tts:Laomedeia`).
+
+## Auditions (pick a voice by ear)
+- `voice.mjs audition`: one line in five styles (snarky, mean, indifferent, nice, cheerful) by every voice in `VOICES`;
+  the line and styles are in [audition-styles.json](audition-styles.json). Page at `/media/voice/audition*/`.
+- [audition-models.mjs](audition-models.mjs): the same four jokes across different speech models (ElevenLabs, Fish Audio
+  Drama, Microsoft MAI-Voice, Grok Voice, Gemini). This is how Gemini 3.8 Flash won.
+- [audition-gemini.mjs](audition-gemini.mjs): the same jokes across all 30 Gemini 3.8 Flash voices with the upbeat direction.
+
+A voice is written `<model>:<voice>`. ElevenLabs acts from tags in the text (`[sighs]`) and returns mp3; its stock
+voices retire on 2026-12-31. Gemini and Fish Audio act from a written direction (tags become delivery cues and are
+stripped from the spoken text); Gemini returns wav.
 
 Voices must be stock or designed voices. Never a clone or an imitation of a real person (ADR 0013, 0014).
