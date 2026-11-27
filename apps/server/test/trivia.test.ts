@@ -152,3 +152,20 @@ test('between rounds the leaderboard ranks everyone and shows who moved; it is s
   s = next(s);
   assert.equal(s.stage, 'final', 'no leaderboard after the last round: the final scores');
 });
+
+test('after the leaderboard the question timer starts once the round card is gone, and earlier answers are refused', () => {
+  let s = toQuestion(start([['g', 'grownups']], 3));
+  s = rules.intent(s, 'g', { type: 'skip' }, s.questionStart + 1); // drum roll
+  s = rules.tick(s, s.stageEnds as number); // reveal
+  s = rules.tick(s, s.stageEnds as number); // leaderboard
+  assert.equal(s.stage, 'standings');
+  const t = s.stageEnds as number;
+  s = rules.tick(s, t); // round 2: the question is up, the card still covers it
+  assert.equal(s.questionStart, t + rules.CARD_COVER_MS);
+  assert.equal(s.questionEnds - s.questionStart, 20_000, 'the full time, counted from when answering opens');
+  assert.equal(rules.hostView(s).opensAt, s.questionStart);
+  s = rules.intent(s, 'g', { type: 'answer', choice: 0 }, t + 500);
+  assert.equal(s.picks.g, undefined, 'too early: the card is still up');
+  s = rules.intent(s, 'g', { type: 'answer', choice: 0 }, s.questionStart + 10);
+  assert.ok(s.picks.g);
+});

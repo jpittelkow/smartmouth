@@ -151,12 +151,12 @@ function Intro({ round, rounds }: { round: number; rounds: number }) {
   );
 }
 
-function Countdown({ deadline }: { deadline: number }) {
-  const [left, setLeft] = useState(() => Math.max(0, deadline - serverNow()));
-  const total = useRef(Math.max(1, deadline - serverNow()));
+function Countdown({ deadline, opensAt }: { deadline: number; opensAt: number }) {
+  const [left, setLeft] = useState(() => Math.max(0, deadline - Math.max(serverNow(), opensAt)));
+  const total = useRef(Math.max(1, deadline - Math.max(serverNow(), opensAt)));
   useEffect(() => {
-    total.current = Math.max(1, deadline - serverNow());
-    const id = setInterval(() => setLeft(Math.max(0, deadline - serverNow())), 200);
+    total.current = Math.max(1, deadline - Math.max(serverNow(), opensAt));
+    const id = setInterval(() => setLeft(Math.max(0, deadline - Math.max(serverNow(), opensAt))), 200);
     return () => clearInterval(id);
   }, [deadline]);
   const secs = Math.ceil(left / 1000);
@@ -193,7 +193,7 @@ function QuestionBoard({ g, q }: { g: TriviaHostView; q: TPublicQuestion }) {
       <div className="board-head">
         <span className="cat-chip">{q.category}</span>
         {g.splitBands && <span className="split-chip">Everyone's got their own question on their phone</span>}
-        {g.stage === 'question' && g.deadline && <Countdown deadline={g.deadline} />}
+        {g.stage === 'question' && g.deadline && <Countdown deadline={g.deadline} opensAt={g.opensAt ?? 0} />}
       </div>
       <div className="q-text display">{q.prompt}</div>
       <div className={`answers n${q.answers.length}`}>

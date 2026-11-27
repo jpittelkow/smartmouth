@@ -83,6 +83,8 @@ export interface TriviaHostView {
   round: number;
   rounds: number;
   deadline: number | null;
+  /** When answering opens (the round card is still up until then); null outside a question. */
+  opensAt: number | null;
   question: TPublicQuestion | null;
   /** Some players have their own (age-sized) question on their phones. */
   splitBands: boolean;
@@ -103,6 +105,8 @@ export interface TriviaPlayerView {
   round: number;
   rounds: number;
   deadline: number | null;
+  /** When answering opens (the round card is still up until then); null outside a question. */
+  opensAt: number | null;
   /** Your question this round (null: you sit this one out, or it's not a question stage). */
   question: TPublicQuestion | null;
   /** Show the question text on the phone: it differs from the one on the TV. */

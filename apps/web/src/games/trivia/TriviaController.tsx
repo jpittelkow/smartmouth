@@ -16,6 +16,7 @@ export function TriviaController({ view, send }: { view: PlayerGameView; send: (
     body = <Center big={`Round ${g.round} of ${g.rounds}`} small="Look at the TV" />;
   } else if (g.stage === 'question') {
     if (!g.question) body = <Center big="Watch the TV" small={view.you.band === 'little' ? 'Your turn is coming!' : 'Sit this one out.'} />;
+    else if (g.opensAt && serverNow() < g.opensAt) body = <OpensSoon at={g.opensAt} />;
     else if (g.picked !== null) body = <Locked slot={g.picked} text={g.question.answers[g.picked]?.text ?? ''} />;
     else body = (
       <div className="ctl-q">
@@ -126,6 +127,13 @@ function Result({ right, gained, correctText, score, rank, helper }: {
       <div className="muted">{score} points · #{rank}</div>
     </div>
   );
+}
+
+/** Until answering opens (the round card is up on the TV); re-renders the moment it does. */
+function OpensSoon({ at }: { at: number }) {
+  const [, force] = useState(0);
+  useEffect(() => { const t = setTimeout(() => force((n) => n + 1), Math.max(0, at - serverNow()) + 30); return () => clearTimeout(t); }, [at]);
+  return <Center big="Get ready…" small="Look at the TV" />;
 }
 
 function TimeBar({ deadline }: { deadline: number }) {

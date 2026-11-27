@@ -15,6 +15,8 @@ export const REVEAL_MS = 8000;
 export const TURN_REVEAL_MS = 6000;
 /** The drum roll before a reveal: answers are closed, the right one isn't shown yet. */
 export const SUSPENSE_MS = 2200;
+/** After the leaderboard the round card still covers the question this long; the timer starts when it's gone. */
+export const CARD_COVER_MS = 1200;
 /** The leaderboard between rounds (held longer while Salty talks). */
 export const STANDINGS_MS = 6000;
 /** A turn that nobody answers moves on after this, so a game can't stall. */
@@ -95,7 +97,7 @@ export function tick(s: TriviaState, now: number): TriviaState {
     case 'reveal': return turnDue(s) ? startTurn(s, now) : nextRound(s, now);
     case 'turn': return nextRound({ ...s, turn: null }, now); // nobody picked in time
     case 'turnReveal': return nextRound(s, now);
-    case 'standings': return startQuestion({ ...s, round: s.round + 1, turn: null }, now);
+    case 'standings': return startQuestion({ ...s, round: s.round + 1, turn: null }, now, CARD_COVER_MS);
     default: return s;
   }
 }
@@ -128,7 +130,7 @@ function takeQuestion(s: TriviaState, band: Band): TQuestion | null {
   return null;
 }
 
-function startQuestion(s0: TriviaState, now: number): TriviaState {
+function startQuestion(s0: TriviaState, now: number, coverMs = 0): TriviaState {
   const s: TriviaState = { ...s0, queues: { ...s0.queues }, picks: {}, gained: {}, current: {}, turn: null, roundStartScores: scoresNow(s0) };
   for (const b of BAND_IDS) s.queues[b] = [...s0.queues[b]];
   const bands = [...new Set(answerers(s).map((id) => s.players[id]?.band as Band))];
@@ -142,8 +144,9 @@ function startQuestion(s0: TriviaState, now: number): TriviaState {
     return littles(s).length && s.queues.little.length ? startTurn(s, now) : finish(s);
   }
   s.tvBand = asked.reduce((a, b) => (bandRank(b) > bandRank(a) ? b : a));
-  s.questionStart = now;
-  s.questionEnds = now + answerMs(asked);
+  // The timer starts once the round card is off the screen (owner, 2026-11-27: "start the question time later").
+  s.questionStart = now + coverMs;
+  s.questionEnds = s.questionStart + answerMs(asked);
   s.stage = 'question';
   s.stageEnds = s.questionEnds;
   return s;
@@ -151,7 +154,7 @@ function startQuestion(s0: TriviaState, now: number): TriviaState {
 
 function answer(s: TriviaState, playerId: string, choice: number, now: number): TriviaState {
   const p = s.players[playerId];
-  if (!p || p.band === 'little' || s.picks[playerId] || now > s.questionEnds) return s;
+  if (!p || p.band === 'little' || s.picks[playerId] || now > s.questionEnds || now < s.questionStart) return s;
   const q = s.current[p.band];
   if (!q || !Number.isInteger(choice) || choice < 0 || choice >= q.answers.length) return s;
   const next = { ...s, picks: { ...s.picks, [playerId]: { choice, at: now } } };
@@ -292,7 +295,7 @@ export function hostView(s: TriviaState): TriviaHostView {
   });
   const t = s.turn;
   return {
-    stage: s.stage, round: s.round, rounds: s.rounds, deadline: s.stage === 'question' ? s.questionEnds : null,
+    stage: s.stage, round: s.round, rounds: s.rounds, deadline: s.stage === 'question' ? s.questionEnds : null, opensAt: s.stage === 'question' ? s.questionStart : null,
     question: showing && tvQ ? publicQ(tvQ) : null,
     splitBands: showing && Object.keys(s.current).length > 1,
     correct: reveal && tvQ ? tvQ.correct : null,
@@ -315,7 +318,7 @@ export function playerView(s: TriviaState, playerId: string): TriviaPlayerView {
   const mine = table.find((r) => r.id === playerId);
   const base = {
     stage: s.stage, round: s.round, rounds: s.rounds, score: p?.score ?? 0, rank: mine?.rank ?? table.length + 1,
-    deadline: s.stage === 'question' ? s.questionEnds : null,
+    deadline: s.stage === 'question' ? s.questionEnds : null, opensAt: s.stage === 'question' ? s.questionStart : null,
     question: null, showPrompt: false, picked: null, result: null, turn: null, final: null,
   } satisfies TriviaPlayerView;
   if (!p) return base;
