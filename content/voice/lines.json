@@ -1,47 +1,41 @@
 {
- "//": "Salty's line bank (ADR 0013, 0014; persona rules in docs/design/design-guide.md §3). Text is what is spoken: audio tags like [sighs] are delivery cues, and never captioned; '...' and em dashes are beats. At Filthy the swearing is real in the audio and bleeped in captions. A line is used only at or below the room's spice level. Round 4, 2026-11-27, after the owner's line review: greet first and end on a hype call; every line makes literal sense; finish the joke with a concrete payoff; a clear attitude; 'another one', not 'the new one'. Lines the owner kept are unchanged; the rest were rewritten by hand (ids ending in 'b'). Little-turn and Snake Manor lines are untouched.",
+ "//": "Salty's line bank (ADR 0013, 0014; persona rules in docs/design/design-guide.md §3). Text is what is spoken: audio tags like [sighs] are delivery cues, and never captioned; '...' and em dashes are beats. At Filthy the swearing is real in the audio and bleeped in captions. A line is used only at or below the room's spice level. Rounds 4-5, 2026-11-27, from the owner's two line reviews: greet first and end on a hype call; every line makes literal sense; an everyday situation with one specific, unexpected twist (the meeting with a slideshow, the smug throw pillows, the grandma who thinks the internet is a fishing net); a clear attitude; 'another one', not 'the new one'. Lines the owner kept are unchanged; round 5 rewrites end in 'c'. Little-turn and Snake Manor lines are untouched.",
  "lines": [
   {
-   "id": "hello-m1b",
+   "id": "hello-m1c",
    "moment": "hello",
    "spice": "mild",
-   "text": "Hello, everybody! I'm Salty, your host. Questions go up on the TV, you answer on your phone, and the faster you tap, the more points you get. Everyone ready?!"
+   "text": "Hello, everybody! I'm Salty, your host. Questions go on the TV, answers go on your phone, and the fastest tapper wins. No pressure. Okay, a little pressure. Everyone ready?!"
   },
   {
-   "id": "hello-m2b",
+   "id": "hello-m2c",
    "moment": "hello",
    "spice": "mild",
-   "text": "Hi, hi, hi! Welcome to Smartmouth! I'm Salty. Watch the TV, tap your answer on your phone, and be quick about it. Let's get going!"
+   "text": "Hi, hi, hi! I'm Salty! Look at the TV, tap your answer on your phone, and be quick. Slow answers still count. They just count less. Let's get going!"
   },
   {
-   "id": "hello-m3b",
+   "id": "hello-m3c",
    "moment": "hello",
    "spice": "mild",
-   "text": "Well, hello there, crew! I'm Salty, and I'm your captain tonight. Read the TV, pick on your phone, and fast taps win big. Here we go!"
+   "text": "Well, hello there, crew! I'm Salty, and I'll be your captain tonight. Yes, of the living room. Questions on the TV, answers on your phone. Here we go!"
   },
   {
-   "id": "hello-s1b",
+   "id": "hello-s1c",
    "moment": "hello",
    "spice": "spicy",
-   "text": "Hey, everybody! I'm Salty. Questions on the TV, answers on your phone, and the fast ones get bragging rights. Everyone ready?! Let's get going!"
+   "text": "Hey, everybody! I'm Salty. Questions on the TV, answers on your phone, and whoever's fastest gets to be smug all week. Everyone ready?!"
   },
   {
-   "id": "hello-s2b",
+   "id": "hello-s2c",
    "moment": "hello",
    "spice": "spicy",
-   "text": "Hello, hello! I'm Salty. I used to captain a ship. Now I captain you lot, which is somehow scarier. Questions on the TV, answers on your phone. Let's get going!"
+   "text": "Hello, hello! I'm Salty. I used to captain a ship. Now I captain a living room. Same job, more snacks. Questions on the TV, answers on your phone. Let's get going!"
   },
   {
-   "id": "hello-s3b",
+   "id": "hello-s3c",
    "moment": "hello",
    "spice": "spicy",
-   "text": "Welcome, everybody! I'm Salty. Here's the deal: the TV asks, your phone answers, and slowpokes get nothing. Everyone ready?!"
-  },
-  {
-   "id": "hello-h3",
-   "moment": "hello",
-   "spice": "hot",
-   "text": "I'm Salty. Former captain, current couch hostage. Question up top, answer on your phone, speed scores. Hell yes, roll it."
+   "text": "Welcome, everybody! I'm Salty. The TV asks, your phone answers, and if you look at someone else's phone, I will know. Everyone ready?!"
   },
   {
    "id": "hello-h1b",
@@ -50,16 +44,16 @@
    "text": "Hey there, everybody! I'm Salty. The TV asks, your phone answers, and if you're slow, that's on you. Here we go!"
   },
   {
-   "id": "hello-h2b",
+   "id": "hello-h3",
    "moment": "hello",
    "spice": "hot",
-   "text": "Hello, you beautiful disasters! I'm Salty. Questions on the TV, answers on your phone, and fast answers score more. Let's get this damn show going!"
+   "text": "I'm Salty. Former captain, current couch hostage. Question up top, answer on your phone, speed scores. Hell yes, roll it."
   },
   {
-   "id": "hello-f1b",
+   "id": "hello-h1c",
    "moment": "hello",
-   "spice": "filthy",
-   "text": "Hello, you magnificent bastards! I'm Salty. Questions on the TV, answers on your phone, and the fast ones get to gloat. Let's. Fucking. Go!"
+   "spice": "hot",
+   "text": "Hello, hello! I'm Salty. Questions on the TV, answers on your phone. Fast answers score more, so put the snacks down. Let's get this damn show going!"
   },
   {
    "id": "hello-f2b",
@@ -74,40 +68,28 @@
    "text": "Well, hello, you degenerates! I'm Salty. Questions on the TV, answers on your phone. Answer fast, or don't. I'm not your mother. Here we go!"
   },
   {
-   "id": "lobby-m1",
+   "id": "hello-f1c",
+   "moment": "hello",
+   "spice": "filthy",
+   "text": "Evening, everybody! I'm Salty. Questions on the TV, answers on your phone, and yes, you can drink while you play. I am. Let's fucking go!"
+  },
+  {
+   "id": "lobby-m1c",
    "moment": "lobby",
    "spice": "mild",
-   "text": "Grab a phone, scan that code, or type the letters like a tiny hero. I'll be here, sparkling."
+   "text": "Come on in! Scan the code on the TV, or type the four letters. If you need help, ask a grown-up. If you are a grown-up, ask a kid."
   },
   {
-   "id": "lobby-m2b",
+   "id": "lobby-m2c",
    "moment": "lobby",
    "spice": "mild",
-   "text": "Come on in! Scan the code on the TV, or type in the four letters. I'll wait. Patiently. Mostly."
+   "text": "Everybody grab a phone! Point the camera at the square on the TV. It's like magic, but nerdier."
   },
   {
-   "id": "lobby-m3b",
+   "id": "lobby-m3c",
    "moment": "lobby",
    "spice": "mild",
-   "text": "Everybody grab a phone! Point the camera at the square, or type the letters. Easy peasy, lemon squeezy!"
-  },
-  {
-   "id": "lobby-m4b",
-   "moment": "lobby",
-   "spice": "mild",
-   "text": "Who's playing? Scan the code or type the letters, and pick a silly name. The sillier the better!"
-  },
-  {
-   "id": "lobby-s1",
-   "moment": "lobby",
-   "spice": "spicy",
-   "text": "That code is not wallpaper. Grab a phone and scan it, or type the letters before I roast the empty hands."
-  },
-  {
-   "id": "lobby-s2",
-   "moment": "lobby",
-   "spice": "spicy",
-   "text": "Still joining? Hit the code or the letters, and stop lurking like a houseplant."
+   "text": "Who's playing? Scan the code, pick a silly name, and pick a blob. The blobs are very excited to meet you."
   },
   {
    "id": "lobby-s3b",
@@ -122,10 +104,16 @@
    "text": "Join now, or I'm playing with the throw pillows instead. They cheat. They copy each other's answers, and then they just lie there looking smug."
   },
   {
-   "id": "lobby-h2",
+   "id": "lobby-s1c",
    "moment": "lobby",
-   "spice": "hot",
-   "text": "Grab a phone and scan the damn code, or type the letters if you're feeling artisanal. Get in."
+   "spice": "spicy",
+   "text": "Still not in? The code's right there on the TV. It's not going to scan itself. I asked."
+  },
+  {
+   "id": "lobby-s2c",
+   "moment": "lobby",
+   "spice": "spicy",
+   "text": "Phones out! And no, you can't share one phone with your brother. You'll fight about it. I've seen it."
   },
   {
    "id": "lobby-h1b",
@@ -146,22 +134,10 @@
    "text": "No phone? Borrow one. And no, you can't just yell your answers at the TV. I can hear you. I'm ignoring you."
   },
   {
-   "id": "lobby-f2",
+   "id": "lobby-h1c",
    "moment": "lobby",
-   "spice": "filthy",
-   "text": "That square is not flirting. Scan it, or type the letters, and stop lingering like a bad decision."
-  },
-  {
-   "id": "lobby-f3",
-   "moment": "lobby",
-   "spice": "filthy",
-   "text": "Phones out, bastards. Scan the code or peck the letters before I start charging rent."
-  },
-  {
-   "id": "lobby-f4",
-   "moment": "lobby",
-   "spice": "filthy",
-   "text": "If a code defeats you, tonight's guesses are going to be a shitshow. Scan it. Get in."
+   "spice": "hot",
+   "text": "Four letters on the TV. Type them in. If you mess up four letters, I'm worried about the actual questions."
   },
   {
    "id": "lobby-f1b",
@@ -170,505 +146,523 @@
    "text": "[annoyed] Oh, for fuck's sake. Grab a phone and scan the code. It's a square. On the TV. I'm begging you."
   },
   {
-   "id": "join-m1b",
-   "moment": "join",
-   "spice": "mild",
-   "text": "Another one! Hello, hello! Find a comfy spot. The good spots are going fast."
+   "id": "lobby-f1c",
+   "moment": "lobby",
+   "spice": "filthy",
+   "text": "Scan the damn code. You managed to order a pizza at one in the morning last week. You can do this."
   },
   {
-   "id": "join-m2b",
-   "moment": "join",
-   "spice": "mild",
-   "text": "Ooh, another player! Welcome aboard! Snacks are over there. Probably."
+   "id": "lobby-f2c",
+   "moment": "lobby",
+   "spice": "filthy",
+   "text": "Phones out. Yes, that means putting your drink down for three whole seconds. You'll survive."
   },
   {
-   "id": "join-m3b",
-   "moment": "join",
-   "spice": "mild",
-   "text": "Another one joins the crew! Wave at the TV. That's you! Look at you!"
+   "id": "lobby-f3c",
+   "moment": "lobby",
+   "spice": "filthy",
+   "text": "Still lurking? Get your ass in the game. There's a blob with your name on it. Well, there will be."
   },
   {
-   "id": "join-s1b",
+   "id": "join-m1c",
+   "moment": "join",
+   "spice": "mild",
+   "text": "Another one! Hello! Wave at the TV. That's you up there. You're famous now!"
+  },
+  {
+   "id": "join-m2c",
+   "moment": "join",
+   "spice": "mild",
+   "text": "Ooh, another player! Welcome aboard! Wipe your feet. It's a nice carpet."
+  },
+  {
+   "id": "join-m3c",
+   "moment": "join",
+   "spice": "mild",
+   "text": "Another one joins the crew! The more the merrier. And the louder."
+  },
+  {
+   "id": "join-s1c",
    "moment": "join",
    "spice": "spicy",
    "text": "Oh good, another one. Great. Another person who thinks they're going to win."
   },
   {
-   "id": "join-s2b",
+   "id": "join-s2c",
    "moment": "join",
    "spice": "spicy",
-   "text": "Another challenger! Everybody size them up. Yep. We can take 'em."
+   "text": "Another challenger! Everybody look at them. Now look away. Don't let them see you're scared."
   },
   {
-   "id": "join-s3b",
+   "id": "join-s3c",
    "moment": "join",
    "spice": "spicy",
-   "text": "Another one joined. Wonderful. More people to beat."
+   "text": "Another one joined! Quick, everybody look smart."
   },
   {
-   "id": "join-h1b",
+   "id": "join-h1c",
    "moment": "join",
    "spice": "hot",
    "text": "Oh hell, another one. Act natural, everybody. They think we're smart."
   },
   {
-   "id": "join-h2b",
+   "id": "join-h2c",
    "moment": "join",
    "spice": "hot",
-   "text": "Another one! Welcome. Don't get comfortable. You're going down."
+   "text": "Another one! Welcome. You can sit anywhere except the good spot. That's taken."
   },
   {
-   "id": "join-h3b",
+   "id": "join-h3c",
    "moment": "join",
    "spice": "hot",
-   "text": "Look at that, another player. Let's be honest, you're here for the snacks."
+   "text": "Look, another player. Be honest, you came for the snacks. Same."
   },
   {
-   "id": "join-f1b",
+   "id": "join-f1c",
    "moment": "join",
    "spice": "filthy",
    "text": "Oh shit, another one. Everybody act like you know things."
   },
   {
-   "id": "join-f2b",
+   "id": "join-f2c",
    "moment": "join",
    "spice": "filthy",
    "text": "Another one! Welcome to the worst decision of your night. So far."
   },
   {
-   "id": "join-f3b",
+   "id": "join-f3c",
    "moment": "join",
    "spice": "filthy",
    "text": "Look at this one. Fresh. Hopeful. Hasn't been humiliated yet. Give it ten minutes."
   },
   {
-   "id": "intro-m1b",
+   "id": "intro-m1c",
    "moment": "intro",
    "spice": "mild",
-   "text": "Next round! Get those thumbs ready!"
+   "text": "Next round! Wiggle your fingers. Wiggle your toes. Okay, toes don't help. Ready!"
   },
   {
-   "id": "intro-m2b",
+   "id": "intro-m2c",
    "moment": "intro",
    "spice": "mild",
-   "text": "Here comes another one. Ready? Ready!"
+   "text": "Here comes another one! Eyes on the TV!"
   },
   {
-   "id": "intro-m3b",
+   "id": "intro-m3c",
    "moment": "intro",
    "spice": "mild",
-   "text": "New round! Everybody wiggle your fingers. Okay, good."
+   "text": "New round! Everybody take a big breath. Now let it out. Okay, go!"
   },
   {
-   "id": "intro-s1b",
+   "id": "intro-s1c",
    "moment": "intro",
    "spice": "spicy",
-   "text": "Next round. Try to look like you know what you're doing."
+   "text": "Next round. Try to look like you know what you're doing. Fake it."
   },
   {
-   "id": "intro-s2b",
+   "id": "intro-s2c",
    "moment": "intro",
    "spice": "spicy",
-   "text": "New round. Fresh start. Pretend the last one didn't happen."
+   "text": "New round, fresh start. We're all pretending the last one didn't happen."
   },
   {
-   "id": "intro-s3b",
+   "id": "intro-s3c",
    "moment": "intro",
    "spice": "spicy",
-   "text": "Here comes the next one. No peeking at each other's phones."
+   "text": "Here comes the next one. And no peeking at each other's phones. Yes, you."
   },
   {
-   "id": "intro-h1b",
+   "id": "intro-h1c",
    "moment": "intro",
    "spice": "hot",
    "text": "Next round. Try not to choke this time."
   },
   {
-   "id": "intro-h2b",
+   "id": "intro-h2c",
    "moment": "intro",
    "spice": "hot",
-   "text": "New round. Somebody's about to look real dumb. Could be you."
+   "text": "New round. Somebody's about to look real dumb. My money's on you."
   },
   {
-   "id": "intro-h3b",
+   "id": "intro-h3c",
    "moment": "intro",
    "spice": "hot",
    "text": "Here we go again. Lock in, damn it."
   },
   {
-   "id": "intro-f1b",
+   "id": "intro-f1c",
    "moment": "intro",
    "spice": "filthy",
    "text": "Next round. Don't fuck it up."
   },
   {
-   "id": "intro-f2b",
+   "id": "intro-f2c",
    "moment": "intro",
    "spice": "filthy",
-   "text": "New round. If you got the last one wrong, drink. Actually, just drink."
+   "text": "New round. If you got the last one wrong, drink. If you got it right, drink anyway."
   },
   {
-   "id": "intro-f3b",
+   "id": "intro-f3c",
    "moment": "intro",
    "spice": "filthy",
    "text": "Here we go. Somebody's about to embarrass themselves. Place your bets."
   },
   {
-   "id": "question-m1b",
+   "id": "question-m1c",
    "moment": "question",
    "spice": "mild",
    "text": "Take your time. Not too much time!"
   },
   {
-   "id": "question-m2b",
+   "id": "question-m2c",
    "moment": "question",
    "spice": "mild",
-   "text": "I can hear you all thinking. It's very loud."
+   "text": "I can hear you all thinking. It sounds like a hamster on a wheel."
   },
   {
-   "id": "question-m3b",
+   "id": "question-m3c",
    "moment": "question",
    "spice": "mild",
-   "text": "Ooh, this is a tricky one."
+   "text": "Ooh, tricky. Even I had to think about this one."
   },
   {
-   "id": "question-s1b",
+   "id": "question-s1c",
    "moment": "question",
    "spice": "spicy",
    "text": "Tick tock. The clock is not your friend."
   },
   {
-   "id": "question-s2b",
+   "id": "question-s2c",
    "moment": "question",
    "spice": "spicy",
-   "text": "No peeking at each other's phones!"
+   "text": "No peeking at each other's phones! I see you."
   },
   {
-   "id": "question-s3b",
+   "id": "question-s3c",
    "moment": "question",
    "spice": "spicy",
-   "text": "Just pick one. Seriously. Any one."
+   "text": "Just pick one. Any one. You've got a twenty-five percent chance, minimum."
   },
   {
-   "id": "question-h1b",
+   "id": "question-h1c",
    "moment": "question",
    "spice": "hot",
    "text": "Come on, come on, come on. Tap something!"
   },
   {
-   "id": "question-h2b",
+   "id": "question-h2c",
    "moment": "question",
    "spice": "hot",
    "text": "I can see you panicking. It's delightful."
   },
   {
-   "id": "question-h3b",
+   "id": "question-h3c",
    "moment": "question",
    "spice": "hot",
-   "text": "Commit, damn it! Pick one!"
+   "text": "Commit, damn it! It's not a marriage. It's a button."
   },
   {
-   "id": "question-f1b",
+   "id": "question-f1c",
    "moment": "question",
    "spice": "filthy",
    "text": "Pick one, for fuck's sake. You're killing me."
   },
   {
-   "id": "question-f2b",
+   "id": "question-f2c",
    "moment": "question",
    "spice": "filthy",
    "text": "Nobody knows. Everybody's guessing. That's the whole game."
   },
   {
-   "id": "question-f3b",
+   "id": "question-f3c",
    "moment": "question",
    "spice": "filthy",
    "text": "Tap something before I die of old age."
   },
   {
-   "id": "allright-m1b",
+   "id": "allright-m1c",
    "moment": "allRight",
    "spice": "mild",
    "text": "Everybody got it! Wow! Give yourselves a big round of applause!"
   },
   {
-   "id": "allright-m2b",
+   "id": "allright-m2c",
    "moment": "allRight",
    "spice": "mild",
-   "text": "All of you! Correct! I'm so proud I could cry."
+   "text": "All of you! Correct! I'm so proud I could cry. I'm not crying. You're crying."
   },
   {
-   "id": "allright-m3b",
+   "id": "allright-m3c",
    "moment": "allRight",
    "spice": "mild",
-   "text": "Every single one of you got it! Show-offs!"
+   "text": "Every single one of you got it! Okay, show-offs."
   },
   {
-   "id": "allright-s1b",
+   "id": "allright-s1c",
    "moment": "allRight",
    "spice": "spicy",
    "text": "Everyone got it. Huh. Did somebody leak the answers?"
   },
   {
-   "id": "allright-s2b",
+   "id": "allright-s2c",
    "moment": "allRight",
    "spice": "spicy",
-   "text": "All correct. Great. Now I have nothing to make fun of."
+   "text": "All correct. Great. Now what am I supposed to make fun of?"
   },
   {
-   "id": "allright-s3b",
+   "id": "allright-s3c",
    "moment": "allRight",
    "spice": "spicy",
-   "text": "All of you got it? Fine. I guess you're all geniuses now."
+   "text": "All of you got it? That was too easy. I'm firing whoever wrote that one."
   },
   {
-   "id": "allright-h1b",
+   "id": "allright-h1c",
    "moment": "allRight",
    "spice": "hot",
    "text": "Everybody got it. Damn. I had a whole roast ready."
   },
   {
-   "id": "allright-h2b",
+   "id": "allright-h2c",
    "moment": "allRight",
    "spice": "hot",
-   "text": "All correct. Okay, which one of you googled it?"
+   "text": "All correct. Okay, which one of you googled it under the table?"
   },
   {
-   "id": "allright-h3b",
+   "id": "allright-h3c",
    "moment": "allRight",
    "spice": "hot",
-   "text": "Every single one. Hell of a round, people."
+   "text": "Every single one. Hell of a round, people. Don't get used to it."
   },
   {
-   "id": "allright-f1b",
+   "id": "allright-f1c",
    "moment": "allRight",
    "spice": "filthy",
    "text": "Everybody got it? What the fuck. Who are you people?"
   },
   {
-   "id": "allright-f2b",
+   "id": "allright-f2c",
    "moment": "allRight",
    "spice": "filthy",
    "text": "All correct. I had insults ready and everything. Shit."
   },
   {
-   "id": "allright-f3b",
+   "id": "allright-f3c",
    "moment": "allRight",
    "spice": "filthy",
-   "text": "Every single one of you. I'm proud, and I'm pissed about it."
+   "text": "Every single one of you. I'm proud, and honestly, I'm a little pissed about it."
   },
   {
-   "id": "allwrong-m1b",
+   "id": "allwrong-m1c",
    "moment": "allWrong",
    "spice": "mild",
-   "text": "Nobody got it! That's okay. That was a toughie."
+   "text": "Nobody got it! That's okay. That one was a toughie."
   },
   {
-   "id": "allwrong-m2b",
+   "id": "allwrong-m2c",
    "moment": "allWrong",
    "spice": "mild",
-   "text": "Oopsie! Not one of you! Don't worry, I didn't know either."
+   "text": "Oopsie! Not one of you! Don't worry. I didn't know either. I'm reading it off a card."
   },
   {
-   "id": "allwrong-m3b",
+   "id": "allwrong-m3c",
    "moment": "allWrong",
    "spice": "mild",
-   "text": "Zero right! Well, you all tried your best. Mostly."
+   "text": "Zero right! Well, you all tried your best. I think."
   },
   {
-   "id": "allwrong-s1b",
+   "id": "allwrong-s1c",
    "moment": "allWrong",
    "spice": "spicy",
-   "text": "Nobody. Not a single one of you. Impressive, honestly."
+   "text": "Nobody. Not a single one of you. Honestly, that's impressive."
   },
   {
-   "id": "allwrong-s2b",
+   "id": "allwrong-s2c",
    "moment": "allWrong",
    "spice": "spicy",
-   "text": "All wrong! And you were so confident, too. That's my favorite part."
+   "text": "All wrong! And you were all so confident, too. That's my favorite part."
   },
   {
-   "id": "allwrong-s3b",
+   "id": "allwrong-s3c",
    "moment": "allWrong",
    "spice": "spicy",
-   "text": "Wow. Zero. Your phones are embarrassed for you."
+   "text": "Zero. Wow. Your phones are embarrassed for you."
   },
   {
-   "id": "allwrong-h1b",
+   "id": "allwrong-h1c",
    "moment": "allWrong",
    "spice": "hot",
    "text": "Nobody got it. Damn. That was painful to watch."
   },
   {
-   "id": "allwrong-h2b",
+   "id": "allwrong-h2c",
    "moment": "allWrong",
    "spice": "hot",
-   "text": "All wrong. Every single one. That's almost a talent."
+   "text": "All wrong. Every single one. At this point, it's a talent."
   },
   {
-   "id": "allwrong-h3b",
+   "id": "allwrong-h3c",
    "moment": "allWrong",
    "spice": "hot",
-   "text": "Zero right. You all just guessed, didn't you? I could tell."
+   "text": "Zero right. You all just guessed, didn't you? I could see it on your faces."
   },
   {
-   "id": "allwrong-f1b",
+   "id": "allwrong-f1c",
    "moment": "allWrong",
    "spice": "filthy",
    "text": "Nobody got it. That was a beautiful, coordinated fuck-up."
   },
   {
-   "id": "allwrong-f2b",
+   "id": "allwrong-f2c",
    "moment": "allWrong",
    "spice": "filthy",
    "text": "All wrong. Every one of you. I need a drink, and so do you."
   },
   {
-   "id": "allwrong-f3b",
+   "id": "allwrong-f3c",
    "moment": "allWrong",
    "spice": "filthy",
    "text": "Zero. You all guessed, and you all guessed wrong. Shit happens."
   },
   {
-   "id": "mixed-m1b",
+   "id": "mixed-m1c",
    "moment": "mixed",
    "spice": "mild",
    "text": "Some of you got it! The rest of you, great try!"
   },
   {
-   "id": "mixed-m2b",
+   "id": "mixed-m2c",
    "moment": "mixed",
    "spice": "mild",
-   "text": "A few right, a few wrong. Everybody gets a high five anyway!"
+   "text": "A few right, a few wrong. High fives for everybody anyway!"
   },
   {
-   "id": "mixed-m3b",
+   "id": "mixed-m3c",
    "moment": "mixed",
    "spice": "mild",
    "text": "Ooh, a split! There are some smarty-pants in this room!"
   },
   {
-   "id": "mixed-s1b",
+   "id": "mixed-s1c",
    "moment": "mixed",
    "spice": "spicy",
    "text": "Some of you got it. The rest of you, stop looking so surprised."
   },
   {
-   "id": "mixed-s2b",
+   "id": "mixed-s2c",
    "moment": "mixed",
    "spice": "spicy",
-   "text": "Half right, half wrong. If you got it wrong, don't look at me."
+   "text": "Half right, half wrong. If you got it wrong, don't look at me. Blame your phone."
   },
   {
-   "id": "mixed-s3b",
+   "id": "mixed-s3c",
    "moment": "mixed",
    "spice": "spicy",
    "text": "A split room! Winners, you may gloat. Quietly."
   },
   {
-   "id": "mixed-h1b",
+   "id": "mixed-h1c",
    "moment": "mixed",
    "spice": "hot",
    "text": "Some got it, some didn't. If you didn't, that's a you problem."
   },
   {
-   "id": "mixed-h2b",
+   "id": "mixed-h2c",
    "moment": "mixed",
    "spice": "hot",
    "text": "Half of you nailed it. The other half, what the hell happened?"
   },
   {
-   "id": "mixed-h3b",
+   "id": "mixed-h3c",
    "moment": "mixed",
    "spice": "hot",
    "text": "Split decision. Winners, enjoy it. It won't last."
   },
   {
-   "id": "mixed-f1b",
+   "id": "mixed-f1c",
    "moment": "mixed",
    "spice": "filthy",
    "text": "Some of you got it. The rest of you guessed like it's last call."
   },
   {
-   "id": "mixed-f2b",
+   "id": "mixed-f2c",
    "moment": "mixed",
    "spice": "filthy",
    "text": "Half right. If you got it wrong, drink. If you got it right, also drink."
   },
   {
-   "id": "mixed-f3b",
+   "id": "mixed-f3c",
    "moment": "mixed",
    "spice": "filthy",
    "text": "Some geniuses, some disasters. I love you all. Mostly the geniuses."
   },
   {
-   "id": "final-m1b",
+   "id": "final-m1c",
    "moment": "final",
    "spice": "mild",
    "text": "That's the game! Big cheers for our winner! And everybody else, you were awesome too. Thanks for playing!"
   },
   {
-   "id": "final-m2b",
+   "id": "final-m2c",
    "moment": "final",
    "spice": "mild",
    "text": "Game over! Let's hear it for the winner! Hugs for everybody. Goodnight, crew!"
   },
   {
-   "id": "final-m3b",
+   "id": "final-m3c",
    "moment": "final",
    "spice": "mild",
-   "text": "And that's a wrap! Our winner is a superstar, and so are all of you. See you next time!"
+   "text": "And that's a wrap! Our winner is a superstar. Everybody else is a superstar too. Just a slightly slower one."
   },
   {
-   "id": "final-s1b",
+   "id": "final-s1c",
    "moment": "final",
    "spice": "spicy",
    "text": "That's the game! Congrats to the winner. Everyone else, there's always next time. Probably."
   },
   {
-   "id": "final-s2b",
+   "id": "final-s2c",
    "moment": "final",
    "spice": "spicy",
    "text": "Game over! Winner, take a bow. Everybody else, take a nap."
   },
   {
-   "id": "final-s3b",
+   "id": "final-s3c",
    "moment": "final",
    "spice": "spicy",
-   "text": "That's it! The winner gets bragging rights, and everyone else gets to be annoyed. Thanks for playing!"
+   "text": "That's it! The winner gets bragging rights. Everyone else gets to hear about it all week. Thanks for playing!"
   },
   {
-   "id": "final-h1b",
+   "id": "final-h1c",
    "moment": "final",
    "spice": "hot",
    "text": "That's the game! Congrats to the winner. The rest of you, damn, better luck next time."
   },
   {
-   "id": "final-h2b",
+   "id": "final-h2c",
    "moment": "final",
    "spice": "hot",
    "text": "Game over! Winner, enjoy it. Everyone else, I'd demand a rematch too."
   },
   {
-   "id": "final-h3b",
+   "id": "final-h3c",
    "moment": "final",
    "spice": "hot",
-   "text": "And that's a wrap! Winner, you're a legend. Everyone else... you were here. Goodnight!"
+   "text": "And that's a wrap! Winner, you're a legend. Everyone else... you showed up. That counts for something. Goodnight!"
   },
   {
-   "id": "final-f1b",
+   "id": "final-f1c",
    "moment": "final",
    "spice": "filthy",
    "text": "That's the game! Congrats to the winner, you smart bastard. Everyone else, go get a drink."
   },
   {
-   "id": "final-f2b",
+   "id": "final-f2c",
    "moment": "final",
    "spice": "filthy",
    "text": "Game over! Winner, you're insufferable now. Everyone else, that was a shitshow, and I loved it."
   },
   {
-   "id": "final-f3b",
+   "id": "final-f3c",
    "moment": "final",
    "spice": "filthy",
    "text": "And that's it! The winner's a genius, the rest of you are a fucking mess, and I'm Salty. Goodnight!"
