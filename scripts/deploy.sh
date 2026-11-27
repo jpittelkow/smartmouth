@@ -16,11 +16,11 @@ git archive --format=tar HEAD | ssh "$HOST" "docker build -q -t smartmouth:$TAG 
 
 echo "==> stack files"
 ssh "$HOST" "mkdir -p $PROJECT"
-ssh "$HOST" "cat > $PROJECT/docker-compose.yml" < deploy/docker-compose.unraid.yml
+git show HEAD:deploy/docker-compose.unraid.yml | ssh "$HOST" "cat > $PROJECT/docker-compose.yml"
 ssh "$HOST" "echo smartmouth > $PROJECT/name"
 # Compose Manager starts again after a reboot only the stacks that carry this file.
 ssh "$HOST" "echo true > $PROJECT/autostart"
-ssh "$HOST" "bash -s" < deploy/init-env.sh
+git show HEAD:deploy/init-env.sh | ssh "$HOST" "bash -s"
 
 echo "==> starting"
 ssh "$HOST" "cd $PROJECT && docker compose up -d --remove-orphans 2>&1 | tail -2"
