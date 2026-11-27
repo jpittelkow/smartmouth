@@ -153,12 +153,6 @@ function AdminSheet({ view, onSpice, onVoice, onDrama, onBots }: {
           ? 'Grown-ups only, so anything goes. Filthy means real swearing.'
           : `Capped at ${SPICE_LABEL[view.spice.cap]} because of the youngest player in the room.`}
       </div>
-      <h2>Salty's voice</h2>
-      <div className="spice-row">
-        {VOICES.map((v) => (
-          <button key={v} className="press" aria-pressed={view.voice === v} onClick={() => onVoice(v)}>{VOICE_LABEL[v]}</button>
-        ))}
-      </div>
       <h2>Drama</h2>
       <div className="spice-row">
         {DRAMAS.map((d) => (

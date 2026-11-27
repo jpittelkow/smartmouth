@@ -292,12 +292,13 @@ button, input { font: inherit; color: inherit; }
 .round-wipe-panel {
   position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 10px;
   background: linear-gradient(115deg, var(--grape), var(--hot)); border-radius: 32px;
-  animation: wipe 1300ms cubic-bezier(.7, 0, .3, 1) both;
+  animation: wipe 3300ms cubic-bezier(.7, 0, .3, 1) both;
 }
-.round-wipe-num { font-size: 190px; line-height: .95; color: var(--paper); text-shadow: 8px 8px 0 var(--ink); animation: wipe-pop 1300ms var(--pop) both; }
-.round-wipe-sub { font-size: 44px; font-weight: 700; color: var(--ink); animation: wipe-pop 1300ms var(--pop) 80ms both; }
-@keyframes wipe { 0% { transform: translateX(105%) skewX(-8deg); } 24% { transform: translateX(0) skewX(0); } 74% { transform: translateX(0); } 100% { transform: translateX(-108%) skewX(8deg); } }
-@keyframes wipe-pop { 0%, 18% { transform: scale(.6); opacity: 0; } 34% { transform: scale(1.08); opacity: 1; } 44%, 76% { transform: scale(1); opacity: 1; } 100% { transform: scale(.95); opacity: 0; } }
+.round-wipe-num { font-size: 190px; line-height: .95; color: var(--paper); text-shadow: 8px 8px 0 var(--ink); animation: wipe-pop 3300ms var(--pop) both; }
+.round-wipe-sub { font-size: 44px; font-weight: 700; color: var(--ink); animation: wipe-pop 3300ms var(--pop) 80ms both; }
+/* 3.3 s: in over 350 ms, held 2.5 s (owner, 2026-11-27), off over 450 ms. */
+@keyframes wipe { 0% { transform: translateX(105%) skewX(-8deg); } 10.6% { transform: translateX(0) skewX(0); } 86.4% { transform: translateX(0); } 100% { transform: translateX(-108%) skewX(8deg); } }
+@keyframes wipe-pop { 0%, 8% { transform: scale(.6); opacity: 0; } 14% { transform: scale(1.08); opacity: 1; } 18%, 87% { transform: scale(1); opacity: 1; } 100% { transform: scale(.95); opacity: 0; } }
 
 /* The title card: rays turn behind, the grin pops, the title slams down and settles. */
 .title-card { position: relative; display: grid; place-content: center; justify-items: center; text-align: center; gap: 6px; }

@@ -10,8 +10,11 @@ import { SaltyStrip } from '../../host/SaltyStrip.tsx';
 import { sayClip, useSalty } from '../../host/voice.ts';
 import { bang, bed, duck, fx, stopMusic } from './audio.ts';
 
-/** The round card starts this long before the leaderboard ends, so it covers the question appearing. */
-const WIPE_LEAD_MS = 650;
+/**
+ * The round card starts this long before the leaderboard ends. It holds 2.5 s (owner, 2026-11-27), mostly over the end of
+ * the leaderboard, so it covers the question appearing but only about the first second of its timer.
+ */
+const WIPE_LEAD_MS = 2100;
 import { Confetti, RoundWipe, Sparkles, TitleCard } from './Transitions.tsx';
 import { buzz, tick } from '../../host/sfx.ts';
 
