@@ -11,6 +11,9 @@ import { AdminAuth, COOKIE, readCookie, sessionCookie } from './admin.ts';
 import { clientAddress, fromHomeNetwork, trustedProxies } from './limits.ts';
 import { openDb, type Db } from './db.ts';
 import { handleQuestionsApi } from './adminApi.ts';
+import { handleGeneratorApi } from './generatorApi.ts';
+import type { Generator } from './generator.ts';
+import type { VoiceRunner } from './voiceRunner.ts';
 import type { VoiceBank } from './voice.ts';
 
 export interface ServerConfig {
@@ -29,6 +32,10 @@ export interface ServerConfig {
   onDb?: (db: Db) => void;
   /** Salty's line bank and recordings (voice.ts). */
   voice?: VoiceBank | null;
+  /** The question generator, made once the database is open (generator.ts). */
+  makeGenerator?: (db: Db) => Generator | null;
+  /** Records Salty reading new questions (voiceRunner.ts). */
+  voiceRunner?: VoiceRunner | null;
   /** Where recordings and pictures live (DATA_DIR/media), served at /media. */
   mediaDir?: string | null;
   now?: () => number;
@@ -72,6 +79,7 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
   const store = new RoomStore();
   const db = openDb(cfg.dbPath ?? ':memory:');
   cfg.onDb?.(db);
+  const generator = cfg.makeGenerator?.(db) ?? null;
   const webRoot = resolve(cfg.webDir);
   const now = cfg.now ?? Date.now;
   const admin = new AdminAuth(cfg.adminPassword);
@@ -123,6 +131,7 @@ export function startServer(cfg: ServerConfig): Promise<{ server: Server; store:
       // Every other admin route needs a session.
       if (!admin.check(token, now())) { json(res, 401, { error: 'Sign in first.' }); return; }
       if (await handleQuestionsApi(req, res, url, db, now(), { json, readJson })) return;
+      if (await handleGeneratorApi(req, res, url, generator, cfg.voiceRunner ?? null, { json, readJson })) return;
       json(res, 404, { error: 'Not found.' });
       return;
     }

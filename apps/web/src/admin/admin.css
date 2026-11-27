@@ -109,3 +109,16 @@ a.adm-btn { text-decoration: none; display: inline-flex; align-items: center; }
 .adm-signin { max-width: 420px; margin: 10vh auto 0; padding: 0 16px; display: grid; gap: 14px; }
 .adm-signin h1 { font-family: var(--font-display); margin: 0; }
 .adm-toast { position: fixed; bottom: max(16px, env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--a-text); color: var(--a-bg); padding: 10px 16px; border-radius: 8px; z-index: 20; }
+
+/* Generate tab */
+.gen-form{display:grid;gap:12px;max-width:720px}
+.gen-label{display:grid;gap:6px;font-weight:700}
+.gen-row{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+.gen-examples{display:flex;flex-wrap:wrap;gap:6px}
+.gen-examples .chip{cursor:pointer;border:0;font:inherit}
+.gen-set{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:6px 16px}
+.gen-set legend{font-weight:700;margin-bottom:6px}
+.gen-job h2{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.gen-log,.gen-results{margin:8px 0;padding-left:18px;display:grid;gap:6px;min-width:0}
+.gen-results li{overflow-wrap:anywhere}
+.gen-voice{padding:0 4px}

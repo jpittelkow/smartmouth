@@ -17,6 +17,8 @@ of Salty's voice. All ADRs except 0021 are **Proposed** (the owner will review t
   runtime (picks per band, timers, records plays), and Salty (`salty.ts`/`voice.ts`: server-picked lines under the spice
   limit, a bleeped caption and clips per cue). 43 tests.
 - **Trivia** (`packages/games/trivia`): pure rules. Views are in `apps/web/src/games/trivia/`.
+- **Question generator** (2026-11-27): admin > Generate. Type a topic, tick ages; it researches on the web, writes, and a second
+  model checks blind; what passes goes live and is voiced automatically (ADR 0011 revision). `generator.ts`, `ai.ts`, `voiceRunner.ts`.
 - **Web:** `/host` (lobby, game, Salty's caption strip with audio and a talking grin, the Back menu), `/play` (join, blob, game
   controller, kid mode during a Little's turn), `/admin` (password, library, editor, coverage, export/import).
 - **Content:** 103 seed questions (`content/seed/questions.json`, all live; Little ones show word cards), about 130 Salty
@@ -35,4 +37,4 @@ of Salty's voice. All ADRs except 0021 are **Proposed** (the owner will review t
 1. The owner picks Salty's voice; rerun `bank` with that `VOICE` if it changes.
 2. The first family playtest on the office TV, with sound.
 3. Back actually pauses; the kid-mode lock; more tracking (results by age band, which wrong answer people pick, the average answer time
-   fix); images (on the question itself, uploads, AI-made Little pictures); AI question generation (ADR 0011).
+   fix); images (on the question itself, uploads, AI-made Little pictures); 

@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react';
 import { APP_NAME } from '@smartmouth/protocol';
 import { Library, NO_FILTERS, type Filters } from './Library.tsx';
 import { Coverage } from './Coverage.tsx';
+import { Generate } from './Generate.tsx';
 import './admin.css';
 
 type Me = { enabled: boolean; signedIn: boolean };
-type Tab = 'library' | 'coverage';
+type Tab = 'library' | 'coverage' | 'generate';
+const TABS: Tab[] = ['library', 'coverage', 'generate'];
 
 export function Admin() {
   const [me, setMe] = useState<Me | null>(null);
@@ -61,11 +63,11 @@ function SignIn({ enabled, onDone }: { enabled: boolean; onDone: () => void }) {
 }
 
 function Signedin({ onSignOut }: { onSignOut: () => void }) {
-  const [tab, setTab] = useState<Tab>(() => (location.hash === '#coverage' ? 'coverage' : 'library'));
+  const [tab, setTab] = useState<Tab>(() => TABS.find((t) => `#${t}` === location.hash) ?? 'library');
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
   const [toastText, setToastText] = useState<string | null>(null);
 
-  useEffect(() => { history.replaceState(null, '', tab === 'coverage' ? '#coverage' : '#library'); }, [tab]);
+  useEffect(() => { history.replaceState(null, '', `#${tab}`); }, [tab]);
   useEffect(() => {
     if (!toastText) return;
     const t = setTimeout(() => setToastText(null), 2500);
@@ -79,14 +81,15 @@ function Signedin({ onSignOut }: { onSignOut: () => void }) {
         <nav className="adm-tabs" role="tablist">
           <button role="tab" aria-selected={tab === 'library'} onClick={() => setTab('library')}>Questions</button>
           <button role="tab" aria-selected={tab === 'coverage'} onClick={() => setTab('coverage')}>Coverage</button>
+          <button role="tab" aria-selected={tab === 'generate'} onClick={() => setTab('generate')}>Generate</button>
         </nav>
         <span className="adm-spacer" />
         <a className="adm-btn" href="/api/admin/questions/export" download="smartmouth-questions.json">Export</a>
         <button className="adm-btn" onClick={onSignOut}>Sign out</button>
       </header>
-      {tab === 'library'
-        ? <Library filters={filters} setFilters={setFilters} toast={setToastText} />
-        : <Coverage goTo={(f) => { setFilters({ ...NO_FILTERS, ...f }); setTab('library'); }} />}
+      {tab === 'library' && <Library filters={filters} setFilters={setFilters} toast={setToastText} />}
+      {tab === 'coverage' && <Coverage goTo={(f) => { setFilters({ ...NO_FILTERS, ...f }); setTab('library'); }} />}
+      {tab === 'generate' && <Generate toast={setToastText} goTo={(f) => { setFilters({ ...NO_FILTERS, ...f }); setTab('library'); }} />}
       {toastText && <div className="adm-toast" role="status">{toastText}</div>}
     </div>
   );
