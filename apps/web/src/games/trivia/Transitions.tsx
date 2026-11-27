@@ -35,8 +35,8 @@ export function Confetti({ seed, count = 70 }: { seed: string | number; count?: 
   const bits = useMemo(() => Array.from({ length: count }, (_, i) => {
     const r = (n: number) => { const x = Math.sin((i + 1) * 9301 + n * 49297 + String(seed).length * 233) * 10000; return x - Math.floor(x); };
     return {
-      left: `${r(1) * 100}%`, delay: `${r(2) * 0.35}s`, dur: `${1.6 + r(3) * 1.2}s`,
-      drift: `${(r(4) - 0.5) * 260}px`, spin: `${(r(5) > 0.5 ? 1 : -1) * (360 + r(6) * 720)}deg`,
+      left: `${r(1) * 100}%`, delay: `${r(2) * 1.2}s`, dur: `${3 + r(3) * 1.6}s`,
+      drift: `${(r(4) - 0.5) * 220}px`, spin: `${(r(5) > 0.5 ? 1 : -1) * (360 + r(6) * 720)}deg`,
       w: `${10 + r(7) * 12}px`, h: `${6 + r(8) * 10}px`, color: COLORS[i % COLORS.length], round: r(9) > 0.7,
     };
   }), [seed, count]);

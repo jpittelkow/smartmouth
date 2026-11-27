@@ -335,8 +335,22 @@ button, input { font: inherit; color: inherit; }
 
 /* Confetti: pieces fall from the top of the game area, drifting and spinning. */
 .confetti { position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
-.confetti i { position: absolute; top: -30px; animation-name: confetti-fall; animation-timing-function: cubic-bezier(.25, .6, .5, 1); animation-fill-mode: both; }
-@keyframes confetti-fall { from { transform: translate(0, 0) rotate(0); opacity: 1; } 85% { opacity: 1; } to { transform: translate(var(--drift), 900px) rotate(var(--spin)); opacity: 0; } }
+.confetti i { position: absolute; top: -60px; animation-name: confetti-fall; animation-timing-function: linear; animation-fill-mode: both; will-change: transform; }
+/* Gravity and flutter: a steady fall with a sideways sway and a tumbling turn, fading only at the very bottom. */
+@keyframes confetti-fall {
+  0% { transform: translate3d(0, 0, 0) rotateZ(0) rotateX(0); opacity: 0; }
+  4% { opacity: 1; }
+  25% { transform: translate3d(calc(var(--drift) * .35), 260px, 0) rotateZ(calc(var(--spin) * .25)) rotateX(180deg); }
+  50% { transform: translate3d(calc(var(--drift) * -.15), 540px, 0) rotateZ(calc(var(--spin) * .5)) rotateX(360deg); }
+  75% { transform: translate3d(calc(var(--drift) * .6), 820px, 0) rotateZ(calc(var(--spin) * .75)) rotateX(540deg); }
+  92% { opacity: 1; }
+  100% { transform: translate3d(var(--drift), 1080px, 0) rotateZ(var(--spin)) rotateX(720deg); opacity: 0; }
+}
+/* The bang: a white flash and a jolt as the answer lands. */
+.bang-flash { position: absolute; inset: 0; z-index: 4; pointer-events: none; background: radial-gradient(circle at 50% 60%, rgba(255, 246, 230, .75), rgba(255, 246, 230, 0) 70%); animation: bang-flash 520ms ease-out both; }
+@keyframes bang-flash { from { opacity: 1; } to { opacity: 0; } }
+.board:has(.answer.correct) { animation: bang-jolt 380ms cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes bang-jolt { 0% { transform: scale(1.03); } 40% { transform: scale(.985) translateY(4px); } 100% { transform: none; } }
 
 /* Sparkles: stars burst out from the middle and fade. */
 .sparkles { position: absolute; left: 50%; top: 55%; z-index: 5; pointer-events: none; }

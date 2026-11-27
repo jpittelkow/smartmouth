@@ -303,6 +303,7 @@ export function hostView(s: TriviaState): TriviaHostView {
       correct: s.stage === 'turnReveal' ? t.question.correct : null,
       picked: t.pick?.choice ?? null, helpers: Object.keys(t.helpers).length,
     } : null,
+    standingsEnd: s.stage === 'standings' ? s.stageEnds : null,
     standings: s.stage === 'standings' ? leaderboard(s) : null,
     final: s.stage === 'final' ? standings(s) : null,
   };

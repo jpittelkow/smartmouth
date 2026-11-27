@@ -8,7 +8,10 @@ import { Blob, PictureCard, SlotShape, Tick } from '../../ui/art.tsx';
 import { serverNow } from '../../socket.ts';
 import { SaltyStrip } from '../../host/SaltyStrip.tsx';
 import { sayClip, useSalty } from '../../host/voice.ts';
-import { bed, duck, fx, stopMusic } from './audio.ts';
+import { bang, bed, duck, fx, stopMusic } from './audio.ts';
+
+/** The round card starts this long before the leaderboard ends, so it covers the question appearing. */
+const WIPE_LEAD_MS = 650;
 import { Confetti, RoundWipe, Sparkles, TitleCard } from './Transitions.tsx';
 import { buzz, tick } from '../../host/sfx.ts';
 
@@ -35,10 +38,11 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
   useEffect(() => {
     switch (g.stage) {
       case 'intro': bed(null); fx('start'); break;
-      case 'question': bed('think'); if (g.round > 1) fx('round'); break;
+      case 'question': bed('think'); break;
       // The drum roll builds while the answer is still hidden; the result lands with the reveal.
       case 'suspense': bed(null); fx('reveal', 0, 0.85); break;
       case 'reveal': {
+        bang();
         const graded = g.players.filter((p) => p.right !== null);
         const right = graded.filter((p) => p.right).length;
         if (graded.length && right === graded.length) { fx('right'); fx('applause', 0.2, 0.55); }
@@ -52,6 +56,22 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
       case 'final': bed('winner'); break;
     }
   }, [g.stage, g.round]);
+  // The round card: due when the leaderboard is about to end (or at once, if a grown-up skipped it).
+  const wipeRound = g.stage === 'standings' ? g.round + 1 : g.round;
+  const [wipeSoon, setWipeSoon] = useState(false);
+  useEffect(() => {
+    setWipeSoon(false);
+    if (g.stage !== 'standings' || !g.standingsEnd) return;
+    const t = setTimeout(() => setWipeSoon(true), Math.max(0, g.standingsEnd - serverNow() - WIPE_LEAD_MS));
+    return () => clearTimeout(t);
+  }, [g.stage, g.standingsEnd]);
+  // The whoosh rides the card in, whichever stage it starts in.
+  const whooshed = useRef(0);
+  useEffect(() => {
+    const showing = (g.stage === 'standings' && wipeSoon) || (g.stage === 'question' && g.round > 1);
+    if (showing && whooshed.current !== wipeRound) { whooshed.current = wipeRound; fx('round'); }
+  }, [g.stage, wipeSoon, wipeRound, g.round]);
+
   // A click on the TV each time someone locks in.
   const locked = g.players.filter((p) => p.locked).length;
   const lastLocked = useRef(0);
@@ -75,7 +95,12 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
         {g.stage === 'standings' && g.standings && <Standings g={g} seat={seat} />}
         {g.stage === 'final' && g.final && <Final g={g} seat={seat} />}
         {/* Transitions over the game area (owner, 2026-11-27). */}
-        {g.stage === 'question' && g.round > 1 && <RoundWipe key={`wipe-${g.round}`} round={g.round} rounds={g.rounds} category={g.question?.category ?? null} />}
+        {/* The round card sweeps in over the end of the leaderboard and off over the new question (same key across
+            both stages, so its animation runs straight through). */}
+        {((g.stage === 'standings' && wipeSoon) || (g.stage === 'question' && g.round > 1)) && (
+          <RoundWipe key={`wipe-${wipeRound}`} round={wipeRound} rounds={g.rounds} category={g.stage === 'question' ? g.question?.category ?? null : null} />
+        )}
+        {g.stage === 'reveal' && <div key={`bang-${g.round}`} className="bang-flash" aria-hidden="true" />}
         {g.stage === 'reveal' && allRight(g) && <Confetti seed={`right-${g.round}`} />}
         {g.stage === 'turn' && <Sparkles seed={`turn-${g.round}`} />}
         {g.stage === 'turnReveal' && g.turn && g.turn.picked === g.turn.correct && <Confetti seed={`little-${g.round}`} count={50} />}

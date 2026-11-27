@@ -90,6 +90,8 @@ export interface TriviaHostView {
   explain: string | null;
   players: TPlayerStatus[];
   turn: null | { playerId: string; question: TPublicQuestion; correct: number | null; picked: number | null; helpers: number };
+  /** When the leaderboard ends (it waits for Salty, so this can move); the round card sweeps in just before. */
+  standingsEnd: number | null;
   /** The leaderboard between rounds, best first, with where each player stood before this round. */
   standings: null | Array<{ id: string; score: number; gained: number; rank: number; prevRank: number }>;
   /** Final standings, best first; Little players are always superstars. */

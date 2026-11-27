@@ -35,4 +35,39 @@ export function bed(cue: string | null): void {
   });
 }
 
+/**
+ * The bang that ends the drum roll (owner, 2026-11-27). Plays the picked `trivia-bang` file when there is one; until
+ * then a synthesized crash (filtered noise) over a kick (a falling sine) stands in (design guide 4.1: placeholder).
+ */
+let ctx: AudioContext | null = null;
+export function bang(): void {
+  if (fx('bang', 0, 0.8)) return;
+  try {
+    ctx ??= new AudioContext();
+    if (ctx.state === 'suspended') void ctx.resume();
+    const t = ctx.currentTime;
+    const len = Math.floor(ctx.sampleRate * 1.6);
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+    const noise = ctx.createBufferSource();
+    noise.buffer = buf;
+    const hp = ctx.createBiquadFilter();
+    hp.type = 'highpass'; hp.frequency.value = 5000;
+    const ng = ctx.createGain();
+    ng.gain.setValueAtTime(0.35, t);
+    noise.connect(hp).connect(ng).connect(ctx.destination);
+    noise.start(t);
+    const kick = ctx.createOscillator();
+    const kg = ctx.createGain();
+    kick.frequency.setValueAtTime(140, t);
+    kick.frequency.exponentialRampToValueAtTime(42, t + 0.35);
+    kg.gain.setValueAtTime(0.9, t);
+    kg.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+    kick.connect(kg).connect(ctx.destination);
+    kick.start(t);
+    kick.stop(t + 0.55);
+  } catch { /* no Web Audio: silent */ }
+}
+
 export { duck, stopMusic };
