@@ -212,7 +212,7 @@ button, input { font: inherit; color: inherit; }
 .superstars .display { font-size: 72px; }
 .final-help { grid-column: 1 / -1; font-size: 30px; color: var(--muted); }
 
-.menu { display: grid; place-content: center; gap: 28px; height: 100%; grid-row: 1 / -1; }
+.menu { display: grid; place-content: center; justify-items: center; text-align: center; gap: 28px; height: 100%; grid-row: 1 / -1; }
 .menu .game-card { min-width: 640px; text-align: center; }
 .menu .game-card.danger .name { color: var(--hot); }
 
