@@ -10,7 +10,11 @@ import { loadSeeds } from '../src/seeds.ts';
 import { RoomStore, adminSeatId, hostView, playerView } from '../src/rooms.ts';
 import { gameIntent, startGame } from '../src/gameRuntime.ts';
 import { GAMES } from '../src/games.ts';
-import { momentFor } from '../src/adapters/snakes.ts';
+import { SM_MOMENTS, momentFor, snakes } from '../src/adapters/snakes.ts';
+import { VoiceBank } from '../src/voice.ts';
+import { SPICES, spiceAllows } from '@smartmouth/protocol';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const SEEDS = fileURLToPath(new URL('../../../content/seed', import.meta.url));
 
@@ -159,4 +163,39 @@ test('Salty’s moment is the same whoever the Snakes are (ADR 0023)', () => {
     if (s.stage === 'mission' && s.mission?.step === 'question') s = answerAll(s, (id) => id.endsWith('1'));
     else s = rules.tick(s, rules.nextDeadline(s) ?? 0);
   }
+});
+
+// ---------- Salty's Lord of the Manor lines (design guide 8.1) ----------
+
+const LINES = fileURLToPath(new URL('../../../content/voice/lines.json', import.meta.url));
+
+test('every Snake Manor moment has a line at every spice level, never above it', () => {
+  const bank = new VoiceBank(LINES, join(tmpdir(), 'no-manifest.json'));
+  for (const moment of SM_MOMENTS) {
+    for (const spice of SPICES) {
+      const line = bank.pick(moment, spice, new Set());
+      assert.ok(line, `${moment} at ${spice}`);
+      assert.ok(spiceAllows(spice, line.spice));
+    }
+  }
+  const sm = bank.lines.filter((l) => l.moment.startsWith('sm-'));
+  assert.ok(sm.every((l) => SM_MOMENTS.includes(l.moment)), 'no stray moments');
+});
+
+test('Mild and Spicy lines say vanished, never murdered; reveal lines never need a name', () => {
+  const bank = new VoiceBank(LINES, join(tmpdir(), 'no-manifest.json'));
+  for (const l of bank.lines.filter((x) => x.moment.startsWith('sm-') && (x.spice === 'mild' || x.spice === 'spicy'))) {
+    assert.ok(!/murder/i.test(l.text), l.id);
+  }
+  for (const l of bank.lines.filter((x) => x.moment.startsWith('sm-reveal'))) assert.ok(!/\{|name/i.test(l.text), l.id);
+});
+
+test('the banishment is said in two parts: the setup, then the payoff for the revealed role', () => {
+  const said: string[] = [];
+  const tools = { line: (m: string) => { said.push(m); return { text: m, clip: `/media/voice/${m}.mp3` }; }, reads: () => ({ prompt: null, answers: [], explain: null }) };
+  let s = rules.init(Array.from({ length: 6 }, (_, i) => ({ id: `p${i + 1}`, band: 'grownups' as Band })), { spice: 'hot', seed: 2, drama: 'full' }, {}, 0);
+  s = { ...s, stage: 'banish', banished: s.order.find((id) => s.players[id]?.role === 'snake') ?? null };
+  const out = snakes.say(s, tools);
+  assert.deepEqual(said, ['sm-reveal-setup', 'sm-reveal-snake']);
+  assert.equal(out.clips.length, 2);
 });

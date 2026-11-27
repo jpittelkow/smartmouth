@@ -5,6 +5,13 @@ import { pickForGame } from '../questions.ts';
 import type { Moment } from '../voice.ts';
 import type { GameAdapter, Say, SaltyTools } from './types.ts';
 
+/** Every moment Salty has Snake Manor lines for (content/voice/lines.json), at every spice level. */
+export const SM_MOMENTS: readonly Moment[] = [
+  'sm-deal', 'sm-mission', 'sm-overboard', 'sm-target-hit', 'sm-target-miss', 'sm-table', 'sm-vote', 'sm-revote', 'sm-seals',
+  'sm-no-votes', 'sm-reveal-setup', 'sm-reveal-snake', 'sm-reveal-guest', 'sm-night', 'sm-murder', 'sm-saved', 'sm-quiet',
+  'sm-recruited', 'sm-morning', 'sm-final-vote', 'sm-unmask', 'sm-guests-win', 'sm-snakes-win',
+];
+
 /** Three missions of up to eight questions each, with spares for spice changes. */
 const PER_BAND = 40;
 
