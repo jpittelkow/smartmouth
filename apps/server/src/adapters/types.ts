@@ -30,7 +30,12 @@ export interface SaltyTools {
 }
 
 /** What Salty says now: the caption text (before bleeping) and the clips to play in order. */
-export interface Say { text: string | null; clips: string[] }
+export interface Say {
+  text: string | null;
+  clips: string[];
+  /** Timed parts (ADR 0024): each said at `at` (server time). */
+  parts?: Array<{ at: number; text: string | null; clip: string | null }>;
+}
 
 export interface GameAdapter<S = unknown> {
   manifest: GameManifest;

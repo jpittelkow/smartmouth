@@ -54,7 +54,16 @@ export type ServerMsg =
 
 // ---- views ----
 /** What Salty says now (ADR 0013): a caption (bleeped) and audio clips to play in order. `key` changes per line. */
-export interface SaltyCue { key: string; caption: string | null; clips: string[] }
+export interface SaltyCue {
+  key: string;
+  caption: string | null;
+  clips: string[];
+  /**
+   * A line said in timed parts (ADR 0024): each part's caption shows and its clip plays at `at` (server time). The
+   * game, not the recording, sets the pause between them. When present, `clips` and `caption` hold the first part.
+   */
+  parts?: Array<{ at: number; caption: string | null; clip: string | null }>;
+}
 
 /** Recordings for a question: the prompt read aloud, each answer (picture questions), the follow-up line. */
 export interface QuestionReads { prompt: string | null; answers: Array<string | null>; explain: string | null }
@@ -113,6 +122,7 @@ export interface HostGameView {
   players: PublicSeat[];
   spice: SpiceState;
   voice: VoiceId;
+  drama: Drama;
   game: unknown;
   salty: SaltyCue | null;
   /** Recordings for the TV's question and the Little turn's question (answers are read as focus moves). */
@@ -129,6 +139,7 @@ export interface PlayerGameView {
   players: PublicSeat[];
   spice: SpiceState;
   voice: VoiceId;
+  drama: Drama;
   game: unknown;
 }
 

@@ -122,9 +122,15 @@ function sayFor(s: SnakesState, tools: SaltyTools): Say {
   const text = line?.text ?? null;
   const clips = line?.clip ? [line.clip] : [];
   if (s.stage === 'banish' && s.banished) {
-    // The reveal in two parts (ADR 0024): the setup, then the payoff. The TV holds the pause between them.
+    // The reveal in two parts (ADR 0024): the setup as "was a…" appears, the payoff just after the role lands.
+    // The pause between them is the game's, so Quick drama shortens it.
     const payoff = tools.line(s.players[s.banished]?.role === 'snake' ? 'sm-reveal-snake' : 'sm-reveal-guest');
-    return { text: [text, payoff?.text].filter(Boolean).join(' ') || null, clips: [...clips, ...(payoff?.clip ? [payoff.clip] : [])] };
+    const length = rules.staged(s, rules.BANISH_MS);
+    const parts = [
+      { at: s.stageStart + Math.round(rules.BANISH_BEATS.was * length), text, clip: line?.clip ?? null },
+      { at: s.stageStart + Math.round(rules.BANISH_BEATS.land * length) + 400, text: payoff?.text ?? null, clip: payoff?.clip ?? null },
+    ];
+    return { text, clips, parts };
   }
   return { text, clips };
 }

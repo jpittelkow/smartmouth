@@ -7,6 +7,7 @@ import { serverNow } from '../../socket.ts';
 import { useSalty } from '../../host/voice.ts';
 import { Arms, Candle, Mark, Seal, clock, useLeft } from './arms.tsx';
 import { Drama } from './drama.tsx';
+import { SFX, captionSound, useCues, useSoundCaption } from './sound.ts';
 import './fonts.ts';
 import './snakes.css';
 
@@ -94,15 +95,21 @@ function subtitle(g: SnakesHostView): string {
 
 const formatName = (f: string) => (f === 'chain' ? 'The chain' : f === 'pairs' ? 'Pairs' : 'Everyone answers');
 
+/** Salty's strip: his seal pulses while he talks; a line in timed parts shows each part's caption at its time. */
 function Herald({ cue, quiet }: { cue: HostGameView['salty']; quiet: boolean }) {
   const { talking, blocked } = useSalty(cue);
+  const now = useNow(250);
+  const sound = useSoundCaption();
+  const part = cue?.parts?.filter((p) => p.at <= now).at(-1);
+  const text = cue?.parts ? (part?.caption ?? '…') : (cue?.caption ?? '…');
   return (
     <div className={`sm-herald${quiet ? ' quiet' : ''}`} role="status">
       <Seal talking={talking} />
       <div className="scroll">
         <span className="who">The Lord of the Manor</span>
-        {cue?.caption ?? '…'}
+        {text}
         {blocked && <span className="hint"> Press any key or click to hear him.</span>}
+        <span className="sm-sound">{sound}</span>
       </div>
     </div>
   );
@@ -169,6 +176,9 @@ function Mission({ g, seat }: { g: SnakesHostView; seat: Seat }) {
 
 function MissionReveal({ g }: { g: SnakesHostView }) {
   const r = g.mission?.result;
+  useCues(`mreveal:${g.stageStart}`, () => [{ at: g.stageStart, run: () => {
+    if (r?.hit) { SFX.flourish(); captionSound('[a harpsichord flourish]'); } else { SFX.crackedFanfare(); captionSound('[a cracked, off-key fanfare]'); }
+  } }]);
   if (!r) return <div className="sm-center"><p className="sm-lede">The mission passes.</p></div>;
   return (
     <div className="sm-center">
@@ -204,11 +214,20 @@ function Vote({ g, seat }: { g: SnakesHostView; seat: Seat }) {
   );
 }
 
+/** When each seal breaks: one every `per`, and a longer silence before the last (the one that may decide it). */
+function sealTimes(g: SnakesHostView, n: number): number[] {
+  const share = g.drama === 'quick' ? rules.QUICK_SHARE : 1;
+  const per = rules.REVEAL_PER_VOTE_MS * share;
+  const lastWait = Math.min(3000, rules.REVEAL_TAIL_MS * 0.75) * share;
+  return Array.from({ length: n }, (_, i) => g.stageStart + (i < n - 1 || n === 1 ? i * per : (n - 2) * per + per + lastWait));
+}
+
 function Seals({ g, seat }: { g: SnakesHostView; seat: Seat }) {
   const now = useNow();
   const reveal = g.vote?.reveal ?? [];
-  const per = rules.REVEAL_PER_VOTE_MS * (g.drama === 'quick' ? rules.QUICK_SHARE : 1);
-  const shown = Math.min(reveal.length, Math.floor((now - g.stageStart) / per) + 1);
+  const times = sealTimes(g, reveal.length);
+  const shown = times.filter((t) => t <= now).length;
+  useCues(`seals:${g.stageStart}`, () => times.map((at, i) => ({ at, run: () => { SFX.quill(); SFX.thud(); captionSound(i === times.length - 1 && i > 0 ? '[the last seal breaks]' : '[a seal breaks]'); } })));
   if (reveal.length === 0) return <div className="sm-center"><p className="sm-lede">No votes. The table couldn’t decide.</p></div>;
   const tally = new Map<string, number>();
   for (const r of reveal.slice(0, shown)) tally.set(r.to, (tally.get(r.to) ?? 0) + 1);
@@ -240,6 +259,10 @@ function Seals({ g, seat }: { g: SnakesHostView; seat: Seat }) {
 
 function Night({ g }: { g: SnakesHostView }) {
   const { left } = useLeft(g.deadline);
+  useCues(`night:${g.stageStart}`, () => [
+    { at: g.stageStart, run: () => { SFX.bell(); SFX.bell(2.2); SFX.bell(4.4); captionSound('[three bell tolls]'); } },
+    { at: g.stageStart + 5000, run: () => { SFX.droneOn(); captionSound('[wind around the manor]'); } },
+  ]);
   return (
     <div className="sm-night">
       <div className="moon" />
@@ -254,7 +277,16 @@ function Night({ g }: { g: SnakesHostView }) {
 
 function Breakfast({ g, seat }: { g: SnakesHostView; seat: Seat }) {
   const b = g.breakfast;
-  const dead = b?.murdered ?? [];
+  const now = useNow();
+  const chairAt = g.stageStart + 2500 * (g.drama === 'quick' ? rules.QUICK_SHARE : 1);
+  const all = b?.murdered ?? [];
+  // Birdsong over the morning first; the empty chair comes a beat later, with the staff's gasp.
+  const dead = now >= chairAt ? all : [];
+  useCues(`breakfast:${g.stageStart}`, () => [
+    { at: g.stageStart, run: () => { SFX.birds(); captionSound('[birdsong]'); } },
+    { at: chairAt, run: () => { if (all.length) { SFX.gasp(); captionSound('[the staff gasp]'); } else { SFX.chime(); captionSound('[a soft chime]'); } } },
+  ]);
+  if (now < chairAt) return <div className="sm-center"><h2 className="sm-title small">Good morning.</h2></div>;
   return (
     <div className="sm-breakfast">
       {dead.length > 0 ? dead.map((id) => (
@@ -286,6 +318,7 @@ function EndVote({ g }: { g: SnakesHostView }) {
 
 function Unmask({ g, seat }: { g: SnakesHostView; seat: Seat }) {
   const u = g.unmask;
+  useCues(`unmask:${u?.shown.length ?? 0}`, () => (u?.shown.length ? [{ at: serverNow(), run: () => { SFX.bell(); captionSound('[a bell]'); } }] : [{ at: serverNow(), run: () => { SFX.droneOn(); captionSound('[the drone rises]'); } }]));
   return (
     <div className="sm-unmask">
       {u?.shown.map((x) => (
@@ -302,6 +335,7 @@ function Unmask({ g, seat }: { g: SnakesHostView; seat: Seat }) {
 
 function Final({ g, seat }: { g: SnakesHostView; seat: Seat }) {
   const f = g.final;
+  useCues(`final:${g.stageStart}`, () => [{ at: g.stageStart, run: () => { SFX.droneOff(); SFX.finale(); captionSound('[a choir and brass]'); } }]);
   if (!f) return null;
   return (
     <div className="sm-center">

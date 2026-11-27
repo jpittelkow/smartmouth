@@ -18,6 +18,11 @@ export const VOTE_MS = 45_000;
 export const REVEAL_PER_VOTE_MS = 2_500;
 export const REVEAL_TAIL_MS = 4_000;
 export const BANISH_MS = 15_000;
+/**
+ * The banishment's beats as shares of its length (ADR 0024 beat sheet; Full drama: 15 s). The TV draws them and the
+ * server times Salty's two-part line to them: the setup at `was`, the payoff just after the role lands.
+ */
+export const BANISH_BEATS = { dark: 0, name: 3.5 / 15, push: 5 / 15, was: 8 / 15, hold: 9.5 / 15, land: 11 / 15 } as const;
 export const NIGHT_MS = 60_000;
 /** On a recruitment night the Snakes' pick closes this far in, and the offer goes out. */
 export const OFFER_AT_MS = 30_000;

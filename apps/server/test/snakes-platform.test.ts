@@ -197,5 +197,11 @@ test('the banishment is said in two parts: the setup, then the payoff for the re
   s = { ...s, stage: 'banish', banished: s.order.find((id) => s.players[id]?.role === 'snake') ?? null };
   const out = snakes.say(s, tools);
   assert.deepEqual(said, ['sm-reveal-setup', 'sm-reveal-snake']);
-  assert.equal(out.clips.length, 2);
+  assert.equal(out.parts?.length, 2);
+  const [setup, payoff] = out.parts ?? [];
+  assert.equal(payoff?.text, 'sm-reveal-snake');
+  assert.ok(setup && payoff && payoff.at - setup.at >= 3000, 'a held pause between the parts');
+  const quick = snakes.say({ ...s, drama: 'quick' }, tools);
+  const [qs, qp] = quick.parts ?? [];
+  assert.ok(qs && qp && qp.at - qs.at < payoff.at - setup.at, 'Quick drama shortens the pause');
 });

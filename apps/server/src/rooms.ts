@@ -162,7 +162,7 @@ export function hostView(
   if (room.game) {
     return {
       role: 'host', phase: 'game', gameId: room.game.id, code: room.code, joinUrl,
-      players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, game: adapterFor(room.game.id).hostView(room.game.state),
+      players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama, game: adapterFor(room.game.id).hostView(room.game.state),
       salty: room.salty.cue, reads,
     };
   }
@@ -177,7 +177,7 @@ export function playerView(room: Room, seat: Seat, games: GameManifest[]): Playe
   if (room.game) {
     return {
       role: 'player', phase: 'game', gameId: room.game.id, code: room.code, you: publicSeat(room, seat),
-      playerCount: room.seats.length, players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice,
+      playerCount: room.seats.length, players: room.seats.map((s) => publicSeat(room, s)), spice: spiceState(room), voice: room.voice, drama: room.drama,
       game: adapterFor(room.game.id).playerView(room.game.state, seat.id),
     };
   }

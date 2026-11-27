@@ -3,6 +3,7 @@
 // shows a hint until then.
 import { useEffect, useSyncExternalStore } from 'react';
 import type { SaltyCue } from '@smartmouth/protocol';
+import { serverNow } from '../socket.ts';
 
 type State = { talking: boolean; blocked: boolean };
 let state: State = { talking: false, blocked: false };
@@ -34,12 +35,34 @@ if (audio) {
   window.addEventListener('pointerdown', unlock);
 }
 
-/** Say a new cue (ignored if it's the one already said). */
+let partTimers: Array<ReturnType<typeof setTimeout>> = [];
+
+/**
+ * Say a new cue (ignored if it's the one already said). A cue in timed parts (ADR 0024) plays each part's clip at
+ * its server time; a part whose time has passed by more than a few seconds (the TV reconnected) is skipped.
+ */
 export function say(cue: SaltyCue | null) {
   if (!cue || cue.key === lastKey) return;
   lastKey = cue.key;
   gen++;
   audio?.pause();
+  for (const t of partTimers) clearTimeout(t);
+  partTimers = [];
+  if (cue.parts?.length) {
+    queue = [];
+    set({ talking: false });
+    const myGen = gen;
+    const now = serverNow();
+    for (const part of cue.parts) {
+      if (!part.clip || part.at < now - 3000) continue;
+      const clip = part.clip;
+      partTimers.push(setTimeout(() => {
+        if (myGen !== gen) return;
+        if (state.talking || queue.length) queue.push(clip); else { queue = [clip]; next(myGen); }
+      }, Math.max(0, part.at - now)));
+    }
+    return;
+  }
   queue = [...cue.clips];
   next(gen);
 }

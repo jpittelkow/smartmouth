@@ -1,7 +1,7 @@
 // The phone controller (design guide §6 Phone). Join in one screen, then "look at the TV".
 import { useState } from 'react';
 import {
-  AVATAR_COUNT, BANDS, NAME_MAX, PLAYER_COLORS, SPICES, SPICE_LABEL, VOICES, VOICE_LABEL, spiceAllows, type VoiceId,
+  AVATAR_COUNT, BANDS, DRAMAS, NAME_MAX, PLAYER_COLORS, SPICES, SPICE_LABEL, VOICES, VOICE_LABEL, spiceAllows, type Drama, type VoiceId,
   type Band, type PlayerView, type ServerMsg, type Spice,
 } from '@smartmouth/protocol';
 import { useSocket, store, save } from '../socket.ts';
@@ -127,7 +127,8 @@ function Waiting({ view, send, online, onLeave }: {
       {view.you.isAdmin && (
         <>
           <button className="press big-btn" onClick={() => setSheet((s) => !s)}>{sheet ? 'Close grown-up controls' : 'Grown-up controls'}</button>
-          {sheet && <AdminSheet view={view} onSpice={(s) => send({ t: 'admin:spice', spice: s })} onVoice={(v) => send({ t: 'admin:voice', voice: v })} />}
+          {sheet && <AdminSheet view={view} onSpice={(s) => send({ t: 'admin:spice', spice: s })} onVoice={(v) => send({ t: 'admin:voice', voice: v })}
+            onDrama={(d) => send({ t: 'admin:drama', drama: d })} />}
         </>
       )}
       <button className="press" style={{ padding: 12 }} onClick={onLeave}>Leave the game</button>
@@ -135,7 +136,9 @@ function Waiting({ view, send, online, onLeave }: {
   );
 }
 
-function AdminSheet({ view, onSpice, onVoice }: { view: PlayerView; onSpice: (s: Spice) => void; onVoice: (v: VoiceId) => void }) {
+function AdminSheet({ view, onSpice, onVoice, onDrama }: {
+  view: PlayerView; onSpice: (s: Spice) => void; onVoice: (v: VoiceId) => void; onDrama: (d: Drama) => void;
+}) {
   return (
     <div className="sheet">
       <h2>Spice level</h2>
@@ -156,6 +159,13 @@ function AdminSheet({ view, onSpice, onVoice }: { view: PlayerView; onSpice: (s:
           <button key={v} className="press" aria-pressed={view.voice === v} onClick={() => onVoice(v)}>{VOICE_LABEL[v]}</button>
         ))}
       </div>
+      <h2>Drama</h2>
+      <div className="spice-row">
+        {DRAMAS.map((d) => (
+          <button key={d} className="press" aria-pressed={view.drama === d} onClick={() => onDrama(d)}>{d === 'full' ? 'Full drama' : 'Quick'}</button>
+        ))}
+      </div>
+      <div className="muted">For Snake Manor's big reveals. Quick cuts the long pauses short. Starts with the next game.</div>
     </div>
   );
 }

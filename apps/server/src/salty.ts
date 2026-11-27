@@ -59,15 +59,20 @@ export function updateSalty(room: Room, bank: VoiceBank | null, now: number): nu
   const t = tools(room, bank, now);
   let text: string | null = null;
   let clips: string[] = [];
+  let parts: SaltyCue['parts'];
   if (g && a) {
-    ({ text, clips } = a.say(g.state, t));
+    const said = a.say(g.state, t);
+    ({ text, clips } = said);
+    parts = said.parts?.map((p) => ({ at: p.at, caption: p.text ? caption(p.text) : null, clip: p.clip }));
   } else if (lobbyMoment) {
     const line = t.line(lobbyMoment);
     text = line?.text ?? null;
     if (line?.clip) clips = [line.clip];
   }
   st.seq++;
-  st.cue = { key: `${stageKey}#${st.seq}`, caption: text ? caption(text) : null, clips };
+  st.cue = { key: `${stageKey}#${st.seq}`, caption: text ? caption(text) : null, clips, ...(parts ? { parts } : {}) };
+  // A line in timed parts runs until its last part has been said.
+  if (parts?.length) return Math.max(0, ...parts.map((p) => p.at - now + (p.clip ? bank.clipsMs([p.clip]) : 0)));
   return bank.clipsMs(clips);
 }
 

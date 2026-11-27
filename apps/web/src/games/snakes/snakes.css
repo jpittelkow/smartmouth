@@ -81,7 +81,7 @@
 .knight.away { opacity: .3; }
 .knight .tag { font-size: 22px; font-style: italic; color: var(--sm-muted); }
 .arms.faded { filter: grayscale(1) brightness(.75); }
-.sm-join { position: absolute; right: 0; bottom: -4px; font-size: 20px; color: var(--sm-muted); font-family: var(--sm-caps); letter-spacing: .08em; }
+.sm-join { position: absolute; right: 0; top: -30px; font-size: 20px; color: var(--sm-muted); font-family: var(--sm-caps); letter-spacing: .08em; }
 
 /* Mission */
 .sm-mission { display: grid; grid-template-columns: 1fr 200px; gap: 48px; align-items: center; }
@@ -106,7 +106,7 @@
 .sm-seals .wax, .vote .wax {
   width: 130px; height: 130px; border-radius: 47% 53% 50% 48% / 52% 46% 54% 48%; display: grid; place-items: center; padding: 8px;
   background: radial-gradient(circle at 36% 32%, #c2453c, var(--sm-gules) 55%, #5e1713); box-shadow: inset 0 -8px 14px #0007, 0 10px 24px #0008;
-  font-family: var(--sm-caps); font-weight: 700; font-size: 24px; color: #f6dccc; text-align: center; overflow: hidden; word-break: break-word;
+  font-family: var(--sm-caps); font-weight: 700; font-size: 19px; letter-spacing: 0; color: #f6dccc; text-align: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
 }
 .sm-seals .wax.pending, .vote.pending .wax { background: none; box-shadow: inset 0 0 0 3px #4a3f33; color: #4a3f33; font-size: 54px; }
 .vote.new .wax { box-shadow: 0 0 0 6px var(--sm-gold), inset 0 -8px 14px #0007; }
@@ -124,17 +124,48 @@
 .tally .num { grid-column: 3; grid-row: 1 / span 2; font-family: var(--sm-caps); font-size: 50px; font-weight: 700; color: var(--sm-vellum); text-align: right; }
 
 /* Banishment (the drama) */
-.sm-drama { position: absolute; inset: 0; display: grid; place-items: center; }
+.sm-drama { position: absolute; inset: 0; display: grid; justify-items: center; align-items: start; }
 .sm-drama .pool { position: absolute; inset: 0; background: radial-gradient(620px 520px at 50% 45%, #f4c66a22 0%, #f4c66a0a 45%, #000a 75%); }
 .sm-drama .body { position: relative; display: grid; justify-items: center; gap: 8px; text-align: center; transition: transform 3s ease-in-out; transform-origin: 50% 40%; }
 .sm-drama.push .body { transform: scale(1.05); }
 .sm-drama .arms-wrap { opacity: 0; transition: opacity .8s ease; }
 .sm-drama .name { font-family: var(--sm-caps); font-weight: 700; font-size: 92px; letter-spacing: .06em; color: var(--sm-vellum); line-height: 1; clip-path: inset(0 100% 0 0); transition: clip-path 1.4s steps(9, end); }
 .sm-drama .was { font-size: 46px; font-style: italic; color: var(--sm-muted); opacity: 0; transition: opacity .6s; height: 54px; }
-.sm-drama .role { font-family: var(--sm-uncial); font-size: 170px; line-height: .9; opacity: 0; height: 160px; }
+.sm-drama .role { font-family: var(--sm-uncial); font-size: 150px; line-height: .9; opacity: 0; height: 138px; }
 .sm-drama .on { opacity: 1; clip-path: inset(0 0 0 0); }
 .sm-drama.landed.snake .role { color: var(--sm-vert); text-shadow: 0 0 70px #5b8a6399; }
 .sm-drama.landed.guest .role { color: var(--sm-gold); text-shadow: 0 0 50px #c9a24a55; }
+
+/* The banishment's synced beats (drama.tsx). */
+.sm-drama .pool.thump { animation: sm-thump .34s ease-out 1; }
+@keyframes sm-thump { 25% { transform: scale(1.09); filter: brightness(1.9); } }
+.sm-drama.hold .pool { opacity: .6; transition: opacity .2s; }
+.sm-drama.hold .cdl i, .sm-drama.hold .flame { animation-play-state: paused; }
+.sm-drama .shake-layer { position: absolute; inset: 0; pointer-events: none; }
+.sm-drama .shake-layer.shake { animation: sm-shake .42s linear 1; }
+@keyframes sm-shake { 15% { translate: -9px 4px; } 30% { translate: 8px -5px; } 45% { translate: -6px 3px; } 60% { translate: 5px -2px; } 80% { translate: -2px 1px; } }
+.sm-drama .row-candles { position: absolute; left: 0; right: 0; bottom: 6px; display: flex; justify-content: space-between; padding: 0 150px; }
+.sm-drama .cdl { width: 34px; display: grid; justify-items: center; position: relative; }
+.sm-drama .cdl i { width: 22px; height: 40px; border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%; transform-origin: 50% 100%;
+  background: radial-gradient(circle at 50% 70%, #fff4d6 0 22%, var(--sm-candle) 50%, #f4c66a00 72%); box-shadow: 0 0 34px 10px #f4c66a33;
+  animation: sm-flick 2.2s ease-in-out infinite; transition: opacity .12s, filter .35s ease, transform .35s cubic-bezier(.34, 1.56, .64, 1); }
+.sm-drama .cdl:nth-child(2n) i { animation-duration: 2.9s; }
+.sm-drama .cdl:nth-child(3n) i { animation-duration: 1.9s; }
+.sm-drama .cdl b { width: 26px; height: 70px; margin-top: 2px; background: linear-gradient(90deg, #b9a983, #efe4c8, #b9a983); }
+.sm-drama .row-candles.green .cdl i { filter: hue-rotate(80deg) saturate(1.6) brightness(1.2); transform: scale(1.7); box-shadow: 0 0 60px 24px #5b8a6366; }
+.sm-drama .cdl.out i { opacity: 0; }
+.sm-drama .cdl.out::after { content: ''; position: absolute; left: 50%; top: -6px; width: 6px; height: 40px; margin-left: -3px; border-radius: 3px;
+  background: linear-gradient(#cfc5b000, #cfc5b066); animation: sm-smoke 1.6s ease-out 1 forwards; }
+@keyframes sm-smoke { from { transform: translateY(0) scaleY(.4); opacity: .9; } to { transform: translateY(-70px) scaleY(1.4) skewX(12deg); opacity: 0; } }
+.sm-drama .ring { position: absolute; left: 50%; top: 62%; width: 300px; height: 300px; margin: -150px 0 0 -150px; border-radius: 50%; border: 6px solid var(--sm-candle);
+  opacity: 0; pointer-events: none; animation: sm-ring 1.8s cubic-bezier(.1, .6, .3, 1) 1; }
+@keyframes sm-ring { from { transform: scale(.2); opacity: .9; } to { transform: scale(5); opacity: 0; } }
+.sm-drama .serpent { width: 760px; height: 40px; overflow: visible; margin-top: -8px; }
+.sm-drama .serpent path { stroke-dasharray: 1200; stroke-dashoffset: 1200; }
+.sm-drama .serpent.go path { transition: stroke-dashoffset 1.8s cubic-bezier(.5, 0, .2, 1); stroke-dashoffset: 0; }
+.sm-drama .role.dim1 { text-shadow: 0 0 30px #c9a24a33 !important; color: #b8964a !important; transition: all .4s; }
+.sm-drama .role.dim2 { text-shadow: none !important; color: #9a8045 !important; transition: all .6s; }
+.sm-sound { display: block; font-style: normal; font-family: var(--sm-caps); font-size: 22px; letter-spacing: .14em; color: var(--sm-muted); min-height: 28px; }
 
 /* Night */
 .sm-night { display: grid; justify-items: center; align-content: center; gap: 26px; text-align: center; }
@@ -249,7 +280,9 @@ body:has(.sm-phone) { background: var(--sm-stone); }
 .sm-admin button { border: 0; border-radius: 6px; background: var(--sm-stone-3); color: var(--sm-pale); padding: 10px 14px; font-family: var(--sm-caps); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) {
-  .flame, .seal.talking { animation: none; }
+  .flame, .seal.talking, .sm-drama .cdl i, .sm-drama .pool.thump, .sm-drama .shake-layer.shake, .sm-drama .ring, .sm-drama .cdl.out::after { animation: none; }
+  .sm-drama .row-candles.green .cdl i { transform: none; }
+  .sm-drama .serpent.go path { transition: none; }
   .sm-drama .body, .sm-drama.push .body { transition: none; transform: none; }
   .sm-drama .name { transition: none; }
 }
