@@ -1,10 +1,24 @@
-import json, sys
+# build-review.py <repo> <out.html> [drafts dir]: with a drafts dir (DATA_DIR/voice/drafts from draft-lines.mjs) the page
+# reviews the new drafts, each with the judge's score and reason, instead of the current lines.
+import json, os, sys
 repo, out = sys.argv[1], sys.argv[2]
-lines = [l for l in json.load(open(repo + '/content/voice/lines.json', encoding='utf8'))['lines'] if not l['moment'].startswith('sm-')]
+drafts = sys.argv[3] if len(sys.argv) > 3 else None
+if drafts:
+    lines = []
+    for f in sorted(os.listdir(drafts)):
+        if not f.endswith('.json'): continue
+        d = json.load(open(os.path.join(drafts, f), encoding='utf8'))
+        for i, c in enumerate(d.get('chosen', [])):
+            lines.append({'id': f"d-{d['moment']}-{d['spice']}-{i}", 'moment': d['moment'], 'spice': d['spice'], 'text': c['text'],
+                          'why': f"Judge {c.get('score', '?')}/10: {c.get('why', '')}"})
+else:
+    lines = [l for l in json.load(open(repo + '/content/voice/lines.json', encoding='utf8'))['lines'] if not l['moment'].startswith('sm-')]
 
 MOMENTS = [
  ('hello', 'Hello', 'The first words of a game (round 1).', 'Trivia · 8 rounds. Phones out.', 'Question one appears and Salty reads it.'),
  ('lobby', 'Lobby', 'While people are joining.', 'The room code and QR code.', 'Nothing. It plays while people join.'),
+ ('lobbyEmpty', 'Empty room', 'Nobody has joined yet; Salty fills the silence (first after 30 s, then less often).', 'The room code and QR code.', 'Nothing.'),
+ ('lobbyWaiting', 'Waiting for more', 'Some players are in, the game hasn’t started; Salty nudges.', 'The players’ characters and the room code.', 'Nothing.'),
  ('join', 'Someone joined', 'A new player just joined in the lobby.', 'Their character pops onto the TV.', 'Nothing.'),
  ('intro', 'New round', 'The start of rounds 2 to 8.', '“Round 3” (Salty never says the number).', 'Salty reads the next question.'),
  ('question', 'Thinking', 'Rare: filler while players think, only when a question has no recording.', 'The question and its answers.', 'The countdown runs.'),
@@ -73,6 +87,7 @@ section.m { margin-top: 36px; }
 .v.keep[aria-pressed="true"] { background: var(--keep); color: var(--ink); border-color: var(--keep); }
 .v.cut[aria-pressed="true"] { background: var(--cut); color: var(--ink); border-color: var(--cut); }
 .v.fix[aria-pressed="true"] { background: var(--fix); color: var(--ink); border-color: var(--fix); }
+.why { color: var(--muted); font-size: 13px; margin-top: 2px; }
 .note { flex: 1 1 220px; min-width: 0; background: var(--ink); color: var(--paper); border: 1px solid var(--stage-2); border-radius: 8px; padding: 7px 10px; font: 15px var(--body); }
 .note::placeholder, textarea::placeholder { color: #8a83a8; }
 .ideas { margin-top: 12px; }
@@ -188,6 +203,7 @@ textarea { width: 100%; box-sizing: border-box; min-height: 70px; background: va
         for (const l of group) {
           const card = el('div', { class: 'line', 'data-id': l.id });
           card.append(renderText(l.text));
+          if (l.why) card.append(el('div', { class: 'why', text: l.why }));
           const row = el('div', { class: 'row' });
           for (const [v, label] of [['keep', 'Keep'], ['cut', 'Cut'], ['fix', 'Fix']]) {
             const b = el('button', { class: 'v ' + v, 'aria-pressed': 'false', text: label, type: 'button' });
