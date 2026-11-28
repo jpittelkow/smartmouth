@@ -48,6 +48,4 @@ of Salty's voice. All ADRs except 0021 are **Proposed** (the owner will review t
    fix); images (on the question itself, uploads, AI-made Little pictures); 
 
 ## Logged for later (owner, 2026-11-27)
-- **Drunk mode:** a level above Filthy (adults only). The longer the game goes, the more Salty's speech slurs, the more
-  annoyed and belligerent she gets, with drinking sounds between lines (sips, a hiccup, a bottle); near the end she's
-  almost incomprehensible, and dirtier as she goes. Details and what it needs: `future.drunk` in `content/voice/brief.json`. **Script draft 3 (2026-11-27):** `docs/design/drunk-salty-script.md`; slurred spelling; heavy swearing, woo girl, actual innuendo. Drinking noises are Salty's own voice, recorded as **separate clips** (inline spelling made the voice say 'slurp'); the owner's picks are in the script's table; gulp still open. Glass/bottle clips from Stable Audio Open (`tools/sounds/sfx-drunk.json`). **All sounds picked (2026-11-27)**; clips in `DATA_DIR/media/sounds/drunk/`. Next: build it (not started).
+- **Drunk mode: built and live 2026-11-27 (d3d60b0).** Spice `drunk` above Filthy (grown-ups only); Salty's 4 stages follow game progress, with a bar tab across games; 77 voiced lines; drinking sounds in `media/sounds/drunk/` (map in `apps/server/src/drunk.ts`). Script and design: `docs/design/drunk-salty-script.md`. Not yet played by the family or checked on the TV.
