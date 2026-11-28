@@ -10,7 +10,7 @@ import { serverNow } from '../../socket.ts';
 import { useSalty } from '../../host/voice.ts';
 import { Arms, Candle, Mark, Seal, clock, useLeft } from './arms.tsx';
 import { Drama } from './drama.tsx';
-import { SFX, captionSound, useCues, useSoundCaption } from './sound.ts';
+import { SFX, captionSound, useCues } from './sound.ts';
 import { bedFor, duck, loadSounds, playBed, startLoop, stopLoop, stopMusic } from './music.ts';
 import { BRIEFS, ROMAN, leadStage } from './briefs.ts';
 import './fonts.ts';
@@ -146,11 +146,10 @@ const formatName = (f: string) => (f === 'chain' ? 'The chain: one at a time, a 
 function Herald({ cue, quiet }: { cue: HostGameView['salty']; quiet: boolean }) {
   const { talking, blocked } = useSalty(cue);
   useEffect(() => { duck(talking); }, [talking]);
-  const sound = useSoundCaption();
   return (
     <div className={`sm-herald${quiet ? ' quiet' : ''}`} aria-label={talking ? 'The Lord of the Manor is talking' : 'The Lord of the Manor'}>
       <Seal talking={talking} />
-      {(blocked || sound) && <span className="hint">{blocked ? 'Press any key or click to hear him.' : sound}</span>}
+      {blocked && <span className="hint">Press any key or click to hear him.</span>}
     </div>
   );
 }
@@ -272,7 +271,7 @@ function MissionReveal({ g }: { g: SnakesHostView }) {
 }
 
 /** What the table knows: the public record, newest first, to argue about. */
-function Record({ history, seat }: { history: HistoryEvent[]; seat: Seat }) {
+function Record({ history, seat, max = 6 }: { history: HistoryEvent[]; seat: Seat; max?: number }) {
   const name = (id: string) => seat(id)?.name ?? '?';
   const lines: string[] = [];
   for (const h of [...history].reverse()) {
@@ -289,7 +288,7 @@ function Record({ history, seat }: { history: HistoryEvent[]; seat: Seat }) {
   return (
     <div className="record">
       <h3>What the table knows</h3>
-      {lines.length ? <ul>{lines.slice(0, 6).map((l, i) => <li key={i}>{l}</li>)}</ul> : <p>Nothing yet. Who answered fast? Who went quiet?</p>}
+      {lines.length ? <ul>{lines.slice(0, max).map((l, i) => <li key={i}>{l}</li>)}</ul> : <p>Nothing yet. Who answered fast? Who went quiet?</p>}
     </div>
   );
 }
@@ -300,8 +299,9 @@ function Debate({ g, seat }: { g: SnakesHostView; seat: Seat }) {
     <div className="sm-debate">
       <div className="clock-side"><div className="sm-clock">{clock(left)}</div><p className="sm-note">until the vote</p></div>
       <div className="sm-debate-side">
-        <Record history={g.history} seat={seat} />
-        <TableTalk talk={g.talk} seat={seat} />
+        {/* Both fit the main area (owner, 2026-11-27: the record ran under the herald): fewer of each when both show. */}
+        <Record history={g.history} seat={seat} max={g.talk.length ? 3 : 6} />
+        <TableTalk talk={g.talk} seat={seat} max={3} />
       </div>
     </div>
   );
