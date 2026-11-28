@@ -2,7 +2,7 @@
 // Original art made on the local GPU (how: tools/art/salty/README.md). Each look (sober, Tipsy, Hammered, Gone) is a
 // still picture plus a 12-second LivePortrait loop of her talking, made from that same picture. While her voice plays
 // the loop fades in over the still; when she stops it fades out. From Hammered on she leans, and Gone sways.
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const FILES = import.meta.glob<string>('./salty/*.{jpg,mp4}', { eager: true, query: '?url', import: 'default' });
 const still = (stage: number) => FILES[`./salty/s${stage}.jpg`] ?? '';
@@ -12,6 +12,9 @@ const loop = (stage: number) => FILES[`./salty/talk-s${stage}.mp4`] ?? '';
 export function SaltyFace({ talking, stage = 0 }: { talking: boolean; stage?: number }) {
   const s = Math.min(4, Math.max(1, stage || 1));
   const video = useRef<HTMLVideoElement>(null);
+  // The loop shows only once it's really playing: a video that hasn't decoded a frame yet is a black circle (seen on
+  // the Chromecast, 2026-11-27), so until then her still stays up.
+  const [live, setLive] = useState(false);
   useEffect(() => {
     const v = video.current;
     if (!v) return;
@@ -25,9 +28,11 @@ export function SaltyFace({ talking, stage = 0 }: { talking: boolean; stage?: nu
     return () => clearTimeout(t);
   }, [talking, s]);
   return (
-    <span className={`salty-face lean-${s}${talking ? ' talking' : ''}`}>
+    <span className={`salty-face lean-${s}${talking && live ? ' talking' : ''}`}>
       <img src={still(s)} alt="" draggable={false} />
-      <video ref={video} key={s} src={loop(s)} muted loop playsInline preload="auto" aria-hidden="true" />
+      <video ref={video} key={s} src={loop(s)} muted loop playsInline preload="auto" aria-hidden="true"
+        onTimeUpdate={(e) => { if (e.currentTarget.currentTime > 0.1 && !e.currentTarget.paused) setLive(true); }}
+        onPause={() => setLive(false)} onEmptied={() => setLive(false)} />
     </span>
   );
 }
