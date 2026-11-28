@@ -79,9 +79,11 @@ button, input { font: inherit; color: inherit; }
   box-shadow: 4px 4px 0 var(--ink); background: var(--stage-2); transition: transform 600ms var(--pop); }
 .salty-face { position: relative; }
 .salty-face img, .salty-face video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
-/* Her talking loop fades in over the still while her voice plays. */
-.salty-face video { opacity: 0; transition: opacity 200ms ease; }
-.salty-face.talking video { opacity: 1; }
+/* While she talks her loop runs under the still; once it's moving the still fades away (TV video ignores opacity). */
+.salty-face video { display: none; }
+.salty-face.talking video { display: block; }
+.salty-face img { z-index: 1; }
+.salty-face.live img { opacity: 0; transition: opacity 200ms ease; } /* fades out; snaps back when she stops */
 .salty-face.lean-3 { transform: rotate(-6deg); }
 .salty-face.lean-4 { animation: salty-sway 3.2s ease-in-out infinite; }
 @keyframes salty-sway { 0%, 100% { transform: rotate(-11deg) translateY(2px); } 50% { transform: rotate(-4deg); } }

@@ -12,8 +12,9 @@ const loop = (stage: number) => FILES[`./salty/talk-s${stage}.mp4`] ?? '';
 export function SaltyFace({ talking, stage = 0 }: { talking: boolean; stage?: number }) {
   const s = Math.min(4, Math.max(1, stage || 1));
   const video = useRef<HTMLVideoElement>(null);
-  // The loop shows only once it's really playing: a video that hasn't decoded a frame yet is a black circle (seen on
-  // the Chromecast, 2026-11-27), so until then her still stays up.
+  // On the Chromecast a video draws on its own layer and ignores opacity: a loaded-but-hidden one is a black circle
+  // (2026-11-27). So the video is out of the page until she talks, sits under her still while it starts, and the still
+  // only goes once the loop is really moving.
   const [live, setLive] = useState(false);
   useEffect(() => {
     const v = video.current;
@@ -28,7 +29,7 @@ export function SaltyFace({ talking, stage = 0 }: { talking: boolean; stage?: nu
     return () => clearTimeout(t);
   }, [talking, s]);
   return (
-    <span className={`salty-face lean-${s}${talking && live ? ' talking' : ''}`}>
+    <span className={`salty-face lean-${s}${talking ? ' talking' : ''}${talking && live ? ' live' : ''}`}>
       <img src={still(s)} alt="" draggable={false} />
       <video ref={video} key={s} src={loop(s)} muted loop playsInline preload="auto" aria-hidden="true"
         onTimeUpdate={(e) => { if (e.currentTarget.currentTime > 0.1 && !e.currentTarget.paused) setLive(true); }}
