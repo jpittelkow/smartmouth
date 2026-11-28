@@ -10,7 +10,7 @@ out-dir    gets mix-<id>.mp3, the effect files, and index.html; upload it to the
 Draft 3: sips, gulps, slurps and hiccups are performed by the voice; only {clink} {toast} {pour} {slam} {bottle-roll}
 are clips. The mixes use the first candidate for each cue, as a placeholder. The owner picks the real takes on the page.
 """
-import html, json, re, shutil, subprocess, sys
+import html, json, os, re, shutil, subprocess, sys
 from pathlib import Path
 
 voice_dir, sfx_dir, meta_path, out_dir = map(Path, sys.argv[1:5])
@@ -19,7 +19,7 @@ data = json.loads((voice_dir / 'lines.json').read_text(encoding='utf-8'))
 lines, bank = (data, []) if isinstance(data, list) else (data['lines'], data.get('bank', []))
 meta = json.loads(meta_path.read_text(encoding='utf-8'))
 CUE_FILE = {'bottle-roll': 'roll'}  # script marker -> cue id
-LABEL = {'sip': 'Sip', 'hiccup': 'Hiccup', 'clink': 'Ice clink', 'toast': 'Cheers (two glasses)', 'pour': 'Pour',
+LABEL = {'sip': 'Sip', 'hiccup': 'Hiccup', 'hiccups': 'Hiccups, sloppy', 'gulp': 'Gulps', 'clink': 'Ice clink', 'toast': 'Cheers (two glasses)', 'pour': 'Pour',
          'slurp': 'Slurp', 'slam': 'Glass slammed down', 'roll': 'Bottle falls and rolls'}
 first = {}
 for m in meta:
@@ -62,6 +62,13 @@ for n in bank:  # copy the voiced noises next to the page
         shutil.copy(voice_dir / n['file'], out_dir / n['file'])
 
 esc = lambda s: html.escape(str(s), quote=True)
+# Page wording (HTML allowed in the notes), set per audition round from the environment.
+TITLE = os.environ.get('TITLE', 'Drunk Salty audition')
+INTRO = os.environ.get('INTRO', '')
+BANK_HEAD = os.environ.get('BANK_HEAD', 'Drinking noises in her voice')
+BANK_NOTE = os.environ.get('BANK_NOTE', '')
+CUES_HEAD = os.environ.get('CUES_HEAD', 'Sound clips')
+CUES_NOTE = os.environ.get('CUES_NOTE', '')
 caption = lambda t: esc(re.sub(r'\[[^\]]+\]\s*', '', t)).replace('{', '<span class="cue">').replace('}', '</span>')
 rows = ''.join(
     f'<tr><td class="l"><b>{esc(l["part"])}</b><small>{esc(l["stage"])} · {esc(l["moment"])}</small></td>'
@@ -98,7 +105,7 @@ for cue in LABEL:
         cues += fieldset(cue, LABEL[cue], [(m.get('id', m['file']), m['file'], m['title'],
                                              credit(m) + (' · in the mixes above' if i == 0 else '')) for i, m in enumerate(opts)])
 
-page = f'''<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Drunk Salty audition 3</title>
+page = f'''<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(TITLE)}</title>
 <style>body{{font:16px system-ui;background:#14111f;color:#fff6e6;margin:0;padding:16px}}h1{{margin:0 0 6px}}h2{{margin:28px 0 6px}}p{{color:#b9b1d6;max-width:80ch}}
 .wrap{{overflow-x:auto}}table{{border-collapse:collapse;min-width:640px}}th,td{{border:1px solid #2b2450;padding:10px;text-align:left;vertical-align:top}}
 th{{background:#1f1a36;font-size:13px}}td.l{{max-width:160px}}td.l b{{display:block}}td.l small{{color:#b9b1d6}}audio{{width:260px;height:36px;vertical-align:middle}}
@@ -107,14 +114,14 @@ fieldset{{border:1px solid #2b2450;border-radius:8px;margin:0 0 12px;padding:8px
 label{{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:4px 0}}label small{{color:#b9b1d6}}a{{color:#9ad1ff}}
 button{{font:inherit;padding:8px 14px;border-radius:8px;border:0;background:#ffb347;color:#14111f;font-weight:700;cursor:pointer}}
 textarea{{width:100%;max-width:760px;height:150px;margin-top:8px;background:#1f1a36;color:#fff6e6;border:1px solid #2b2450;border-radius:8px;font:13px ui-monospace,monospace}}</style>
-<h1>Drunk Salty: audition 3</h1>
-<p>The draft-3 lines: fewer “sexy”s, more actual dirty jokes. Sips, gulps, slurps and hiccups are now Salty herself, performed by the voice. The orange ♪ marks are the only effect clips (glass and bottle sounds a voice can’t make), generated with Stable Audio Open. The mixes use the first take of each effect as a placeholder.</p>
-<div class="wrap"><table><tr><th>Line</th><th>With effects</th><th>Voice only</th></tr>{rows}</table></div>
-<h2>Drinking noises in her voice, on their own</h2>
-<p>For playing between lines. Three takes of each, because the voice comes out different every time.</p>
+<h1>{esc(TITLE)}</h1>
+<p>{INTRO}</p>
+<div class="wrap"><table><tr><th>Line</th><th>With sounds</th><th>Voice only</th></tr>{rows}</table></div>
+<h2>{esc(BANK_HEAD)}</h2>
+<p>{BANK_NOTE}</p>
 {noises}
-<h2>Glass and bottle effects</h2>
-<p>Generated with Stable Audio Open. Pick a take, or “none”, for each.</p>
+<h2>{esc(CUES_HEAD)}</h2>
+<p>{CUES_NOTE}</p>
 {cues}
 <button id="copy">Copy my picks</button><textarea id="out" readonly placeholder="Your picks appear here"></textarea>
 <script>

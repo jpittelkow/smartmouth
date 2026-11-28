@@ -35,7 +35,25 @@ spelling, bleeped.
 second game started back at Buzzed, the drunk act would fall apart. Stage 4 would stay at 4. The "Hello" lines below
 already allow for a second game.
 
-**Drinking noises in her own voice (owner, 2026-11-27).** The sips, gulps, slurps and hiccups are performed by the voice, not played as clips: the recorded text spells them out ("Hic!", "Sluurp... ahhh.", "Glug, glug, glug... ahhh.") and the direction tells the voice to make them real noises, not words. So `{sip}`, `{hiccup}` and `{slurp}` become spoken text at recording time. Only the things a voice can't make stay clips: `{clink}`, `{toast}`, `{pour}`, `{slam}`, `{bottle-roll}`, generated locally with Stable Audio Open (`tools/sounds/sfx-drunk.json`). The 22 CC0 Freesound candidates were all rejected.
+**Drinking noises in her own voice (owner, 2026-11-27).** The sips, slurps and hiccups are Salty's own voice. They're
+recorded **once each as separate clips** and picked by ear, then played at the `{…}` markers like any other sound.
+Writing them into the line text was tried in audition 3, and the voice sometimes said the word ("slurp") instead of making
+the noise, so lines never spell noises out. Owner's picks (audition 3):
+
+| Marker | Clip | Text it was recorded from |
+|---|---|---|
+| `{sip}` | `noise-sip-2` | "Mm. Sluurp. ...Ahhh." |
+| `{hiccup}` | `noise-hic-1` | "Hic!" |
+| `{hiccups}` | `noise-hics-2` (stage 4) | "Hic. ...hic. Hic!" |
+| `{slurp}` | `noise-slurp-3` | "Sluuuuurrrp. Sluurp. ...Mm." |
+| `{gulp}` | none yet: both gulp takes and the chug were rejected; retried in audition 4 | |
+| `{clink}` | `clink-gen3` | Stable Audio Open |
+| `{toast}` | `toast-gen1` | Stable Audio Open |
+| `{pour}` | `pour-gen1` | Stable Audio Open |
+| `{slam}` | `slam-gen1` | Stable Audio Open |
+| `{bottle-roll}` | `roll-gen1` | Stable Audio Open |
+
+The 22 CC0 Freesound candidates were all rejected.
 
 **Sounds** are separate clips, not part of the speech. In this script, `{sip}`, `{hiccup}`, `{clink}`, `{pour}`,
 `{slurp}`, `{slam}` and `{bottle-roll}` mark where the player plays one. The voice tool never reads them. Candidates are
