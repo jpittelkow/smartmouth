@@ -1,22 +1,22 @@
-// Drunk Salty audition, draft 4 (owner, 2026-11-27: "some of the slurps say 'slurp' instead of having a slurp").
-// Noises are no longer spelled inside the lines: each one is its own clip in her voice, picked by ear (audition 3 picks
-// in docs/design/drunk-salty-script.md), and drunk-mix.py splices them in at the {markers}. This records the six lines
-// clean, plus new attempts at the gulp (audition 3's gulps and chug were all rejected), spelled so there's no word to read.
+// Drunk Salty audition, round 5 (owner, 2026-11-27: "In the slurp i picked, she says 'slurp'"). The six lines from
+// round 4 are kept as they are (their noises are spliced in by drunk-mix.py, so nothing in them changes); this round only
+// records slurp attempts spelled with no real word, under a direction that says it isn't speech, as the gulp did.
+// Earlier rounds' lines and banks are in git history (rounds 1-4, docs/journal/2026-11-27.md).
 // Runs inside the container (holds OPENROUTER_API_KEY):
 //   ssh root@192.168.1.4 "docker exec -i smartmouth node --input-type=module -" < tools/voice/audition-drunk.mjs
-// Writes DATA_DIR/media/voice/audition-drunk-4/: voice-<id>.wav, noise-<id>-<take>.wav, lines.json.
+// Writes DATA_DIR/media/voice/audition-drunk-5/: noise-<id>-<take>.wav, lines.json.
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 const KEY = process.env.OPENROUTER_API_KEY;
-const OUT = join(process.env.DATA_DIR || '/data', 'media', 'voice', 'audition-drunk-4');
+const OUT = join(process.env.DATA_DIR || '/data', 'media', 'voice', 'audition-drunk-5');
 mkdirSync(OUT, { recursive: true });
 const MODEL = 'google/gemini-3.8-flash-tts';
 const VOICE = 'Laomedeia';
 
 // Copied from the script's "Direction for the recorder" section; keep the two in step.
 const BASE = 'A woman hosting a living-room game show, with a stand-up comic timing, the same bright comic host as always, but drinking. Not a cartoon. ';
-const NOISES = ' This is not speech. The letters spell the sound of her throat gulping down a big drink, one hard swallow per syllable, then a satisfied gasp at the end. Make the real gulping noises; never say a word.';
+const NOISES = ' This is not speech. The letters spell the sound of her slurping the last drops of a drink loudly through a straw, wet and rude, then a small satisfied hum. Make the real slurping noise with her lips; never say a word.';
 const STAGE = {
   buzzed: 'One drink in, and the loudest woo girl at the party. Too loud, shrieking WOO, laughing at the jokes, swearing like it\'s a compliment, consonants just starting to loosen. The timing is still sharp.',
   tipsy: 'Tipsy and flirty. A soft slur on the s sounds, words running together, a purring, flirty voice that turns snippy without warning, landing a beat late, giggling mid-sentence.',
@@ -25,25 +25,11 @@ const STAGE = {
 };
 
 // text keeps the script's {sound} markers; they're stripped before recording and placed by drunk-mix.py.
-const LINES = [
-  { id: 'b1', part: 'Beginning', stage: 'buzzed', moment: 'hello',
-    text: "WOOO! Hello, you filthy fuckers! I'm Salty, I'm one drink in, and I'm already picking who I'm going home with. TV asks, phone answers. Let's fucking GO! {sip}" },
-  { id: 'b2', part: 'Beginning', stage: 'buzzed', moment: 'allRight',
-    text: 'Everybody got it! WOO! Brains get me so wet. ...My drink. My drink got wet. Cheers! {toast}' },
-  { id: 'm1', part: 'Middle', stage: 'tipsy', moment: 'intro',
-    text: "{hiccup} Whoever'sh winning... call me. Sheriously. I'm shingle, and I'm shit-faced. WOO!" },
-  { id: 'm2', part: 'Middle', stage: 'hammered', moment: 'drink',
-    text: "{pour} {slurp} Thish bottle'sh my besht friend. It never picksh the wrong answer. And it puts out." },
-  { id: 'e1', part: 'End', stage: 'gone', moment: 'drink',
-    text: "{slam} I'M AWAKE. ...I'm awake. [whispers] Who wants to make out. {hiccup}" },
-  { id: 'e2', part: 'End', stage: 'gone', moment: 'final',
-    text: "We have a... we have a winner! Sho proud. Winner gets a drink... and maybe a little shomething elshe. Everybody elshe... loshers. Go home. Thish is my couch now. Night, fuckers. {hiccups} {bottle-roll}" },
-];
-// Gulp, retried: no real word anywhere in the text, so there's nothing to read out.
+const LINES = []; // round 4's lines are reused
 const BANK = [
-  { id: 'gulpA', label: 'Gulps: "Ngk. Ngk. Ngk."', stage: 'tipsy', text: 'Ngk. Ngk. Ngk. ...Haaah!' },
-  { id: 'gulpB', label: 'Gulps: "Mmf. Mmf. Mmf."', stage: 'tipsy', text: 'Mmf. Mmf. Mmf. Mmf. ...Ahhh.' },
-  { id: 'gulpC', label: 'Gulps: "Gk... gk... gk..."', stage: 'tipsy', text: 'Gk... gk... gk... gk... aaahhh.' },
+  { id: 'slurpA', label: 'Slurp: "Shhhllllrrrp."', stage: 'hammered', text: 'Shhhllllrrrp.' },
+  { id: 'slurpB', label: 'Slurp: "Ffshhhllp... shllp."', stage: 'hammered', text: 'Ffshhhllp... shllp.' },
+  { id: 'slurpC', label: 'Slurp: "Ssssssllllllp... mm."', stage: 'hammered', text: 'Ssssssllllllp... mm.' },
 ];
 const TAKES = 3;
 const spoken = (t) => t.replace(/\{[^}]+\}\s*/g, '').replace(/\[[^\]]+\]\s*/g, '').trim();

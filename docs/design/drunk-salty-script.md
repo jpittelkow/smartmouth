@@ -38,15 +38,15 @@ already allow for a second game.
 **Drinking noises in her own voice (owner, 2026-11-27).** The sips, slurps and hiccups are Salty's own voice. They're
 recorded **once each as separate clips** and picked by ear, then played at the `{…}` markers like any other sound.
 Writing them into the line text was tried in audition 3, and the voice sometimes said the word ("slurp") instead of making
-the noise, so lines never spell noises out. Owner's picks (audition 3):
+the noise, so lines never spell noises out. Owner's picks (auditions 3 and 4). Noise text never contains a real word ("Ngk", not "glug" or "slurp"), and the direction says it isn't speech; any take that says a word is out:
 
 | Marker | Clip | Text it was recorded from |
 |---|---|---|
 | `{sip}` | `noise-sip-2` | "Mm. Sluurp. ...Ahhh." |
 | `{hiccup}` | `noise-hic-1` | "Hic!" |
 | `{hiccups}` | `noise-hics-2` (stage 4) | "Hic. ...hic. Hic!" |
-| `{slurp}` | `noise-slurp-3` | "Sluuuuurrrp. Sluurp. ...Mm." |
-| `{gulp}` | none yet: both gulp takes and the chug were rejected; retried in audition 4 | |
+| `{slurp}` | none yet: take 3 turned out to say the word "slurp"; retried in audition 5 | |
+| `{gulp}` | rotate `noise-gulpA-2`, `noise-gulpB-2`, `noise-gulpC-3` (audition 4) | "Ngk. Ngk. Ngk. ...Haaah!" / "Mmf. Mmf. Mmf. Mmf. ...Ahhh." / "Gk... gk... gk... gk... aaahhh." |
 | `{clink}` | `clink-gen3` | Stable Audio Open |
 | `{toast}` | `toast-gen1` | Stable Audio Open |
 | `{pour}` | `pour-gen1` | Stable Audio Open |
@@ -169,7 +169,7 @@ Each stage is added to the base: "A woman hosting a living-room game show, with 
 - Half of you got it. The other half can kissh my ass. Shlowly. ...With tongue.
 
 **drink**
-- `{pour}` `{slurp}` Don't you dare judge me. You're all on your phonesh. At a fucking party.
+- `{pour}` `{gulp}` Don't you dare judge me. You're all on your phonesh. At a fucking party.
 - `{clink}` Thish bottle'sh my besht friend. It never picksh the wrong answer. And it puts out.
 
 ---
