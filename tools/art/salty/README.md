@@ -1,9 +1,9 @@
 # Salty's face
 
 The owner picked her on 2026-11-27 from five styles ("E", the 3D-animated lounge diva, take 11). Original character,
-made on the local RTX 3090; not a likeness of anyone. The game uses `apps/web/src/ui/salty/`: `s<stage>.jpg`, her still picture, and `talk-s<stage>.webp`, a 12-second
-loop of her whole face talking (stage 1 sober, which Buzzed shares; 2 Tipsy, 3 Hammered, 4 Gone). The TV
-(`apps/web/src/ui/SaltyFace.tsx`) lays the loop over the still while her voice plays and adds the lean from Hammered on.
+made on the local RTX 3090; not a likeness of anyone. The game uses `apps/web/src/ui/salty/`: `s<stage>.jpg`, her still picture, and `talk-s<stage>.jpg`, a sheet of
+72 frames of her whole face talking (stage 1 sober, which Buzzed shares; 2 Tipsy, 3 Hammered, 4 Gone). The TV
+(`apps/web/src/ui/SaltyFace.tsx`) draws those frames on a canvas over the still while her voice plays, forward then back, and adds the lean from Hammered on.
 
 How they were made (paths are arguments; outputs went to a scratch folder, not the repo):
 
@@ -18,3 +18,7 @@ How they were made (paths are arguments; outputs went to a scratch folder, not t
 Mouth frames were tried first and dropped (owner: "her jaw still dislocates"): each still is drawn on its own, so the
 face drifts a few pixels between them and flipping 7 times a second reads as the jaw jumping. Splicing only the lips
 kept the jaw still but the mouths came out small. A motion model keeps one face consistent from frame to frame.
+
+On the Chromecast a `<video>` draws on its own layer over the page (a black circle while it loads, whatever the CSS
+says), and an animated WebP mis-draws for its first second (a shrunken face and a stripe of colour). So the frames are
+a plain JPEG sheet that the page draws itself.
