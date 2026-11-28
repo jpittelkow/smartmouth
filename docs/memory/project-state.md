@@ -11,8 +11,9 @@ of Salty's voice. All ADRs except 0021 are **Proposed** (the owner will review t
   made 2026-11-26). Deploy with `bash scripts/deploy.sh`. The settings file is `/mnt/apps/appdata/smartmouth/.env` (ADMIN_PASSWORD,
   OPENROUTER_API_KEY = its own key with spend limits set in OpenRouter since 2026-11-27, TRUSTED_PROXIES=172.24.0.1). Data lives in
   `/mnt/apps/appdata/smartmouth/data` (SQLite, `media/voice`, `voice/manifest.json` + salt).
-- **TV app** (`apps/tv`): installed on the **office Chromecast** (`192.168.1.109`), defaulting to play.303.social.
-  Tested there with the real remote keys over adb. Not yet on any other TV.
+- **TV app** (`apps/tv`): installed on the **office Chromecast** (`192.168.1.109`) and, since 2026-11-27, on the
+  **office TCL TV itself** (`192.168.2.148`, network adb), both defaulting to play.303.social. Remote keys tested on
+  the Chromecast only.
 - **Server** (`apps/server`): rooms, codes, reconnects, admin password, the question library and its API, the game
   runtime (picks per band, timers, records plays), and Salty (`salty.ts`/`voice.ts`: server-picked lines under the spice
   limit, a bleeped caption and clips per cue). 43 tests.
