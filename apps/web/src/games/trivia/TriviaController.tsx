@@ -10,13 +10,21 @@ export function TriviaController({ view, send }: { view: PlayerGameView; send: (
   const g = view.game as TriviaPlayerView;
   const answer = (choice: number) => send({ t: 'game:intent', intent: { type: 'answer', choice } });
   const turnName = g.turn ? view.players.find((p) => p.id === g.turn?.playerId)?.name ?? 'the little one' : '';
+  // Re-render this whole view the moment answering opens: whether to show the answers is decided here, so a timer
+  // inside OpensSoon only re-drew "Get ready" (2026-11-27: phones stuck there from question 2 on).
+  const [, reopen] = useState(0);
+  useEffect(() => {
+    if (!g.opensAt) return;
+    const t = setTimeout(() => reopen((n) => n + 1), Math.max(0, g.opensAt - serverNow()) + 30);
+    return () => clearTimeout(t);
+  }, [g.opensAt]);
 
   let body: React.ReactNode;
   if (g.stage === 'intro') {
     body = <Center big={`Round ${g.round} of ${g.rounds}`} small="Look at the TV" />;
   } else if (g.stage === 'question') {
     if (!g.question) body = <Center big="Watch the TV" small={view.you.band === 'little' ? 'Your turn is coming!' : 'Sit this one out.'} />;
-    else if (g.opensAt && serverNow() < g.opensAt) body = <OpensSoon at={g.opensAt} />;
+    else if (g.opensAt && serverNow() < g.opensAt) body = <Center big="Get ready…" small="Look at the TV" />;
     else if (g.picked !== null) body = <Locked slot={g.picked} text={g.question.answers[g.picked]?.text ?? ''} />;
     else body = (
       <div className="ctl-q">
@@ -127,13 +135,6 @@ function Result({ right, gained, correctText, score, rank, helper }: {
       <div className="muted">{score} points · #{rank}</div>
     </div>
   );
-}
-
-/** Until answering opens (the round card is up on the TV); re-renders the moment it does. */
-function OpensSoon({ at }: { at: number }) {
-  const [, force] = useState(0);
-  useEffect(() => { const t = setTimeout(() => force((n) => n + 1), Math.max(0, at - serverNow()) + 30); return () => clearTimeout(t); }, [at]);
-  return <Center big="Get ready…" small="Look at the TV" />;
 }
 
 function TimeBar({ deadline }: { deadline: number }) {
