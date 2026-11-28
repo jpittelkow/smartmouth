@@ -76,6 +76,8 @@ export interface SaltyCue {
    * game, not the recording, sets the pause between them. When present, `clips` and `caption` hold the first part.
    */
   parts?: Array<{ at: number; caption: string | null; clip: string | null }>;
+  /** At Drunk, how drunk she is (1 Buzzed, 2 Tipsy, 3 Hammered, 4 Gone): the TV shows her face to match. */
+  drunk?: number;
 }
 
 /** Recordings for a question: the prompt read aloud, each answer (picture questions), the follow-up line. */

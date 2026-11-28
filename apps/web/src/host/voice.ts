@@ -5,8 +5,9 @@ import { useEffect, useSyncExternalStore } from 'react';
 import type { SaltyCue } from '@smartmouth/protocol';
 import { serverNow } from '../socket.ts';
 
-type State = { talking: boolean; blocked: boolean };
-let state: State = { talking: false, blocked: false };
+/** `sound`: what's playing is a drinking noise, not her voice (her mouth stays shut for those). */
+type State = { talking: boolean; blocked: boolean; sound: boolean };
+let state: State = { talking: false, blocked: false, sound: false };
 const listeners = new Set<() => void>();
 const set = (s: Partial<State>) => { state = { ...state, ...s }; for (const l of listeners) l(); };
 
@@ -20,7 +21,7 @@ function next(myGen: number) {
   const src = queue.shift();
   if (!src) { set({ talking: false }); return; }
   audio.src = src;
-  audio.play().then(() => set({ talking: true, blocked: false })).catch((e: unknown) => {
+  audio.play().then(() => set({ talking: true, blocked: false, sound: src.includes('/media/sounds/') })).catch((e: unknown) => {
     // Autoplay blocked: wait for a click or key, then carry on from this clip.
     if (e instanceof DOMException && e.name === 'NotAllowedError') { queue.unshift(src); set({ talking: false, blocked: true }); }
     else next(myGen);

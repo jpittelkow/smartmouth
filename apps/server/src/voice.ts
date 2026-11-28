@@ -17,7 +17,7 @@ export type Moment = string;
 export interface Line { id: string; moment: Moment; spice: Spice; text: string; stage?: number }
 
 /** What the TV says and shows now. `clips` play in order; `key` changes when there's something new to say. */
-export interface SaltyCue { key: string; caption: string | null; clips: string[] }
+export interface SaltyCue { key: string; caption: string | null; clips: string[]; drunk?: number }
 
 /** Audio for a question: the prompt read aloud, each answer (picture questions), and the follow-up line. */
 export interface QuestionReads { prompt: string | null; answers: Array<string | null>; explain: string | null }

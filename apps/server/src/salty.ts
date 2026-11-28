@@ -141,7 +141,8 @@ export function updateSalty(room: Room, bank: VoiceBank | null, now: number): nu
   st.seq++;
   st.spokeAt = now;
   if (g) st.idle = 0;
-  st.cue = { key: `${stageKey}#${st.seq}`, caption: text ? caption(text) : null, clips, ...(parts ? { parts } : {}) };
+  const drunk = currentDrunkStage(room);
+  st.cue = { key: `${stageKey}#${st.seq}`, caption: text ? caption(text) : null, clips, ...(parts ? { parts } : {}), ...(drunk ? { drunk } : {}) };
   // A line in timed parts runs until its last part has been said.
   if (parts?.length) return Math.max(0, ...parts.map((p) => p.at - now + (p.clip ? bank.clipsMs([p.clip]) : 0)));
   return bank.clipsMs(clips);

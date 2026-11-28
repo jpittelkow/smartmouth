@@ -31,6 +31,12 @@ own GPU with **Stable Audio Open 1.0** on 2026-11-27, from the prompts in `tools
 Stability AI, under the Stability AI Community License (https://stability.ai/community-license-agreement). All
 picked by ear by the owner; files are `media/sounds/drunk/<sound>-<n>.20261127.mp3` (map in `apps/server/src/drunk.ts`).
 
+## Salty's face
+Generated on our own GPU on 2026-11-27 and picked by the owner: the portrait with **Z-Image-Turbo** (Tongyi-MAI,
+Apache-2.0), then her talking mouths and Drunk stages as edits of that same picture with **FLUX.1 Kontext [dev]**
+(Black Forest Labs, FLUX.1 [dev] Non-Commercial License; check it before any commercial use). An original character,
+not a likeness of anyone. Files: `apps/web/src/ui/salty/`; how they were made: `tools/art/salty/README.md`.
+
 ## Music and the bell (Snake Manor)
 Generated with **Google Lyria 3** (`google/lyria-3-clip-preview`) through OpenRouter on 2026-11-27, from our own
 prompts in `tools/sounds/sounds.mjs`. The files carry Google's content credentials (a C2PA tag).

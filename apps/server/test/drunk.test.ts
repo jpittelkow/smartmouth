@@ -87,6 +87,8 @@ test('a drunk trivia game: Salty starts Buzzed, plays drinking sounds, ends Gone
     seen.add(currentDrunkStage(room) ?? 0);
     updateSalty(room, b, t * 1000);
     sounds += room.salty.cue?.clips.filter((c) => c.startsWith('/media/sounds/drunk/')).length ?? 0;
+    // The TV's face follows the stage the line was said at.
+    if (room.salty.cue) assert.equal(room.salty.cue.drunk, currentDrunkStage(room));
     if (a.isOver(room.game.state)) { updateSalty(room, b, t * 1000 + 1); break; }
   }
   assert.deepEqual([...seen].filter((x) => x).sort(), [1, 2, 3, 4], 'all four stages');
@@ -105,5 +107,7 @@ test('a drunk trivia game: Salty starts Buzzed, plays drinking sounds, ends Gone
   assert.equal(currentDrunkStage(room), null);
   assert.equal(startGame(room, 'trivia', db, 600_000, 9).ok, true);
   assert.equal(room.drunkGames, 0);
+  updateSalty(room, b, 600_001);
+  assert.equal(room.salty.cue?.drunk, undefined, 'sober face below Drunk');
   db.close();
 });

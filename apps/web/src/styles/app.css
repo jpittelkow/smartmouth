@@ -73,8 +73,15 @@ button, input { font: inherit; color: inherit; }
 .notice { font-size: 30px; color: var(--hot); min-height: 40px; }
 .tv-top-mid { display: flex; align-items: center; gap: 20px; }
 /* Salty in the top bar (no caption row since 2026-11-27); the sound hint hangs below her, out of the flow. */
-.salty-badge { position: relative; width: 80px; height: 80px; flex: none; }
-.salty-badge svg { width: 100%; height: 100%; }
+.salty-badge { position: relative; width: 96px; height: 96px; flex: none; }
+/* Her face: a round portrait with the ink outline; from Hammered on she leans, and Gone sways (guide §3). */
+.salty-face { display: block; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 4px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink); background: var(--stage-2); transition: transform 600ms var(--pop); }
+.salty-face img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.salty-face.lean-3 { transform: rotate(-6deg); }
+.salty-face.lean-4 { animation: salty-sway 3.2s ease-in-out infinite; }
+@keyframes salty-sway { 0%, 100% { transform: rotate(-11deg) translateY(2px); } 50% { transform: rotate(-4deg); } }
+@media (prefers-reduced-motion: reduce) { .salty-face.lean-4 { animation: none; transform: rotate(-8deg); } }
 .salty-badge .sound-hint { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); white-space: nowrap;
   background: var(--ink); border-radius: 999px; padding: 6px 16px; margin: 6px 0 0; z-index: 5; }
 .tiles { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
@@ -256,7 +263,6 @@ button, input { font: inherit; color: inherit; }
 .kid-pic .pic-word { font-size: 44px; }
 
 /* Salty talking */
-.salty-badge.talking svg { animation: chatter 220ms steps(2) infinite; }
 @keyframes chatter { 50% { transform: scaleY(1.12) translateY(-2px); } }
 .sound-hint { color: var(--spot); font-size: 26px; margin-left: 10px; }
 
