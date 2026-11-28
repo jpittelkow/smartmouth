@@ -38,14 +38,14 @@ already allow for a second game.
 **Drinking noises in her own voice (owner, 2026-11-27).** The sips, slurps and hiccups are Salty's own voice. They're
 recorded **once each as separate clips** and picked by ear, then played at the `{…}` markers like any other sound.
 Writing them into the line text was tried in audition 3, and the voice sometimes said the word ("slurp") instead of making
-the noise, so lines never spell noises out. Owner's picks (auditions 3 and 4). Noise text never contains a real word ("Ngk", not "glug" or "slurp"), and the direction says it isn't speech; any take that says a word is out:
+the noise, so lines never spell noises out. Owner's picks (auditions 3 to 5; every sound is now chosen). The processed clips are on the server in `DATA_DIR/media/sounds/drunk/` (trimmed, loudnorm -18), ready to wire in. Noise text never contains a real word ("Ngk", not "glug" or "slurp"), and the direction says it isn't speech; any take that says a word is out:
 
 | Marker | Clip | Text it was recorded from |
 |---|---|---|
 | `{sip}` | `noise-sip-2` | "Mm. Sluurp. ...Ahhh." |
 | `{hiccup}` | `noise-hic-1` | "Hic!" |
 | `{hiccups}` | `noise-hics-2` (stage 4) | "Hic. ...hic. Hic!" |
-| `{slurp}` | none yet: take 3 turned out to say the word "slurp"; retried in audition 5 | |
+| `{slurp}` | rotate `noise-slurpA-2`, `noise-slurpC-2` (audition 5; round 3's take said the word) | "Shhhllllrrrp." / "Ssssssllllllp... mm." |
 | `{gulp}` | rotate `noise-gulpA-2`, `noise-gulpB-2`, `noise-gulpC-3` (audition 4) | "Ngk. Ngk. Ngk. ...Haaah!" / "Mmf. Mmf. Mmf. Mmf. ...Ahhh." / "Gk... gk... gk... gk... aaahhh." |
 | `{clink}` | `clink-gen3` | Stable Audio Open |
 | `{toast}` | `toast-gen1` | Stable Audio Open |
