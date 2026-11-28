@@ -55,8 +55,8 @@ loses to a toddler he takes it personally and theatrically.
 ### How she looks (owner, 2026-11-27)
 The voice became a woman's on 2026-11-27, and Salty got a face to match: a 3D-animated lounge diva with purple hair
 swept to one side, a gold star pin, green eyes with winged liner and gold hoops (picked from five styles). She sits in
-the TV's top bar at 96 px, round, with the ink outline. Her mouth flips between three frames while her voice plays (not
-during drinking noises). At Drunk her face follows the stage: Tipsy blushes, Hammered has heavy lids and leans, Gone has
+the TV's top bar at 96 px, round, with the ink outline. While her voice plays (not during drinking noises) a
+loop of her whole face talking fades in over her still picture. At Drunk her face follows the stage: Tipsy blushes, Hammered has heavy lids and leans, Gone has
 her eyes shut and sways. The logo grin stays the logo. Art and how it was made: `tools/art/salty/README.md`.
 
 ### His rules (these hold at every spice level)
@@ -214,7 +214,7 @@ Both are OFL, self-hosted in the web app (no font CDN at play time). Sizes are i
 
 ### 5.5 Motion
 - Things arrive with a quick overshoot (`cubic-bezier(.34,1.56,.64,1)`, 250–400 ms). Scores count up.
-- Salty's face talks while her voice plays (three mouth frames, flipped at random; §3 "How she looks").
+- Salty's face talks while her voice plays (a LivePortrait loop over her still; §3 "How she looks").
 - Respect `prefers-reduced-motion` on phones: no bounces, just fades.
 - The TV never animates something the players need to read. The question appears and stays put.
 

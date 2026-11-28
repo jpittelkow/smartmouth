@@ -34,8 +34,9 @@ picked by ear by the owner; files are `media/sounds/drunk/<sound>-<n>.20261127.m
 ## Salty's face
 Generated on our own GPU on 2026-11-27 and picked by the owner: the portrait with **Z-Image-Turbo** (Tongyi-MAI,
 Apache-2.0), then her talking mouths and Drunk stages as edits of that same picture with **FLUX.1 Kontext [dev]**
-(Black Forest Labs, FLUX.1 [dev] Non-Commercial License; check it before any commercial use). An original character,
-not a likeness of anyone. Files: `apps/web/src/ui/salty/`; how they were made: `tools/art/salty/README.md`.
+(Black Forest Labs, FLUX.1 [dev] Non-Commercial License; check it before any commercial use). Her talking loops are
+animated with **LivePortrait** (Kuaishou, KwaiVGI/LivePortrait, MIT; its face detector uses InsightFace models, which
+are for non-commercial research) from its sample driving clip `d10.mp4`. An original character, not a likeness of anyone. Files: `apps/web/src/ui/salty/`; how they were made: `tools/art/salty/README.md`.
 
 ## Music and the bell (Snake Manor)
 Generated with **Google Lyria 3** (`google/lyria-3-clip-preview`) through OpenRouter on 2026-11-27, from our own
