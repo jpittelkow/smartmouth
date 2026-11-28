@@ -68,6 +68,10 @@ Related work from 2026-11-27:
     quietly drops one teammate's answer from the count. The reveal shows only totals, so the Overboard can't be
     traced. Salty only says "one answer went overboard".
   - **Formats** to start: Everyone answers, The chain, and Pairs.
+  - **Later format, "The Witness"** (owner idea, 2026-11-27, not built). One player answers a very hard question
+    alone; the rest of the room can see it and has to talk them to the right answer. The question is hard enough that
+    nobody is sure, so a Snake can steer the witness wrong and it passes as an honest mistake. Open points: who sees
+    the choices (the room only, or the witness too), how long the room gets to argue, and how the pot pays.
   - **Shields:** the mission's top scorer is offered a shield privately. A shielded player can't be murdered that
     night. The room is told that a shield was given, but not who has it.
 - **Night:**

@@ -27,8 +27,8 @@
 }
 /* Five rows that always fit the 1920x1080 stage: the top bar, the now strip, the main area (takes what's left and
    never grows), Salty's strip (fixed height) and the court. */
-.sm-tv { position: absolute; inset: 0; padding: 24px 40px 20px; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto auto; gap: 12px; color: var(--sm-pale); font-family: var(--sm-book); }
-.sm-tv.stage-night { grid-template-rows: auto minmax(0, 1fr) auto; background: radial-gradient(700px 520px at 50% 40%, #1b1a24 0%, transparent 70%), #0b0a0d; }
+.sm-tv { position: absolute; inset: 0; padding: 24px 40px 20px; display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; gap: 12px; color: var(--sm-pale); font-family: var(--sm-book); }
+.sm-tv.stage-night { grid-template-rows: auto minmax(0, 1fr); background: radial-gradient(700px 520px at 50% 40%, #1b1a24 0%, transparent 70%), #0b0a0d; }
 .sm-top { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid var(--sm-gold-dim); padding-bottom: 14px; }
 .sm-phase { display: grid; gap: 2px; }
 .sm-phase .n { font-family: var(--sm-caps); font-size: 34px; letter-spacing: .14em; text-transform: uppercase; color: var(--sm-gold); }
@@ -60,13 +60,11 @@
   box-shadow: inset 0 0 0 2px #b8a47a, inset 0 0 0 10px var(--sm-vellum), inset 0 0 0 11px #b8a47a, 0 30px 80px #0009;
 }
 
-/* Salty's herald strip: the seal and his caption on a scroll. */
-.sm-herald { display: flex; align-items: center; gap: 24px; }
-.sm-herald.quiet .scroll { color: #b9b2a2; }
-.sm-herald .scroll { flex: 1; border-top: 1px solid var(--sm-gold-dim); border-bottom: 1px solid var(--sm-gold-dim); padding: 8px 8px; font-size: 32px; font-style: italic; color: var(--sm-vellum); line-height: 1.22; height: 106px; overflow: hidden; display: flex; flex-direction: column; }
-.sm-herald .scroll .line { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.sm-herald .who { display: block; font-style: normal; font-family: var(--sm-caps); font-size: 20px; letter-spacing: .22em; text-transform: uppercase; color: var(--sm-gules); }
-.sm-herald .hint { font-size: 26px; color: var(--sm-muted); }
+/* Salty's seal: top-left corner, out of the layout (no caption since 2026-11-27); the top bar leaves it room. */
+.sm-herald { position: absolute; top: 18px; left: 40px; display: flex; align-items: center; gap: 16px; z-index: 5; pointer-events: none; }
+.sm-herald .hint { font-size: 24px; color: var(--sm-muted); font-style: italic; background: #0b0a0dcc; padding: 4px 14px; border-radius: 4px; white-space: nowrap; }
+.sm-tv:not(.stage-night) .sm-top { padding-left: 112px; }
+.sm-tv.stage-night .sm-herald { opacity: .55; }
 .seal {
   flex: none; width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center;
   background: radial-gradient(circle at 38% 34%, #c2453c, var(--sm-gules) 55%, #6b1a16); box-shadow: 0 0 0 6px #7d221d55, inset 0 -6px 12px #0006;
@@ -305,9 +303,12 @@ body:has(.sm-phone) { background: var(--sm-stone); }
 .sm-now .track li.on { color: var(--sm-stone); background: var(--sm-gold); border-color: var(--sm-gold); }
 
 /* The deal: how it works, one card at a time. */
-.sm-deal { display: grid; align-content: center; gap: 22px; }
-.sm-deal .sm-lede { text-align: center; }
-.sm-deal .how { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.sm-deal { display: grid; place-items: center; }
+.deal-card { padding: 40px 72px; text-align: center; display: grid; gap: 10px; animation: sm-brief-in .7s ease-out both; }
+.deal-card .kicker { font-family: var(--sm-caps); letter-spacing: .3em; text-transform: uppercase; font-size: 24px; color: var(--sm-gules); margin: 0; }
+.deal-card h2 { font-family: var(--sm-uncial); font-weight: 400; font-size: 96px; line-height: 1; margin: 0; color: var(--sm-ink); }
+.deal-card p { font-family: var(--sm-book); font-size: 40px; margin: 0; color: var(--sm-ink); }
+.deal-card .count { font-size: 34px; font-style: italic; color: #5a4632; border-top: 2px solid var(--sm-gold-dim); padding-top: 12px; margin-top: 8px; }
 .how-card { padding: 22px 24px; display: grid; gap: 8px; align-content: start; opacity: 0; transform: translateY(16px); transition: opacity .5s, transform .5s cubic-bezier(.34, 1.56, .64, 1); }
 .how-card.on { opacity: 1; transform: none; }
 .how-card .k { font-family: var(--sm-uncial); font-size: 48px; color: var(--sm-gules); line-height: 1; }
@@ -323,12 +324,12 @@ body:has(.sm-phone) { background: var(--sm-stone); }
 @keyframes sm-pop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
 
 /* The debate: the clock, and what the table knows. */
-.sm-debate { display: grid; grid-template-columns: 420px 1fr; gap: 48px; align-items: center; }
+.sm-debate { display: grid; grid-template-columns: 420px 1fr; gap: 48px; align-items: center; min-height: 0; }
 .sm-debate .clock-side { text-align: center; }
 .record { background: #00000040; border-left: 4px solid var(--sm-gold); padding: 18px 26px; min-height: 0; }
 .record h3 { font-family: var(--sm-caps); font-size: 24px; letter-spacing: .2em; text-transform: uppercase; color: var(--sm-gold); margin: 0 0 10px; font-weight: 600; }
 .record ul { margin: 0; padding-left: 1.1em; display: grid; gap: 8px; }
-.record li, .record p { font-size: 30px; line-height: 1.25; color: var(--sm-vellum); margin: 0; }
+.record li, .record p { font-size: 28px; line-height: 1.25; color: var(--sm-vellum); margin: 0; }
 
 /* Votes are sealed letters. Each lands on the table; at the reveal its seal cracks and it opens. */
 .letters { display: flex; flex-wrap: wrap; gap: 22px; justify-content: center; max-width: 1300px; }
@@ -378,7 +379,8 @@ body:has(.sm-phone) { background: var(--sm-stone); }
 .sm-phone.night .sm-guide { background: #17151a; border-left-color: #6b6250; }
 
 /* Table talk: what players typed (or the bots said) during the Round Table. */
-.sm-debate-side { display: grid; gap: 22px; min-width: 0; }
+.sm-debate-side { display: grid; grid-template-rows: minmax(0, auto) auto; gap: 18px; min-width: 0; min-height: 0; max-height: 100%; overflow: hidden; align-self: stretch; align-content: center; }
+.sm-debate-side .record { overflow: hidden; }
 .talk { background: #00000040; border-left: 4px solid var(--sm-gules); padding: 14px 26px; min-width: 0; }
 .talk h3 { font-family: var(--sm-caps); font-size: 22px; letter-spacing: .2em; text-transform: uppercase; color: var(--sm-gules); margin: 0 0 8px; font-weight: 600; filter: brightness(1.5); }
 .talk ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
@@ -417,3 +419,8 @@ body:has(.sm-phone) { background: var(--sm-stone); }
 .sm-brief-phone li .n { font-family: var(--sm-caps); font-weight: 700; color: var(--sm-gules); text-align: right; }
 .sm-brief-phone .stakes { margin: 4px 0 0; font-weight: 600; font-size: 16px; border-top: 1px solid var(--sm-gold-dim); padding-top: 8px; }
 .sm-brief-phone .note { margin: 0; font-style: italic; font-size: 15px; color: #5a4632; }
+
+/* Fine print on a rules card (the first mission has more rules than three steps hold). */
+.brief-card .fine { margin: 0 0 8px; padding-left: 1.1em; display: grid; gap: 4px; font-family: var(--sm-book); font-size: 27px; line-height: 1.2; color: #3d3020; animation: sm-step-in .6s ease-out both; }
+.sm-brief-phone .fine { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; font-size: 15px; line-height: 1.3; }
+@media (prefers-reduced-motion: reduce) { .brief-card .fine { animation: none; } }

@@ -9,6 +9,8 @@ export interface Brief {
   stakes: string;
   /** One small worked example or catch. */
   note: string;
+  /** The fine print, when the steps can't hold every rule. */
+  fine?: string[];
   /** The stage the card leads into, for the round track and the music. */
   leads: 'deal' | 'mission' | 'debate' | 'night' | 'endVote';
 }
@@ -16,16 +18,21 @@ export interface Brief {
 export const BRIEFS: Record<BriefId, Brief> = {
   game: {
     title: 'Snake Manor',
-    steps: ['Most of you are Guests. A few are secret Snakes, and the Snakes know each other.', 'Each round: a trivia mission for the pot, the Round Table vote, then night.', 'At night the Snakes make someone vanish. The vanished become Ghosts.'],
-    stakes: 'Guests win if every Snake is banished. Snakes win if one survives to the end.',
+    steps: ['Most of you are Guests. A few are secret Snakes, and the Snakes know each other.', 'Each round: a trivia mission fills the pot, the Round Table votes someone out, then night.', 'At night the Snakes make someone vanish. The vanished become Ghosts.'],
+    stakes: 'Guests win if every Snake is banished. Snakes win if one survives to the end. The winners split the pot.',
     note: 'Your secret role is on your phone next. Keep a straight face.',
     leads: 'deal',
   },
   'mission-everyone': {
     title: 'The Mission',
-    steps: ['A question comes up on every phone. Answer it quickly.', 'Each right answer adds crowns to the pot.', 'A Snake can secretly sink one right answer.'],
-    stakes: 'Hit the target and the pot gets a bonus. Miss it and the Snakes get a Dagger.',
-    note: 'The top scorer gets a secret shield: nobody can make them vanish tonight.',
+    steps: ['Six questions. Each of you gets your own on your phone, with about 20 seconds to answer.', 'Every right answer adds 100 crowns to the pot. Everyone’s answers count together.', 'Get 3 in 4 right (the target, up top) for a 500-crown bonus. Miss it and the Snakes earn a Dagger.'],
+    stakes: 'The Snakes want you to miss: a Dagger gives them a dirty trick at night.',
+    note: 'Watch who misses the easy ones.',
+    fine: [
+      'A Snake can answer wrong on purpose.',
+      'Once a mission, a Snake can secretly sink someone else’s right answer. Salty says it happened, never whose.',
+      'The top scorer gets a secret shield: nobody can make them vanish tonight.',
+    ],
     leads: 'mission',
   },
   'mission-chain': {

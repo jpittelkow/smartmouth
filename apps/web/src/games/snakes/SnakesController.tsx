@@ -190,6 +190,7 @@ function BriefPhone({ g }: { g: SnakesPlayerView }) {
       <h2>{b.title}</h2>
       <ol>{b.steps.map((t, i) => <li key={i}><span className="n">{ROMAN[i]}</span><span>{t}</span></li>)}</ol>
       <p className="stakes">{b.stakes}</p>
+      {b.fine && <ul className="fine">{b.fine.map((t) => <li key={t}>{t}</li>)}</ul>}
       <p className="note">{b.note}</p>
     </div>
   );

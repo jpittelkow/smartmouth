@@ -3,7 +3,7 @@
 //
 // Every screen says three things: what to do now, what comes next, and where we are in the round (the "now" strip).
 // Every moment's picture, sound and caption tell one story: votes are sealed letters, the reveal opens them.
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ClientMsg, HostGameView, PublicSeat } from '@smartmouth/protocol';
 import { rules, type HistoryEvent, type SnakesHostView, type SPublicPlayer, type TalkLine } from '@smartmouth/game-snakes';
 import { serverNow } from '../../socket.ts';
@@ -95,6 +95,7 @@ export function SnakesHost({ view, send }: { view: HostGameView; send: (m: Clien
   const inLoop = TRACK.some((t) => t.stages.includes(leadStage(g)));
   return (
     <div className={`sm-tv stage-${g.stage}`}>
+      <Herald cue={view.salty} quiet={night} />
       {!night && (
         <div className="sm-top">
           <div className="sm-phase"><span className="n">{STAGE_TITLE[g.stage]}</span><span className="sub">{g.endVote || g.unmask || g.final ? 'The endgame' : `Round ${g.round}`}</span></div>
@@ -131,7 +132,6 @@ export function SnakesHost({ view, send }: { view: HostGameView; send: (m: Clien
         {g.stage === 'final' && <Final g={g} seat={seat} />}
       </div>
 
-      <Herald cue={view.salty} quiet={night} />
       {!night && <Court players={g.players} seat={seat} joinUrl={view.joinUrl} code={view.code} hideRoleOf={g.stage === 'banish' || g.stage === 'voteReveal' ? g.banished?.id ?? null : null} />}
     </div>
   );
@@ -139,48 +139,20 @@ export function SnakesHost({ view, send }: { view: HostGameView; send: (m: Clien
 
 const formatName = (f: string) => (f === 'chain' ? 'The chain: one at a time, a run of right answers pays more' : f === 'pairs' ? 'Pairs: a pair scores only when both are right' : 'Everyone answers their own question');
 
-/** Salty's strip: his seal pulses while he talks; a line in timed parts shows each part's caption at its time. */
+/**
+ * Salty on the TV: his seal pulses while he talks. No caption text (owner, 2026-11-27: his words take too much room);
+ * the seal sits in the top bar's corner, out of the layout, and stays mounted so his audio never restarts.
+ */
 function Herald({ cue, quiet }: { cue: HostGameView['salty']; quiet: boolean }) {
   const { talking, blocked } = useSalty(cue);
   useEffect(() => { duck(talking); }, [talking]);
-  const now = useNow(250);
   const sound = useSoundCaption();
-  const part = cue?.parts?.filter((p) => p.at <= now).at(-1);
-  const full = cue?.parts ? (part?.caption ?? '…') : (cue?.caption ?? '…');
-  // A long line (a rules card's explanation) pages through at about speaking pace, two lines at a time.
-  const pages = useMemo(() => captionPages(full), [full]);
-  const since = useRef({ text: '', at: 0 });
-  if (since.current.text !== full) since.current = { text: full, at: now };
-  let page = 0;
-  for (let t = now - since.current.at, i = 0; i < pages.length - 1; i++) { t -= pages[i]!.length * SPOKEN_MS_PER_CHAR; if (t < 0) break; page = i + 1; }
-  const text = pages[page] ?? full;
   return (
-    <div className={`sm-herald${quiet ? ' quiet' : ''}`} role="status">
+    <div className={`sm-herald${quiet ? ' quiet' : ''}`} aria-label={talking ? 'The Lord of the Manor is talking' : 'The Lord of the Manor'}>
       <Seal talking={talking} />
-      <div className="scroll">
-        <span className="who">The Lord of the Manor{sound && <span className="sm-sound"> · {sound}</span>}</span>
-        <span className="line">{text}</span>
-        {blocked && <span className="hint">Press any key or click to hear him.</span>}
-      </div>
+      {(blocked || sound) && <span className="hint">{blocked ? 'Press any key or click to hear him.' : sound}</span>}
     </div>
   );
-}
-
-/** About how fast Salty speaks (calibrated on his recordings: roughly 0.06 s a character). */
-const SPOKEN_MS_PER_CHAR = 62;
-const PAGE_CHARS = 120;
-/** A caption cut into pages of whole sentences that fit the herald's two lines. */
-function captionPages(text: string): string[] {
-  if (text.length <= PAGE_CHARS) return [text];
-  const sentences = text.match(/[^.!?]+[.!?]+["”’)]*\s*|[^.!?]+$/g) ?? [text];
-  const pages: string[] = [];
-  for (const raw of sentences) {
-    const sn = raw.trim();
-    const last = pages.at(-1);
-    if (last !== undefined && (last + ' ' + sn).length <= PAGE_CHARS) pages[pages.length - 1] = `${last} ${sn}`;
-    else pages.push(sn);
-  }
-  return pages;
 }
 
 /** `hideRoleOf`: the player being banished right now; their role waits for the reveal (ADR 0024). */
@@ -205,25 +177,17 @@ function Court({ players, seat, joinUrl, code, hideRoleOf }: { players: SPublicP
   );
 }
 
-/** The deal: how the game works, one card at a time, while everyone checks their role. */
+/** The deal: everyone checks their role. The rules card before it already explained the game (owner, 2026-11-27). */
 function Deal({ g }: { g: SnakesHostView }) {
   const n = rules.snakeCount(g.players.length);
-  const now = useNow(250);
-  const steps = [
-    { h: 'Missions', p: 'Trivia for the pot. The Snakes try to sink them without being caught.' },
-    { h: 'The Round Table', p: 'Argue out loud, then vote someone out in secret.' },
-    { h: 'Night', p: 'Everyone’s phone looks the same. The Snakes pick someone to vanish.' },
-    { h: 'Winning', p: 'Guests win if every Snake is gone. Snakes win if one survives to the end.' },
-  ];
-  const shown = Math.min(steps.length, Math.floor((now - g.stageStart) / 2500) + 1);
-  useCues(`deal:${g.stageStart}`, () => steps.map((_, i) => ({ at: g.stageStart + i * 2500, run: () => { SFX.cards(); if (i === 0) captionSound('[cards being dealt]'); } })));
+  useCues(`deal:${g.stageStart}`, () => [{ at: g.stageStart + 150, run: () => { SFX.cards(); captionSound('[cards being dealt]'); } }]);
   return (
     <div className="sm-deal">
-      <p className="sm-lede">{n === 1 ? 'One of you is a Snake.' : `${n} of you are Snakes.`} {g.players.some((p) => p.kid) ? 'The youngest guests are always Guests.' : ''}</p>
-      <div className="how">
-        {steps.map((s, i) => (
-          <div key={s.h} className={`vellum how-card${i < shown ? ' on' : ''}`}><span className="k">{i + 1}</span><h3>{s.h}</h3><p>{s.p}</p></div>
-        ))}
+      <div className="vellum deal-card">
+        <p className="kicker">Your secret role</p>
+        <h2>Look at your phone</h2>
+        <p>Hold the card to see it. Tell no one.</p>
+        <p className="count">{n === 1 ? 'One of you is a Snake.' : `${n} of you are Snakes.`}{g.players.some((p) => p.kid) ? ' The youngest guests are always Guests.' : ''}</p>
       </div>
     </div>
   );
@@ -240,7 +204,8 @@ function Briefing({ g }: { g: SnakesHostView }) {
         <h2>{b.title}</h2>
         <ol>{b.steps.map((t, i) => <li key={i} style={{ animationDelay: `${0.6 + i * 1.6}s` }}><span className="n">{ROMAN[i]}</span><span>{t}</span></li>)}</ol>
         <p className="stakes" style={{ animationDelay: '5.4s' }}>{b.stakes}</p>
-        <p className="note" style={{ animationDelay: '6.6s' }}>{b.note}</p>
+        {b.fine && <ul className="fine" style={{ animationDelay: '6.6s' }}>{b.fine.map((t) => <li key={t}>{t}</li>)}</ul>}
+        <p className="note" style={{ animationDelay: b.fine ? '7.8s' : '6.6s' }}>{b.note}</p>
       </div>
     </div>
   );
