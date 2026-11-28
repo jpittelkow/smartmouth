@@ -6,7 +6,7 @@ import { BANDS, SPICE_LABEL } from '@smartmouth/protocol';
 import type { TriviaHostView, TPublicQuestion } from '@smartmouth/game-trivia';
 import { Blob, PictureCard, SlotShape, Tick } from '../../ui/art.tsx';
 import { serverNow } from '../../socket.ts';
-import { SaltyStrip } from '../../host/SaltyStrip.tsx';
+import { SaltyBadge } from '../../host/SaltyStrip.tsx';
 import { sayClip, useSalty } from '../../host/voice.ts';
 import { bang, bed, duck, fx, stopMusic } from './audio.ts';
 
@@ -92,7 +92,7 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
     <>
       <div className="tv-top">
         <div className="round-chip display">Round {Math.min(g.round, g.rounds)} of {g.rounds}</div>
-        <div className="spice-chip">Spice <b>{SPICE_LABEL[view.spice.effective]}</b></div>
+        <div className="tv-top-mid"><SaltyBadge cue={view.salty} /><div className="spice-chip">Spice <b>{SPICE_LABEL[view.spice.effective]}</b></div></div>
         <div className="join-chip">Join: <b>{view.joinUrl.replace(/^https?:\/\//, '').replace(/\/play\?code=.*$/, '')}</b> · <b>{view.code}</b></div>
       </div>
 
@@ -114,8 +114,6 @@ export function TriviaHost({ view, send }: { view: HostGameView; send: (m: Clien
         {g.stage === 'turnReveal' && g.turn && g.turn.picked === g.turn.correct && <Confetti seed={`little-${g.round}`} count={50} />}
         {g.stage === 'final' && <Confetti seed="final" count={110} />}
       </div>
-
-      <SaltyStrip cue={view.salty} />
 
       <div className={`tiles compact${view.players.length > 6 ? ' two-rows' : ''}`}>
         {view.players.map((p) => {

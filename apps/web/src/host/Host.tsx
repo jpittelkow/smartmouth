@@ -4,7 +4,7 @@ import QRCode from 'qrcode';
 import { APP_NAME, BANDS, LEVELS, LEVEL_LABEL, MAX_PLAYERS, SPICE_LABEL, type ClientMsg, type HostLobbyView, type HostView, type ServerMsg } from '@smartmouth/protocol';
 import { useSocket, store, save, serverNow } from '../socket.ts';
 import { Blob, Grin, Tick } from '../ui/art.tsx';
-import { SaltyStrip } from './SaltyStrip.tsx';
+import { SaltyBadge } from './SaltyStrip.tsx';
 import { TriviaHost } from '../games/trivia/TriviaHost.tsx';
 import { bed, fx } from '../games/trivia/audio.ts';
 import { SnakesHost } from '../games/snakes/SnakesHost.tsx';
@@ -156,9 +156,12 @@ function Lobby({ view, send, problem }: { view: HostLobbyView; send: (m: ClientM
     <>
       <div className="tv-top">
         <div className="wordmark display">sm<Grin />rtmouth</div>
-        <div className="spice-chip">
-          Spice <b>{SPICE_LABEL[view.spice.effective]}</b>
-          {capped && <span className="muted">— capped: {capReason(view)}</span>}
+        <div className="tv-top-mid">
+          <SaltyBadge cue={view.salty} />
+          <div className="spice-chip">
+            Spice <b>{SPICE_LABEL[view.spice.effective]}</b>
+            {capped && <span className="muted">— capped: {capReason(view)}</span>}
+          </div>
         </div>
       </div>
 
@@ -185,8 +188,6 @@ function Lobby({ view, send, problem }: { view: HostLobbyView; send: (m: ClientM
           <div className="notice">{problem ?? view.notice ?? ''}</div>
         </div>}
       </div>
-
-      <SaltyStrip cue={view.salty} />
 
       <div className={`tiles${view.players.length > 6 ? ' two-rows' : ''}`}>
         {view.players.map((p) => (
