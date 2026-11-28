@@ -1,9 +1,9 @@
 # Salty's face
 
 The owner picked her on 2026-11-27 from five styles ("E", the 3D-animated lounge diva, take 11). Original character,
-made on the local RTX 3090; not a likeness of anyone. The game uses `apps/web/src/ui/salty/`: `s<stage>.jpg`, her still picture, and `talk-s<stage>.mp4`, a 12-second
+made on the local RTX 3090; not a likeness of anyone. The game uses `apps/web/src/ui/salty/`: `s<stage>.jpg`, her still picture, and `talk-s<stage>.webp`, a 12-second
 loop of her whole face talking (stage 1 sober, which Buzzed shares; 2 Tipsy, 3 Hammered, 4 Gone). The TV
-(`apps/web/src/ui/SaltyFace.tsx`) fades the loop in while her voice plays and adds the lean from Hammered on.
+(`apps/web/src/ui/SaltyFace.tsx`) lays the loop over the still while her voice plays and adds the lean from Hammered on.
 
 How they were made (paths are arguments; outputs went to a scratch folder, not the repo):
 

@@ -1,39 +1,33 @@
 // Salty's face on the TV (owner's pick 2026-11-27: the 3D-animated diva, "E", with her whole face moving, "B").
 // Original art made on the local GPU (how: tools/art/salty/README.md). Each look (sober, Tipsy, Hammered, Gone) is a
-// still picture plus a 12-second LivePortrait loop of her talking, made from that same picture. While her voice plays
-// the loop fades in over the still; when she stops it fades out. From Hammered on she leans, and Gone sways.
-import { useEffect, useRef, useState } from 'react';
+// still picture plus a 12-second LivePortrait loop of her talking, made from that same picture, as an animated WebP.
+// While her voice plays the loop sits over the still, restarted from its first frame (which is the still); when she
+// stops, the still is back. From Hammered on she leans, and Gone sways.
+// Not a <video>: on the Chromecast a video draws on its own layer over everything, a black circle while it loads.
+import { useEffect, useState } from 'react';
 
-const FILES = import.meta.glob<string>('./salty/*.{jpg,mp4}', { eager: true, query: '?url', import: 'default' });
+const FILES = import.meta.glob<string>('./salty/*.{jpg,webp}', { eager: true, query: '?url', import: 'default' });
 const still = (stage: number) => FILES[`./salty/s${stage}.jpg`] ?? '';
-const loop = (stage: number) => FILES[`./salty/talk-s${stage}.mp4`] ?? '';
+const loop = (stage: number) => FILES[`./salty/talk-s${stage}.webp`] ?? '';
+
+const warmed = new Set<number>();
+/** Fetch a stage's loop ahead of time so it starts the moment she speaks. */
+function warm(stage: number) {
+  if (warmed.has(stage) || typeof Image === 'undefined') return;
+  warmed.add(stage);
+  new Image().src = loop(stage);
+}
 
 /** `stage`: 0 or 1 sober (Buzzed looks sober), 2 Tipsy, 3 Hammered, 4 Gone. */
 export function SaltyFace({ talking, stage = 0 }: { talking: boolean; stage?: number }) {
   const s = Math.min(4, Math.max(1, stage || 1));
-  const video = useRef<HTMLVideoElement>(null);
-  // On the Chromecast a video draws on its own layer and ignores opacity: a loaded-but-hidden one is a black circle
-  // (2026-11-27). So the video is out of the page until she talks, sits under her still while it starts, and the still
-  // only goes once the loop is really moving.
-  const [live, setLive] = useState(false);
-  useEffect(() => {
-    const v = video.current;
-    if (!v) return;
-    if (talking) {
-      // Start from the top: the loop's first frame is her still picture, so the fade-in has nothing to jump.
-      v.currentTime = 0;
-      void v.play().catch(() => {});
-      return;
-    }
-    const t = setTimeout(() => v.pause(), 250); // after the fade-out
-    return () => clearTimeout(t);
-  }, [talking, s]);
+  const [take, setTake] = useState(0); // a new key each time she starts talking restarts the animation
+  useEffect(() => { warm(s); if (s < 4) warm(s + 1); }, [s]);
+  useEffect(() => { if (talking) setTake((n) => n + 1); }, [talking]);
   return (
-    <span className={`salty-face lean-${s}${talking ? ' talking' : ''}${talking && live ? ' live' : ''}`}>
+    <span className={`salty-face lean-${s}`}>
       <img src={still(s)} alt="" draggable={false} />
-      <video ref={video} key={s} src={loop(s)} muted loop playsInline preload="auto" aria-hidden="true"
-        onTimeUpdate={(e) => { if (e.currentTarget.currentTime > 0.1 && !e.currentTarget.paused) setLive(true); }}
-        onPause={() => setLive(false)} onEmptied={() => setLive(false)} />
+      {talking && <img key={`${s}-${take}`} className="talk" src={loop(s)} alt="" draggable={false} />}
     </span>
   );
 }
