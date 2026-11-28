@@ -16,7 +16,11 @@ test('room codes use only the safe alphabet and avoid taken codes', () => {
 
 test('spice is capped by the youngest player (ADR 0014)', () => {
   assert.equal(spiceCap([]), 'mild');
-  assert.equal(spiceCap(['grownups', 'grownups']), 'filthy');
+  assert.equal(spiceCap(['grownups', 'grownups']), 'drunk');
+  // Drunk is grown-ups only: any younger player takes it away at once.
+  assert.equal(effectiveSpice('drunk', ['grownups', 'teens']), 'hot');
+  assert.equal(effectiveSpice('drunk', ['grownups', 'kids']), 'spicy');
+  assert.equal(effectiveSpice('drunk', ['grownups']), 'drunk');
   assert.equal(spiceCap(['grownups', 'teens']), 'hot');
   assert.equal(spiceCap(['grownups', 'tweens', 'kids']), 'spicy');
   assert.equal(spiceCap(['grownups', 'little']), 'mild');

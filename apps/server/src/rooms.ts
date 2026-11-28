@@ -54,6 +54,8 @@ export interface Room {
   asked: Set<number>;
   /** What Salty is saying (salty.ts). */
   salty: SaltyState;
+  /** Drunk games this room has finished in a row: the bar tab (drunk.ts). Back to 0 once a game runs below Drunk. */
+  drunkGames: number;
 }
 
 export interface RunningGame {
@@ -87,7 +89,7 @@ export class RoomStore {
     const code = makeCode((c) => this.rooms.has(c));
     const room: Room = {
       code, hostToken: makeToken(), hostConnected: false, seats: [], spiceChosen: 'spicy', voice: 'female', drama: 'full', length: 'short', level: 'mixed', setup: null, ready: new Set(), pausedAt: null,
-      notice: null, lastActive: now, nextSeat: 1, game: null, asked: new Set(), salty: newSalty(),
+      notice: null, lastActive: now, nextSeat: 1, game: null, asked: new Set(), salty: newSalty(), drunkGames: 0,
     };
     this.rooms.set(code, room);
     return room;

@@ -23,6 +23,14 @@ gasp, fanfare, misfanfare, chime, birds, tick and lute, plus `hiss.g1.mp3` (the 
 `tools/sounds/sfx-hiss.json`, take 2). Powered by Stability AI, under the Stability AI Community
 License (https://stability.ai/community-license-agreement).
 
+## Drunk Salty's drinking sounds
+The mouth noises (sip, hiccup, sloppy hiccups, three gulps, two slurps) are Salty's own voice, made with the same
+speech model as her lines (`google/gemini-3.8-flash-tts`, voice Laomedeia) through OpenRouter on 2026-11-27, from
+`tools/voice/audition-drunk.mjs`. The glass and bottle sounds (clink, toast, pour, slam, roll) were generated on our
+own GPU with **Stable Audio Open 1.0** on 2026-11-27, from the prompts in `tools/sounds/sfx-drunk.json`. Powered by
+Stability AI, under the Stability AI Community License (https://stability.ai/community-license-agreement). All
+picked by ear by the owner; files are `media/sounds/drunk/<sound>-<n>.20261127.mp3` (map in `apps/server/src/drunk.ts`).
+
 ## Music and the bell (Snake Manor)
 Generated with **Google Lyria 3** (`google/lyria-3-clip-preview`) through OpenRouter on 2026-11-27, from our own
 prompts in `tools/sounds/sounds.mjs`. The files carry Google's content credentials (a C2PA tag).

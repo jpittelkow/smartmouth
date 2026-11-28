@@ -152,8 +152,8 @@ function AdminSheet({ view, onSpice, onVoice, onDrama, onLength, onBots }: {
         ))}
       </div>
       <div className="muted">
-        {view.spice.cap === 'filthy'
-          ? 'Grown-ups only, so anything goes. Filthy means real swearing.'
+        {view.spice.cap === 'drunk'
+          ? 'Grown-ups only, so anything goes. Filthy means real swearing. Drunk: Salty starts one drink in and gets wasted as the game goes, and stays drunk for the next game.'
           : `Capped at ${SPICE_LABEL[view.spice.cap]} because of the youngest player in the room.`}
       </div>
       <h2>Game length</h2>

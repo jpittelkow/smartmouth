@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 const repo = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const brief = JSON.parse(readFileSync(join(repo, 'content', 'voice', 'brief.json'), 'utf8'));
 const { lines } = JSON.parse(readFileSync(join(repo, 'content', 'voice', 'lines.json'), 'utf8'));
-const SPICES = ['mild', 'spicy', 'hot', 'filthy'];
+const SPICES = ['mild', 'spicy', 'hot', 'filthy', 'drunk'];
 const short = process.argv.includes('--short');
 
 const count = {};

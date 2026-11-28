@@ -193,7 +193,7 @@ test('Mild and Spicy lines say vanished, never murdered; reveal lines never need
 
 test('the banishment is said in two parts: the setup, then the payoff for the revealed role', () => {
   const said: string[] = [];
-  const tools = { line: (m: string) => { said.push(m); return { text: m, clip: `/media/voice/${m}.mp3` }; }, reads: () => ({ prompt: null, answers: [], explain: null }) };
+  const tools = { line: (m: string) => { said.push(m); return { text: m, clip: `/media/voice/${m}.mp3`, clips: [`/media/voice/${m}.mp3`] }; }, reads: () => ({ prompt: null, answers: [], explain: null }) };
   let s = rules.init(Array.from({ length: 6 }, (_, i) => ({ id: `p${i + 1}`, band: 'grownups' as Band })), { spice: 'hot', seed: 2, drama: 'full' }, {}, 0);
   s = { ...s, stage: 'banish', banished: s.order.find((id) => s.players[id]?.role === 'snake') ?? null };
   const out = snakes.say(s, tools);

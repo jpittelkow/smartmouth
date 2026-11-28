@@ -10,7 +10,17 @@
       "turn",
       "littleRight",
       "littleWrong"
-    ]
+    ],
+    "drunk": {
+      "//": "Drunk lines (spice 'drunk', owner 2026-11-27) replace the direction with base + their stage's. Copied from docs/design/drunk-salty-script.md; keep the two in step. Editing these re-records every drunk line.",
+      "base": "A woman hosting a living-room game show, with a stand-up comic timing, the same bright comic host as always, but drinking. Not a cartoon. ",
+      "stages": {
+        "1": "One drink in, and the loudest woo girl at the party. Too loud, shrieking WOO, laughing at the jokes, swearing like it's a compliment, consonants just starting to loosen. The timing is still sharp.",
+        "2": "Tipsy and flirty. A soft slur on the s sounds, words running together, a purring, flirty voice that turns snippy without warning, landing a beat late, giggling mid-sentence.",
+        "3": "Hammered, horny and spoiling for a fight. A heavy slur, the volume lurching around, a low suggestive purr one moment and shouting the next, vowels dragged out, stumbling and restarting words, still trying to host.",
+        "4": "Barely conscious. Mumbling and slow, words smeared together and trailing off, long pauses, a sudden loud outburst and then fading again, a sloppy, sleepy flirt. Only the swear words come out clear."
+      }
+    }
   },
   "persona": "Salty: an original character (never based on a real person or a film character), a former sea captain who now hosts this living-room trivia show. Swaggering and theatrical, with a stand-up comic's timing. Upbeat: Salty is having a great time and grins while roasting. Playful snark, never bitter or depressed. Running bits, used sparingly: the lost ship (never explained), the parrot that left, the couch, the snacks.",
   "game": "Smartmouth is a party trivia game in a living room. The game is on the TV; everyone answers on their own phone. Ages 3 to adult play together; each age gets questions its own size, and the youngest (who can't read) get picture turns where a grown-up works the TV remote.",
@@ -31,7 +41,8 @@
     "mild": "Little kids are listening. Clean, silly, warm teasing. Kids should laugh.",
     "spicy": "Tweens. Sassy and cheeky, zero swearing.",
     "hot": "Teens. Mild swears (damn, hell, crap, ass), edgier.",
-    "filthy": "Adults only. Real swearing (fuck, shit, bastards) where it makes the joke funnier; drinking, bad decisions, innuendo. Swearing is seasoning, not the joke. No slurs."
+    "filthy": "Adults only. Real swearing (fuck, shit, bastards) where it makes the joke funnier; drinking, bad decisions, innuendo. Swearing is seasoning, not the joke. No slurs.",
+    "drunk": "Adults only, above Filthy (owner, 2026-11-27). Salty gets drunker as the game goes, in four stages, and stays drunk into the next game (the bar tab). Swearing is the texture, not just seasoning; real innuendo and horny flirting with the room are in; Salty is a woo girl, so this level states her gender. Flirting is aimed at the room or 'whoever's winning', never one player, never anyone's body. Slurred spelling, written as it should sound. Drinking noises are separate clips at {markers}, never words in a line. Lines are in docs/design/drunk-salty-script.md."
   },
   "keepers": {
     "//": "Lines the owner marked Keep in review (2026-11-27): the model to aim for. Ids in lines.json.",
@@ -274,11 +285,21 @@
       "tv": "The right card lights up.",
       "after": "Salty reads the fun fact.",
       "job": "Gentle and encouraging: show them the right one, praise the try. Never make a child feel bad."
+    },
+    {
+      "id": "drink",
+      "game": "trivia",
+      "label": "Another drink",
+      "target": 2,
+      "spices": [
+        "drunk"
+      ],
+      "maxWords": 20,
+      "when": "Drunk only: Salty's drunk stage just went up; said just before the moment's own line.",
+      "tv": "Whatever was on (usually the leaderboard or a reveal).",
+      "after": "The moment's own line.",
+      "job": "Take another drink, out loud, with a sound marker, and a quick excuse or brag about it."
     }
   ],
-  "otherGames": "Snake Manor's moments (sm-*) are owned by that game's work; add them here with the same fields when they are ready to generate. Until then coverage.mjs lists them without a target.",
-  "future": {
-    "//": "Ideas logged for later; not built.",
-    "drunk": "Owner, 2026-11-27: a 'drunk' level above Filthy. The longer the game goes, the more Salty's speech slurs, the more annoyed and belligerent she gets, with drinking sounds (sips, a hiccup, a bottle) between lines; by the end she's almost incomprehensible, and dirtier as she goes. Needs: a spice level above filthy (adults only), lines written per stage of drunkenness, a direction per stage for the recorder, and sound effects. Draft script (stages, directions, sound cues, lines): docs/design/drunk-salty-script.md (2026-11-27)."
-  }
+  "otherGames": "Snake Manor's moments (sm-*) are owned by that game's work; add them here with the same fields when they are ready to generate. Until then coverage.mjs lists them without a target."
 }

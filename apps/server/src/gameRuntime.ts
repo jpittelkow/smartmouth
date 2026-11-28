@@ -45,6 +45,7 @@ export function startGame(room: Room, gameId: string, db: Db, now: number, seed:
   if (dryRun) return { ok: true };
   room.game = { id: manifest.id, state: r.state, seed, logged: 0 };
   room.notice = null;
+  if (spiceState(room).effective !== 'drunk') room.drunkGames = 0;
   return { ok: true };
 }
 
@@ -169,6 +170,9 @@ export function endGame(room: Room): void {
     const scores = a.scores(g.state);
     for (const seat of room.seats) seat.score += scores[seat.id] ?? 0;
   }
+  // The bar tab: a Drunk game played at least halfway leaves Salty drunker for the next one.
+  if (spiceState(room).effective !== 'drunk') room.drunkGames = 0;
+  else if (a.isOver(g.state) || (a.progress?.(g.state) ?? 0) >= 0.5) room.drunkGames++;
   room.game = null;
   room.pausedAt = null;
 }

@@ -90,14 +90,17 @@ Each stage is added to the base: "A woman hosting a living-room game show, with 
 **allRight**
 - Everybody got it! WOO! Brains get me so wet. ...My drink. My drink got wet. Cheers! `{toast}`
 - All of you? Ugh. Now I've got no excuse to drink. Drinking anyway, bitches. `{sip}`
+- Everybody! WOO! I'm so proud I could kiss every one of you. On the mouth. ...Drink first.
 
 **allWrong**
 - Nobody! [laughs] Dumb as shit, all of you. I love it. That's a drink for me. Here's what it was.
 - All wrong! Oh, tonight is gonna be fucking wonderful for my liver.
+- Not one of you. [laughs] Holy shit. You're cute, but you're fucking stupid. Here's the answer.
 
 **mixed**
 - Some of you got it. The rest of you, drink. I'll join you. Supportively. WOO!
 - Half right. Like my last marriage. ...I was the wrong fucking half.
+- Some right, some wrong. Like every guy I've ever taken home. WOO!
 
 **drink** _(new moment: plays once each time the stage goes up)_
 - `{sip}` Ahh. That's the shit. Okay. Where the fuck were we?
@@ -123,18 +126,21 @@ Each stage is added to the base: "A woman hosting a living-room game show, with 
 **allRight**
 - Everybody?! WOOO! That'sh teamwork. I'd make out with every shingle one of you. Who are you people again?
 - You all got it. Shmart people turn me on. And you're all fucking geniushes. ...Thish ish a problem.
+- `{hiccup}` All of you got it?! I'm getting turned on. Ish that weird? Thash weird.
 
 **allWrong**
 - `{hiccup}` Nobody got it! [laughs] Me neither, and I've got the fucking answer right here. Lemme read it.
 - All of you. Wrong. I'm not judging. I'm drinking. Shame thing. ...Same thing.
+- Wrong. Everybody. Shit. Thash okay, baby. Thish happensh to lotsh of people.
 
 **mixed**
 - Shome of you got it. The resht of you... I shtill wanna take you home. Lesh. ...Less.
 - Half and half. Like my drink. Half vodka... and half more fucking vodka.
+- Shome of you got it. Shome of you didn't. Shome of you should buy me a drink. `{sip}`
 
 **drink**
 - `{clink}` Thish one'sh for the losers. I mean... thish one's for me. WOO!
-- `{sip}` Hydrating. Vodka is moshtly water. Look it up. Don't fucking look it up.
+- `{slurp}` Hydrating. Vodka is moshtly water. Look it up. Don't fucking look it up.
 
 ---
 
@@ -159,14 +165,17 @@ Each stage is added to the base: "A woman hosting a living-room game show, with 
 **allRight**
 - Everybody got it. Of course you did. You looked it up, you lying little shits.
 - Oh, now everyone'sh a fucking geniush. Shmart people make me sho horny. Shtop it.
+- You all got it. Show-offsh. [annoyed] Shomebody here ish faking it, and I'm gonna find out who.
 
 **allWrong**
 - Nobody?! Not ONE of you?! I'm the drunk one here! [scoffs] Here. Read it yourshelves, dumbasshes.
 - Wrong. All wrong. I've shlept with shmarter people. Not many. But shome.
+- Not ONE?! Fuck me. No, sheriously. Shomebody. Anybody. `{gulp}`
 
 **mixed**
 - Shome of you got it. Shome of you are dead to me. You know who you are. I don't. But you fucking do.
 - Half of you got it. The other half can kissh my ass. Shlowly. ...With tongue.
+- Half right. I've had better oddsh at lasht call. And I shtill went home with shomebody.
 
 **drink**
 - `{pour}` `{gulp}` Don't you dare judge me. You're all on your phonesh. At a fucking party.
@@ -175,6 +184,9 @@ Each stage is added to the base: "A woman hosting a living-room game show, with 
 ---
 
 ## Stage 4: Gone
+
+**hello** _(fourth game and later)_
+- Hi. Hiii. It'sh me. Shalty. Shtill here. Phones... TV... you know. Fuckin' go. `{hiccups}`
 
 **intro**
 - Nnnnext... round... roun'... [sighs] ...the fuck'sh a round.
@@ -188,14 +200,17 @@ Each stage is added to the base: "A woman hosting a living-room game show, with 
 **allRight**
 - Y'all got it? [laughs] ...good f'you. Good... fuck. I mean... f'you. Fuck you. Wooo.
 - Everybody... ev'ry... I love... where'sh the parrot. PARROT. ...He left. Fuckin' bird.
+- Y'all... y'all got it. [laughs] Group hug. Group... shomething. Get over here.
 
 **allWrong**
 - Wrong! Wrooong. All of ya. [laughs] ...me too. I'm wrong. I'm a wrong fuckin' boat.
 - Nobody... nobody got... [sighs] I losht a whole ship once. Thish ish worse. Shit.
+- Nobody? Mmm. Me neither. I don't even know what the queshtion was. Fuck it. `{hiccups}`
 
 **mixed**
-- Shome... shome of you... `{hiccup}` ...shit. Forgot what I wash shaying. Shome of you are hot.
+- `{hiccup}` Shome... shome of you... ...shit. Forgot what I wash shaying. Shome of you are hot.
 - Half... half the... look. Look at me. ...Fuck all of you. Lovingly. With tongue.
+- `{slurp}` Shome right... shome... [sighs] I need a drink. I have a drink. ...Shome wrong.
 
 **drink**
 - `{bottle-roll}` ...Thatsh fine. Thatsh fine. There'sh another one in the couch.
@@ -209,11 +224,14 @@ Each stage is added to the base: "A woman hosting a living-room game show, with 
 
 ---
 
-## What building it needs (not done)
-- A `drunk` spice level above `filthy` in `packages/protocol`, a grown-up-only pick, and the server rule that a room
-  with a Kid or Little can't use it, plus a test.
-- A `stage` (1–4) on each line, and `salty.ts` choosing lines by stage from game progress (and the bar-tab carry-over, if the owner wants it).
-- A new `drink` moment in `brief.json` that plays when the stage goes up, and the Drunk exceptions to the rules (above) written into the brief.
-- `voice.mjs` taking each stage's direction, with `{…}` sound markers removed before recording and played as separate clips.
-- The owner's picks from the sound audition, processed with loudnorm, shipped as versioned files and credited in `CREDITS.md`.
-- Owner review of these lines before anything is voiced in bulk (ADR 0011).
+## How it's built (2026-11-27)
+- `drunk` is a spice level above `filthy` (`packages/protocol/src/spice.ts`). Only a room of grown-ups can reach it:
+  any younger player caps it (tested in `rules.test.ts`).
+- Lines are in `content/voice/lines.json` as spice `drunk` with a `stage`; ids `drunk<stage>-<moment>-<n>`. This
+  file is still the source: change a line here, then copy it there (same id only if the words are unchanged).
+- `apps/server/src/drunk.ts`: the stage (game progress plus the bar tab), the sound files, and the extra sounds between
+  lines. `salty.ts` picks by stage, wraps each line in its sounds, and puts a `drink` line first when the stage rises.
+  `VoiceBank.pick` never goes to a drunker stage than she's at; with no drunk line for a moment it uses Filthy.
+- The bar tab (owner: yes): `room.drunkGames` counts Drunk games played at least halfway; any game below Drunk clears it.
+- `voice.mjs bank` records drunk lines with `brief.json` `voice.drunk` (base + the stage's direction), markers cut out.
+- Snake Manor has no drunk lines; a Drunk room there gets Filthy lines with no sounds.

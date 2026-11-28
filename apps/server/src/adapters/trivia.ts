@@ -47,6 +47,7 @@ export const trivia: GameAdapter<TriviaState> = {
   countsStats: true,
   shown: (s) => [...Object.values(s.current).map((q) => q!.id), ...(s.turn ? [s.turn.question.id] : [])],
   stageKey: (s) => `${s.round}:${s.stage}`,
+  progress: (s) => (rules.isOver(s) ? 1 : Math.max(0, Math.min(1, (s.round - 1) / Math.max(1, s.rounds)))),
 
   /** A bot answers its own question at random. */
   bot(s, seatId, rand) {
@@ -68,23 +69,23 @@ export const trivia: GameAdapter<TriviaState> = {
       // The question is on screen; Salty reads it if there's a recording, else shows a filler caption.
       if (qReads?.prompt && tvQ) { clips.push(qReads.prompt); text = tvQ.prompt; }
     } else if (moment === 'allRight' || moment === 'allWrong' || moment === 'mixed') {
-      if (line?.clip) clips.push(line.clip);
+      if (line) clips.push(...line.clips);
       if (tvQ?.explain) {
         text = [line?.text, tvQ.explain].filter(Boolean).join(' ');
         if (qReads?.explain) clips.push(qReads.explain);
       }
     } else if (moment === 'turn') {
-      if (line?.clip) clips.push(line.clip);
+      if (line) clips.push(...line.clips);
       if (tReads?.prompt) clips.push(tReads.prompt);
       if (s.turn) text = [line?.text, s.turn.question.prompt].filter(Boolean).join(' ');
     } else if (moment === 'littleRight' || moment === 'littleWrong') {
-      if (line?.clip) clips.push(line.clip);
+      if (line) clips.push(...line.clips);
       if (s.turn?.question.explain) {
         text = [line?.text, s.turn.question.explain].filter(Boolean).join(' ');
         if (tReads?.explain) clips.push(tReads.explain);
       }
-    } else if (line?.clip) {
-      clips.push(line.clip);
+    } else if (line) {
+      clips.push(...line.clips);
     }
     return { text, clips };
   },

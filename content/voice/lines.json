@@ -1,5 +1,5 @@
 {
- "//": "Salty's line bank (ADR 0013, 0014; persona rules in docs/design/design-guide.md §3). Text is what is spoken: audio tags like [sighs] are delivery cues, and never captioned; '...' and em dashes are beats. At Filthy the swearing is real in the audio and bleeped in captions. A line is used only at or below the room's spice level. Rounds 4-5, 2026-11-27, from the owner's two line reviews: greet first and end on a hype call; every line makes literal sense; an everyday situation with one specific, unexpected twist (the meeting with a slideshow, the smug throw pillows, the grandma who thinks the internet is a fishing net); a clear attitude; 'another one', not 'the new one'. Lines the owner kept are unchanged; round 5 rewrites end in 'c'. Little-turn and Snake Manor lines are untouched.",
+ "//": "Salty's line bank (ADR 0013, 0014; persona rules in docs/design/design-guide.md §3). Text is what is spoken: audio tags like [sighs] are delivery cues, and never captioned; '...' and em dashes are beats. At Filthy the swearing is real in the audio and bleeped in captions. A line is used only at or below the room's spice level. Rounds 4-5, 2026-11-27, from the owner's two line reviews: greet first and end on a hype call; every line makes literal sense; an everyday situation with one specific, unexpected twist (the meeting with a slideshow, the smug throw pillows, the grandma who thinks the internet is a fishing net); a clear attitude; 'another one', not 'the new one'. Lines the owner kept are unchanged; round 5 rewrites end in 'c'. Little-turn and Snake Manor lines are untouched. Drunk (2026-11-27): lines above Filthy carry a `stage` (1 Buzzed, 2 Tipsy, 3 Hammered, 4 Gone) and may start or end with {sound} markers (sip, hiccup, hiccups, gulp, slurp, clink, toast, pour, slam, bottle-roll), played as separate clips and never recorded or captioned. Source: docs/design/drunk-salty-script.md.",
  "lines": [
   {
    "id": "hello-m1c",
@@ -4308,6 +4308,545 @@
    "moment": "turn",
    "spice": "mild",
    "text": "Little hands on the clicker! If you blurt it, I heard you."
+  },
+  {
+   "id": "drunk1-hello-1",
+   "moment": "hello",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "WOOO! Hello, you filthy fuckers! I'm Salty, I'm one drink in, and I'm already picking who I'm going home with. TV asks, phone answers. Let's fucking GO!"
+  },
+  {
+   "id": "drunk1-hello-2",
+   "moment": "hello",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "[laughs] Evening, you beautiful idiots! I'm Salty. The TV asks, your phone answers, and I drink every time some dumbass is wrong. So please be fucking wrong. Here we go! {sip}"
+  },
+  {
+   "id": "drunk1-hello-3",
+   "moment": "hello",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "Hi! Hi, bitches! I'm Salty, and I've had... one. A big fucking one. Questions on the TV, answers on your phone. Who's ready to get weird?! WOO!"
+  },
+  {
+   "id": "drunk1-intro-1",
+   "moment": "intro",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "Next round! WOO! Drink up, assholes. I already did. {clink}"
+  },
+  {
+   "id": "drunk1-intro-2",
+   "moment": "intro",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "Look at that leaderboard. Holy shit. I need a refill for this."
+  },
+  {
+   "id": "drunk1-intro-3",
+   "moment": "intro",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "[mischievously] New round, new drink. That's the rule. I just made it up, and it's fucking genius."
+  },
+  {
+   "id": "drunk1-question-1",
+   "moment": "question",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "Tap something, sweetie. I need another fucking drink."
+  },
+  {
+   "id": "drunk1-question-2",
+   "moment": "question",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "The clock's ticking. So is my bar tab. Hurry the fuck up."
+  },
+  {
+   "id": "drunk1-allRight-1",
+   "moment": "allRight",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "Everybody got it! WOO! Brains get me so wet. ...My drink. My drink got wet. Cheers! {toast}"
+  },
+  {
+   "id": "drunk1-allRight-2",
+   "moment": "allRight",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "All of you? Ugh. Now I've got no excuse to drink. Drinking anyway, bitches. {sip}"
+  },
+  {
+   "id": "drunk1-allRight-3",
+   "moment": "allRight",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "Everybody! WOO! I'm so proud I could kiss every one of you. On the mouth. ...Drink first."
+  },
+  {
+   "id": "drunk1-allWrong-1",
+   "moment": "allWrong",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "Nobody! [laughs] Dumb as shit, all of you. I love it. That's a drink for me. Here's what it was."
+  },
+  {
+   "id": "drunk1-allWrong-2",
+   "moment": "allWrong",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "All wrong! Oh, tonight is gonna be fucking wonderful for my liver."
+  },
+  {
+   "id": "drunk1-allWrong-3",
+   "moment": "allWrong",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "Not one of you. [laughs] Holy shit. You're cute, but you're fucking stupid. Here's the answer."
+  },
+  {
+   "id": "drunk1-mixed-1",
+   "moment": "mixed",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "Some of you got it. The rest of you, drink. I'll join you. Supportively. WOO!"
+  },
+  {
+   "id": "drunk1-mixed-2",
+   "moment": "mixed",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "Half right. Like my last marriage. ...I was the wrong fucking half."
+  },
+  {
+   "id": "drunk1-mixed-3",
+   "moment": "mixed",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "Some right, some wrong. Like every guy I've ever taken home. WOO!"
+  },
+  {
+   "id": "drunk1-drink-1",
+   "moment": "drink",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "{sip} Ahh. That's the shit. Okay. Where the fuck were we?"
+  },
+  {
+   "id": "drunk1-drink-2",
+   "moment": "drink",
+   "spice": "drunk",
+   "stage": 1,
+   "text": "{pour} Don't look at me like that. You're the ones making me do this. ...WOO!"
+  },
+  {
+   "id": "drunk2-hello-1",
+   "moment": "hello",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "Hello again, gorgeoush! Still Salty. Shaltier. TV, phone, you know the fucking drill. I forgot the drill. WOOO!"
+  },
+  {
+   "id": "drunk2-hello-2",
+   "moment": "hello",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "{hiccup} Welcome back, bitches! I'm Salty. I've been here the whole time. Drinking. And having very dirty thoughts about the couch. Lesh fucking go!"
+  },
+  {
+   "id": "drunk2-intro-1",
+   "moment": "intro",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "Okay. Okay. Nexsht round. I love you guys. Not the one in last. Everybody elshe."
+  },
+  {
+   "id": "drunk2-intro-2",
+   "moment": "intro",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "Whoever'sh winning... call me. Sheriously. I'm shingle, and I'm shit-faced. WOO!"
+  },
+  {
+   "id": "drunk2-intro-3",
+   "moment": "intro",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "New round. I'm fine. Thish is my fine fucking voice."
+  },
+  {
+   "id": "drunk2-question-1",
+   "moment": "question",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "Pick one. Any one. Go with your gut. That'sh how I pick who I shleep with."
+  },
+  {
+   "id": "drunk2-question-2",
+   "moment": "question",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "Hurry up, baby. My drink'sh getting warm. ...Ish that my drink?"
+  },
+  {
+   "id": "drunk2-allRight-1",
+   "moment": "allRight",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "Everybody?! WOOO! That'sh teamwork. I'd make out with every shingle one of you. Who are you people again?"
+  },
+  {
+   "id": "drunk2-allRight-2",
+   "moment": "allRight",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "You all got it. Shmart people turn me on. And you're all fucking geniushes. ...Thish ish a problem."
+  },
+  {
+   "id": "drunk2-allRight-3",
+   "moment": "allRight",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "{hiccup} All of you got it?! I'm getting turned on. Ish that weird? Thash weird."
+  },
+  {
+   "id": "drunk2-allWrong-1",
+   "moment": "allWrong",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "{hiccup} Nobody got it! [laughs] Me neither, and I've got the fucking answer right here. Lemme read it."
+  },
+  {
+   "id": "drunk2-allWrong-2",
+   "moment": "allWrong",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "All of you. Wrong. I'm not judging. I'm drinking. Shame thing. ...Same thing."
+  },
+  {
+   "id": "drunk2-allWrong-3",
+   "moment": "allWrong",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "Wrong. Everybody. Shit. Thash okay, baby. Thish happensh to lotsh of people."
+  },
+  {
+   "id": "drunk2-mixed-1",
+   "moment": "mixed",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "Shome of you got it. The resht of you... I shtill wanna take you home. Lesh. ...Less."
+  },
+  {
+   "id": "drunk2-mixed-2",
+   "moment": "mixed",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "Half and half. Like my drink. Half vodka... and half more fucking vodka."
+  },
+  {
+   "id": "drunk2-mixed-3",
+   "moment": "mixed",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "Shome of you got it. Shome of you didn't. Shome of you should buy me a drink. {sip}"
+  },
+  {
+   "id": "drunk2-drink-1",
+   "moment": "drink",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "{clink} Thish one'sh for the losers. I mean... thish one's for me. WOO!"
+  },
+  {
+   "id": "drunk2-drink-2",
+   "moment": "drink",
+   "spice": "drunk",
+   "stage": 2,
+   "text": "{slurp} Hydrating. Vodka is moshtly water. Look it up. Don't fucking look it up."
+  },
+  {
+   "id": "drunk3-hello-1",
+   "moment": "hello",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Hello! Hello. Who invited all you fuckers? Oh. Me. I'm Shalty, and I'm not wearing any... shoes. Phones. TV. Fucking... go."
+  },
+  {
+   "id": "drunk3-lobbyWaiting-1",
+   "moment": "lobbyWaiting",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Shtart the game. Shomebody. Pressh the fucking button, or I'm pressing charges."
+  },
+  {
+   "id": "drunk3-lobbyWaiting-2",
+   "moment": "lobbyWaiting",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Why ish nobody pressing shtart? I've been shtanding here for— I'm shitting. When did I shit down. ...Sit. Fuck."
+  },
+  {
+   "id": "drunk3-intro-1",
+   "moment": "intro",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Nexsht round. And whoever'sh winning... I shee your phone, you cheating shit. ...It'sh kinda hot."
+  },
+  {
+   "id": "drunk3-intro-2",
+   "moment": "intro",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "[annoyed] Who moved the fucking leaderboard? Shomebody touched it. Put it back, asshole."
+  },
+  {
+   "id": "drunk3-intro-3",
+   "moment": "intro",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Shhh. Shut up. Shut the fuck up. It'sh a round. Go."
+  },
+  {
+   "id": "drunk3-question-1",
+   "moment": "question",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Pick shomething. Or don't. I'm not your fucking mother. Where'sh my drink?"
+  },
+  {
+   "id": "drunk3-question-2",
+   "moment": "question",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Tap it. Tap the thing. Tap it like you mean it, baby. Harder. ...Yeah."
+  },
+  {
+   "id": "drunk3-allRight-1",
+   "moment": "allRight",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Everybody got it. Of course you did. You looked it up, you lying little shits."
+  },
+  {
+   "id": "drunk3-allRight-2",
+   "moment": "allRight",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Oh, now everyone'sh a fucking geniush. Shmart people make me sho horny. Shtop it."
+  },
+  {
+   "id": "drunk3-allRight-3",
+   "moment": "allRight",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "You all got it. Show-offsh. [annoyed] Shomebody here ish faking it, and I'm gonna find out who."
+  },
+  {
+   "id": "drunk3-allWrong-1",
+   "moment": "allWrong",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Nobody?! Not ONE of you?! I'm the drunk one here! [scoffs] Here. Read it yourshelves, dumbasshes."
+  },
+  {
+   "id": "drunk3-allWrong-2",
+   "moment": "allWrong",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Wrong. All wrong. I've shlept with shmarter people. Not many. But shome."
+  },
+  {
+   "id": "drunk3-allWrong-3",
+   "moment": "allWrong",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Not ONE?! Fuck me. No, sheriously. Shomebody. Anybody. {gulp}"
+  },
+  {
+   "id": "drunk3-mixed-1",
+   "moment": "mixed",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Shome of you got it. Shome of you are dead to me. You know who you are. I don't. But you fucking do."
+  },
+  {
+   "id": "drunk3-mixed-2",
+   "moment": "mixed",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Half of you got it. The other half can kissh my ass. Shlowly. ...With tongue."
+  },
+  {
+   "id": "drunk3-mixed-3",
+   "moment": "mixed",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "Half right. I've had better oddsh at lasht call. And I shtill went home with shomebody."
+  },
+  {
+   "id": "drunk3-drink-1",
+   "moment": "drink",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "{pour} {gulp} Don't you dare judge me. You're all on your phonesh. At a fucking party."
+  },
+  {
+   "id": "drunk3-drink-2",
+   "moment": "drink",
+   "spice": "drunk",
+   "stage": 3,
+   "text": "{clink} Thish bottle'sh my besht friend. It never picksh the wrong answer. And it puts out."
+  },
+  {
+   "id": "drunk4-hello-1",
+   "moment": "hello",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Hi. Hiii. It'sh me. Shalty. Shtill here. Phones... TV... you know. Fuckin' go. {hiccups}"
+  },
+  {
+   "id": "drunk4-intro-1",
+   "moment": "intro",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Nnnnext... round... roun'... [sighs] ...the fuck'sh a round."
+  },
+  {
+   "id": "drunk4-intro-2",
+   "moment": "intro",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Whooo'sh winning? Doeshn't... doesn' matter. Nothing mattersh. Shex matters. Shnacks matter."
+  },
+  {
+   "id": "drunk4-intro-3",
+   "moment": "intro",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "I'm not drunk. You're drunk. Thish whole fuckin'... couch ish drunk."
+  },
+  {
+   "id": "drunk4-question-1",
+   "moment": "question",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Mmmph... pick the... the one. Wi' the... words on it. Fuck."
+  },
+  {
+   "id": "drunk4-question-2",
+   "moment": "question",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Tap... tappy tap... I'm gonna lie down on the... floor'sh nice. Shomebody join me. ...Anybody."
+  },
+  {
+   "id": "drunk4-allRight-1",
+   "moment": "allRight",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Y'all got it? [laughs] ...good f'you. Good... fuck. I mean... f'you. Fuck you. Wooo."
+  },
+  {
+   "id": "drunk4-allRight-2",
+   "moment": "allRight",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Everybody... ev'ry... I love... where'sh the parrot. PARROT. ...He left. Fuckin' bird."
+  },
+  {
+   "id": "drunk4-allRight-3",
+   "moment": "allRight",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Y'all... y'all got it. [laughs] Group hug. Group... shomething. Get over here."
+  },
+  {
+   "id": "drunk4-allWrong-1",
+   "moment": "allWrong",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Wrong! Wrooong. All of ya. [laughs] ...me too. I'm wrong. I'm a wrong fuckin' boat."
+  },
+  {
+   "id": "drunk4-allWrong-2",
+   "moment": "allWrong",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Nobody... nobody got... [sighs] I losht a whole ship once. Thish ish worse. Shit."
+  },
+  {
+   "id": "drunk4-allWrong-3",
+   "moment": "allWrong",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Nobody? Mmm. Me neither. I don't even know what the queshtion was. Fuck it. {hiccups}"
+  },
+  {
+   "id": "drunk4-mixed-1",
+   "moment": "mixed",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "{hiccup} Shome... shome of you... ...shit. Forgot what I wash shaying. Shome of you are hot."
+  },
+  {
+   "id": "drunk4-mixed-2",
+   "moment": "mixed",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Half... half the... look. Look at me. ...Fuck all of you. Lovingly. With tongue."
+  },
+  {
+   "id": "drunk4-mixed-3",
+   "moment": "mixed",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "{slurp} Shome right... shome... [sighs] I need a drink. I have a drink. ...Shome wrong."
+  },
+  {
+   "id": "drunk4-drink-1",
+   "moment": "drink",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "{bottle-roll} ...Thatsh fine. Thatsh fine. There'sh another one in the couch."
+  },
+  {
+   "id": "drunk4-drink-2",
+   "moment": "drink",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "{slam} I'M AWAKE. ...I'm awake. [whispers] Who wants to make out."
+  },
+  {
+   "id": "drunk4-final-1",
+   "moment": "final",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "We have a... we have a winner! Sho proud. Winner gets a drink... and maybe a little shomething elshe. Everybody elshe... loshers. Go home. Thish is my couch now. Night, fuckers. {bottle-roll}"
+  },
+  {
+   "id": "drunk4-final-2",
+   "moment": "final",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "[laughs] Shomebody won. Congrats... whoever. I can't shee the TV. Best night of my fuckin' life. Don't tell anyone. WOOO... g'night."
+  },
+  {
+   "id": "drunk4-final-3",
+   "moment": "final",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Game over. Over. Like my career at shea. [sighs] Winner, I'd kissh you, but there's two of you. ...Fine. Both of you. Everyone elshe... call me a cab."
+  },
+  {
+   "id": "drunk4-final-4",
+   "moment": "final",
+   "spice": "drunk",
+   "stage": 4,
+   "text": "Okay. Okay. Winner. Proud. Everybody elshe... wha'sh the word... shit. You're shit. Love you. Bye. {bottle-roll}"
   }
  ]
 }

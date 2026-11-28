@@ -6,6 +6,7 @@ import { spiceState, type Room } from './rooms.ts';
 import { caption, type Moment, type VoiceBank } from './voice.ts';
 import { adapterFor } from './adapters/index.ts';
 import type { SaltyTools } from './adapters/types.ts';
+import { drunkStage, extraSound, lobbyStage, markers, soundUrl, type DrunkStage } from './drunk.ts';
 
 export interface SaltyState {
   /** The moment last spoken for, e.g. "lobby", "trivia:3:reveal". */
@@ -19,6 +20,8 @@ export interface SaltyState {
   spokeAt: number;
   /** Idle lobby lines said in a row (the gap grows with each). */
   idle: number;
+  /** Drunk only: the stage Salty last spoke at in this game (a rise means she takes a drink first). */
+  drunkStage?: DrunkStage;
 }
 
 export const newSalty = (): SaltyState => ({ stageKey: '', cue: null, recent: [], pending: null, seq: 0, spokeAt: 0, idle: 0 });
@@ -45,15 +48,53 @@ export function idleCue(room: Room, now: number): boolean {
   return true;
 }
 
-function tools(room: Room, bank: VoiceBank, now: number): SaltyTools {
+const QUIET_FOR_DRINK = new Set(['question', 'suspense']);
+
+/** Drunk Salty's stage right now, or null below Drunk. */
+export function currentDrunkStage(room: Room): DrunkStage | null {
+  if (spiceState(room).effective !== 'drunk') return null;
+  const g = room.game;
+  const a = g ? adapterFor(g.id) : null;
+  if (!g || !a) return lobbyStage(room.drunkGames);
+  return drunkStage(a.progress?.(g.state) ?? 0, room.drunkGames);
+}
+
+function tools(room: Room, bank: VoiceBank, now: number, rand: () => number = Math.random): SaltyTools {
   const spice = spiceState(room).effective;
   const st = room.salty;
+  const voiced = (l: { id: string; text: string }) => !!bank.lineAudio(l.id, now, room.voice, l.text);
+  const pickLine = (moment: string, stage: DrunkStage | null) => {
+    const line = bank.pick(moment, spice, new Set(st.recent), rand, voiced, stage ?? 1);
+    if (line) st.recent = [line.id, ...st.recent].slice(0, 12);
+    return line;
+  };
+  /** A line's recording, with its drinking sounds around it at Drunk (its own markers, or now and then an extra). */
+  const withSounds = (line: { id: string; text: string }, stage: DrunkStage | null): string[] => {
+    const clip = bank.lineAudio(line.id, now, room.voice, line.text);
+    if (!stage) return clip ? [clip] : [];
+    let m = markers(line.text);
+    if (!m.before.length && !m.after.length && room.game) m = extraSound(stage, rand);
+    const sound = (x: string) => soundUrl(x, rand);
+    return [...m.before.map(sound), clip, ...m.after.map(sound)].filter((x): x is string => !!x);
+  };
   return {
     line(moment) {
-      const line = bank.pick(moment, spice, new Set(st.recent), Math.random, (l) => !!bank.lineAudio(l.id, now, room.voice, l.text));
+      const stage = currentDrunkStage(room);
+      const line = pickLine(moment, stage);
       if (!line) return null;
-      st.recent = [line.id, ...st.recent].slice(0, 12);
-      return { text: line.text, clip: bank.lineAudio(line.id, now, room.voice, line.text) };
+      const clip = bank.lineAudio(line.id, now, room.voice, line.text);
+      let text = line.text;
+      let clips = withSounds(line, stage);
+      // Trivia asks for a line at the question too but plays the question's own reading there, so the drink waits for
+      // a moment whose line is really said.
+      if (stage && room.game && !QUIET_FOR_DRINK.has(moment)) {
+        // She just got drunker: another drink first (not over her hello; the game's first line sets where she starts).
+        const rose = moment !== 'hello' && st.drunkStage !== undefined && stage > st.drunkStage;
+        st.drunkStage = stage;
+        const drink = rose ? pickLine('drink', stage) : null;
+        if (drink) { text = `${drink.text} ${text}`; clips = [...withSounds(drink, stage), ...clips]; }
+      }
+      return { text, clip, clips };
     },
     reads: (questionId) => bank.reads(questionId, now, room.voice, spice),
   };

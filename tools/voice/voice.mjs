@@ -190,12 +190,17 @@ async function bank() {
   // direction (they're stripped from the text so they aren't read out).
   const KID_MOMENTS = new Set(BRIEF.voice.kidMoments);
   for (const l of lines) {
-    const base = KID_MOMENTS.has(l.moment) ? KIDS_STYLE : STYLE;
+    // Drunk lines (2026-11-27): their stage's direction, and the {sound} markers cut out (the server plays those as
+    // separate clips). lineText keeps the full text, markers and all, because that's what the server checks against.
+    const drunk = l.spice === 'drunk' ? BRIEF.voice.drunk : null;
+    if (drunk && !drunk.stages[String(l.stage)]) { console.error(`${l.id}: drunk line without a stage`); continue; }
+    const base = drunk ? drunk.base + drunk.stages[String(l.stage)] : KID_MOMENTS.has(l.moment) ? KIDS_STYLE : STYLE;
+    const spoken = l.text.replace(/\{[^}]+\}\s*/g, '').trim();
     const tags = [...l.text.matchAll(/\[([^\]]+)\]/g)].map((m) => m[1]);
     const style = v.directed && tags.length ? `${base} Delivery cues for this line: ${tags.join(', ')}.` : base;
     // Lines carry their own delivery tags where the joke turns (2026-11-27); only Little moments get the warm lead-in.
     const tag = KID_MOMENTS.has(l.moment) ? NICE : null;
-    jobs.push({ text: l.text, style, tag: /^\[/.test(l.text) ? null : tag, put: (f) => { manifest.lines[l.id] = f; manifest.lineText[l.id] = l.text; } });
+    jobs.push({ text: spoken, style, tag: /^\[/.test(spoken) ? null : tag, put: (f) => { manifest.lines[l.id] = f; manifest.lineText[l.id] = l.text; } });
   }
   // Questions: Littles' are read nicely only. Everyone else's are read snarkily, plus nicely for Mild rooms when the
   // voice takes tags (directed models get one reading).

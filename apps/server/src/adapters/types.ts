@@ -29,10 +29,14 @@ export interface Play {
   player?: string;
 }
 
-/** What Salty can use when a game decides what he says (salty.ts supplies these). */
+/**
+ * What Salty can use when a game decides what he says (salty.ts supplies these). `clip` is the line's recording alone;
+ * `clips` is everything to play for it in order: at Drunk, drinking sounds around the recording (and a drink line
+ * first when she's just got drunker).
+ */
 export interface SaltyTools {
   /** A line for a moment at or below the room's spice, avoiding recent ones; with its recording, if any. */
-  line(moment: Moment): { text: string; clip: string | null } | null;
+  line(moment: Moment): { text: string; clip: string | null; clips: string[] } | null;
   /** Recordings for a question. */
   reads(questionId: number): QuestionReads;
 }
@@ -80,6 +84,8 @@ export interface GameAdapter<S = unknown> {
    * player view, so a bot knows no more than a person in its seat. Empty when it has nothing to do.
    */
   bot?(state: S, seatId: string, rand: () => number): unknown[];
+  /** How far through the game it is, 0 to 1 (1 once it's over): Drunk Salty's stage follows it. Optional. */
+  progress?(state: S): number;
   /** Changes whenever Salty should say something new. */
   stageKey(state: S): string;
   /** What Salty says at the current stage. */

@@ -13,7 +13,8 @@ import { SPICES, VOICES, isSpice, spiceAllows, spiceRank, type Spice, type Voice
  */
 export type Moment = string;
 
-export interface Line { id: string; moment: Moment; spice: Spice; text: string }
+/** `stage` is set on Drunk lines only (1 Buzzed, 2 Tipsy, 3 Hammered, 4 Gone: docs/design/drunk-salty-script.md). */
+export interface Line { id: string; moment: Moment; spice: Spice; text: string; stage?: number }
 
 /** What the TV says and shows now. `clips` play in order; `key` changes when there's something new to say. */
 export interface SaltyCue { key: string; caption: string | null; clips: string[] }
@@ -37,9 +38,9 @@ interface Manifest {
 // Strong words are bleeped in captions at every level (the audio keeps them, Filthy only: ADR 0014).
 const BLEEP = /\b(fuck\w*|shit\w*|bastards?|bitch\w*|assholes?|dicks?|piss\w*)\b/gi;
 
-/** Caption text: delivery tags dropped, strong words bleeped as four stars (length never gives the word away). */
+/** Caption text: delivery tags and {sound} markers dropped, strong words bleeped as four stars (length never gives the word away). */
 export function caption(text: string): string {
-  return text.replace(/\[[^\]]+\]\s*/g, '').replace(BLEEP, '★★★★').replace(/\s{2,}/g, ' ').trim();
+  return text.replace(/\[[^\]]+\]\s*/g, '').replace(/\{[^}]+\}\s*/g, '').replace(BLEEP, '★★★★').replace(/\s{2,}/g, ' ').trim();
 }
 
 export class VoiceBank {
@@ -94,17 +95,31 @@ export class VoiceBank {
 
   /**
    * Picks a line for a moment: never above `spice`, preferring the room's exact level, then the next level down,
-   * and avoiding the lines in `recent`. With `voiced`, lines that have a recording come first, so a newly written line
+   * and avoiding the lines in `recent`. At Drunk, `stage` (1-4) chooses among the drunk lines. With `voiced`, lines that have a recording come first, so a newly written line
    * isn't shown silently while the bank is still recording it (2026-11-27).
    */
-  pick(moment: Moment, spice: Spice, recent: ReadonlySet<string>, rand: () => number = Math.random, voiced?: (l: Line) => boolean): Line | null {
+  pick(
+    moment: Moment, spice: Spice, recent: ReadonlySet<string>, rand: () => number = Math.random, voiced?: (l: Line) => boolean,
+    stage = 1,
+  ): Line | null {
     let allowed = this.lines.filter((l) => l.moment === moment && spiceAllows(spice, l.spice));
     if (voiced) { const rec = allowed.filter(voiced); if (rec.length) allowed = rec; }
-    for (let r = spiceRank(spice); r >= 0; r--) {
-      const level = allowed.filter((l) => l.spice === SPICES[r]);
+    const choose = (level: Line[]) => {
       const fresh = level.filter((l) => !recent.has(l.id));
       const pool = fresh.length ? fresh : level;
-      if (pool.length) return pool[Math.floor(rand() * pool.length)] ?? null;
+      return pool.length ? pool[Math.floor(rand() * pool.length)] ?? null : null;
+    };
+    // Drunk: the line for this stage, or the nearest earlier stage (never a drunker one: she doesn't sober up and
+    // slur ahead); with no drunk line for the moment at all, a Filthy one.
+    if (spice === 'drunk') {
+      for (let st = stage; st >= 1; st--) {
+        const line = choose(allowed.filter((l) => l.spice === 'drunk' && (l.stage ?? 1) === st));
+        if (line) return line;
+      }
+    }
+    for (let r = spiceRank(spice === 'drunk' ? 'filthy' : spice); r >= 0; r--) {
+      const line = choose(allowed.filter((l) => l.spice === SPICES[r]));
+      if (line) return line;
     }
     return null;
   }
