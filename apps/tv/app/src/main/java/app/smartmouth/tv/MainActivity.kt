@@ -94,6 +94,23 @@ class MainActivity : Activity() {
         super.onPause()
     }
 
+    // Leaving the app (Home, another app, the TV input switching) must silence it: a paused WebView keeps playing
+    // Salty and the music (owner, 2026-11-27: "I've quit the app but still hear it"). So the page goes when the app
+    // is out of sight, and comes back fresh when it returns; the server keeps the room for the TV to rejoin.
+    override fun onStop() {
+        handler.removeCallbacksAndMessages(null)
+        web?.let { root.removeView(it); it.destroy() }
+        web = null
+        super.onStop()
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        attempt = 0
+        newWebView()
+        load()
+    }
+
     override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
         web?.let { root.removeView(it); it.destroy() }

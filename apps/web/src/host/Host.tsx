@@ -7,6 +7,7 @@ import { Blob, Grin, Tick } from '../ui/art.tsx';
 import { SaltyBadge } from './SaltyStrip.tsx';
 import { TriviaHost } from '../games/trivia/TriviaHost.tsx';
 import { bed, fx } from '../games/trivia/audio.ts';
+import { tick } from './sfx.ts';
 import { SnakesHost } from '../games/snakes/SnakesHost.tsx';
 
 const KEY = 'smartmouth.host';
@@ -231,6 +232,14 @@ function SetupPanel({ view, send, problem }: { view: HostLobbyView; send: (m: Cl
     return () => clearInterval(t);
   }, [s.step]);
   const secs = s.startsAt ? Math.max(1, Math.ceil((s.startsAt - serverNow()) / 1000)) : 0;
+  // The 3-2-1 ticks out loud (owner, 2026-11-27: "count down needs some audio"): the picked Trivia tick, sharper on 1.
+  const ticked = useRef(0);
+  useEffect(() => {
+    if (s.step !== 'countdown') { ticked.current = 0; return; }
+    if (!secs || secs === ticked.current) return;
+    ticked.current = secs;
+    if (!fx('tick', 0, secs <= 1 ? 0.9 : 0.7)) tick(secs);
+  }, [s.step, secs]);
   return (
     <div className="games setup">
       <h2>{game?.name ?? 'Game'}{s.asksLevel && s.step !== 'options' ? ` · ${LEVEL_LABEL[s.level]} questions` : ''}</h2>
